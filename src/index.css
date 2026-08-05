@@ -2,24 +2,27 @@
 
 @layer base {
   body {
-    font-family: 'VT323', 'Press Start 2P', monospace;
+    font-family: 'Chakra Petch', 'VT323', sans-serif;
     background-color: #231f38;
     color: #ffffff;
     user-select: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    -webkit-font-smoothing: none;
-    -moz-osx-font-smoothing: unset;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 }
 
 .font-pixel {
-  font-family: 'Press Start 2P', 'VT323', monospace;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .font-mono-retro {
   font-family: 'VT323', monospace;
+  letter-spacing: 0.05em;
 }
 
 /* Desaturated Pink / Blue / Purple Pastel Gradient Wallpaper */
@@ -27,7 +30,7 @@
   background: linear-gradient(135deg, #231f38 0%, #3e2b4d 35%, #663d63 70%, #333d59 100%);
 }
 
-/* 8-bit Windows - Dark Crisp Glass (No CSS Blur artifacts) */
+/* 8-bit Windows - Dark Crisp Glass */
 .pixel-window {
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
@@ -49,10 +52,10 @@
     opacity: 1;
   }
   80% {
-    transform: translateY(0px) scaleY(0.7) scaleX(1.3); /* Impact Squish */
+    transform: translateY(0px) scaleY(0.75) scaleX(1.25);
   }
   90% {
-    transform: translateY(-12px) scaleY(1.05) scaleX(0.95); /* Quick bounce */
+    transform: translateY(-10px) scaleY(1.05) scaleX(0.95);
   }
   100% {
     transform: translateY(0px) scaleY(1) scaleX(1);
@@ -61,6 +64,20 @@
 
 .animate-bot-fast-drop {
   animation: botFastDrop 0.65s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+}
+
+/* Alive Bouncy Floating Animation for Mascot Head */
+@keyframes floatHead {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg);
+  }
+}
+
+.animate-float-head {
+  animation: floatHead 3s ease-in-out infinite;
 }
 
 /* Floating Molecules Node Animation for Skill Tree */

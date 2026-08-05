@@ -1,6 +1,6 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
-import { Lock, Check, Play } from "lucide-react";
+import { Lock, Check, Play, X, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
 
@@ -9,12 +9,13 @@ interface CustomSkillNodeProps {
     nodeId: string;
     titleKey: string;
     levelNumber: number;
+    onStartLesson?: (nodeId: string) => void;
   };
 }
 
 export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
   const { t } = useTranslation();
-  const { nodes, selectedNodeId, selectNode, completeNode } = useSkillTreeStore();
+  const { nodes, selectedNodeId, selectNode } = useSkillTreeStore();
   const nodeState = nodes[data.nodeId] || { status: "locked", progress: 0 };
   const isSelected = selectedNodeId === data.nodeId;
 
@@ -28,61 +29,125 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
 
   return (
     <div
-      onClick={() => selectNode(data.nodeId)}
+      onClick={(e) => {
+        e.stopPropagation();
+        selectNode(data.nodeId);
+      }}
       className={`flex flex-col items-center cursor-pointer group select-none relative ${floatAnimClass}`}
     >
-      {/* Completely Invisible & Unclickable Handle Dots */}
       <Handle
         type="target"
         position={Position.Top}
         className="!opacity-0 !w-0 !h-0 !border-none pointer-events-none"
       />
 
-      {/* Circle Node Container */}
+      {/* Main Circle Node Container */}
       <div className="relative flex items-center justify-center">
         <div
           className={`w-20 h-20 rounded-full border-4 flex items-center justify-center transition-all duration-200 ${
             isLocked
               ? "bg-slate-950 border-slate-700 text-slate-500 opacity-60"
               : isCompleted
-              ? "bg-[#2d0938] border-[#ffd700] text-white shadow-[0_0_20px_rgba(255,215,0,0.4)]"
-              : "bg-[#1f0528] border-[#00ffcc] text-white shadow-[0_0_20px_rgba(0,255,204,0.4)]"
-          } ${isSelected ? "scale-110 ring-4 ring-white/50" : "group-hover:scale-105"}`}
+              ? "bg-[#2d0938] border-[#ffd700] text-white shadow-[0_0_25px_rgba(255,215,0,0.5)]"
+              : "bg-[#1f0528] border-[#00ffcc] text-white shadow-[0_0_25px_rgba(0,255,204,0.5)]"
+          } ${isSelected ? "scale-110 ring-4 ring-white/60" : "group-hover:scale-105"}`}
         >
           {isLocked ? (
-            <Lock size={24} className="text-slate-500" />
+            <Lock size={26} className="text-slate-500" />
           ) : isCompleted ? (
-            <Check size={30} className="text-[#ffd700]" />
+            <Check size={32} className="text-[#ffd700]" />
           ) : (
             <span className="font-pixel text-xl text-white">0{data.levelNumber}</span>
           )}
         </div>
-
-        {/* GREEN START BUTTON: Still, attached to circle center axis */}
-        {isSelected && isActive && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              completeNode(data.nodeId);
-            }}
-            className="absolute left-[92px] top-1/2 -translate-y-1/2 bg-emerald-500 hover:bg-emerald-400 border border-emerald-300 text-slate-950 font-bold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-xl active:scale-95 cursor-pointer text-xs font-pixel whitespace-nowrap z-50 transition-all"
-          >
-            <Play size={14} className="fill-slate-950" />
-            <span>ROZPOCZNIJ</span>
-          </button>
-        )}
       </div>
 
-      {/* Short Text Title Below */}
-      <div className="mt-2.5 text-center max-w-[140px]">
+      {/* Node Short Label */}
+      <div className="mt-2 text-center max-w-[140px]">
         <span
-          className={`text-xs font-mono-retro font-bold block leading-snug drop-shadow ${
-            isLocked ? "text-slate-400" : "text-white"
+          className={`text-xs font-pixel font-bold block leading-snug drop-shadow ${
+            isLocked ? "text-slate-500" : "text-white"
           }`}
         >
           {t(data.titleKey)}
         </span>
       </div>
+
+      {/* DUOLINGO STYLE POPUP CARD (Rendered Floating Below Node when Selected) */}
+      {isSelected && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="absolute top-[105px] left-1/2 -translate-x-1/2 w-[280px] z-50 animate-fade-in select-none"
+        >
+          {/* Card Arrow Tip */}
+          <div className="w-4 h-4 bg-slate-900 border-t border-l border-white/20 rotate-45 mx-auto -mb-2 relative z-10" />
+
+          {/* Card Body */}
+          {isActive || isCompleted ? (
+            <div className="bg-slate-900 border-2 border-emerald-500/60 rounded-3xl p-4 shadow-2xl text-white flex flex-col gap-3 relative">
+              {/* Close Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  selectNode("");
+                }}
+                className="absolute top-3 right-3 text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800"
+              >
+                <X size={14} />
+              </button>
+
+              <div className="space-y-1 pr-6">
+                <span className="text-[10px] font-pixel font-bold text-emerald-400 uppercase tracking-wide flex items-center gap-1">
+                  <Zap size={12} className="fill-emerald-400" />
+                  <span>Dział {data.levelNumber} • Lekcja 1 z 3</span>
+                </span>
+                <h4 className="text-sm font-pixel font-bold text-white leading-tight">
+                  {t(data.titleKey)}
+                </h4>
+              </div>
+
+              {/* Action Start Lesson Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (data.onStartLesson) data.onStartLesson(data.nodeId);
+                }}
+                className="w-full py-3 bg-[#58cc02] hover:bg-[#46a302] border-b-4 border-[#3ca100] text-white font-pixel text-xs font-bold rounded-2xl shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-1"
+              >
+                <Play size={14} className="fill-white" />
+                <span>{isCompleted ? "POWTÓRZ NAUKĘ (+25 XP)" : "ROZPOCZNIJ NAUKĘ (+25 XP)"}</span>
+              </button>
+            </div>
+          ) : (
+            /* Locked Card State */
+            <div className="bg-slate-900 border-2 border-slate-700/60 rounded-3xl p-4 shadow-2xl text-slate-300 flex flex-col gap-2 relative">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  selectNode("");
+                }}
+                className="absolute top-3 right-3 text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800"
+              >
+                <X size={14} />
+              </button>
+
+              <div className="space-y-1 pr-6">
+                <h4 className="text-xs font-pixel font-bold text-slate-200">
+                  {t(data.titleKey)}
+                </h4>
+                <p className="text-[11px] font-pixel text-slate-400 leading-relaxed">
+                  Ukończ poprzednie poziomy, aby odblokować tę lekcję!
+                </p>
+              </div>
+
+              <div className="w-full py-2.5 bg-slate-800 border-b-4 border-slate-950 text-slate-500 font-pixel text-xs font-bold rounded-2xl text-center uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-not-allowed mt-1">
+                <Lock size={12} />
+                <span>ZABLOKOWANE</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <Handle
         type="source"
