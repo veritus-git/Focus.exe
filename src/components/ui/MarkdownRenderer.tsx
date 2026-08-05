@@ -2,6 +2,11 @@ import React from "react";
 import { BinaryCounter } from "../interactive/BinaryCounter";
 import { LogicGates } from "../interactive/LogicGates";
 
+export interface LessonPage {
+  type: "content" | "insight";
+  content: string;
+}
+
 interface MarkdownRendererProps {
   content: string;
 }
@@ -15,8 +20,7 @@ const INTERACTIVE_COMPONENTS: Record<string, React.FC> = {
 /**
  * Lightweight Markdown-to-JSX renderer.
  * Supports: headings, bold, italic, code blocks, inline code, blockquotes,
- * Key Insight cards (> [!KEY]), unordered/ordered lists, horizontal rules,
- * tables, interactive embeds, and paragraphs.
+ * unordered/ordered lists, horizontal rules, tables, interactive embeds, and paragraphs.
  * No external dependencies.
  */
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
@@ -56,14 +60,14 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
       }
       i++; // skip closing ```
       elements.push(
-        <div key={elements.length} className="my-4 rounded-xl overflow-hidden border border-white/10">
+        <div key={elements.length} className="my-6 rounded-2xl overflow-hidden border border-white/10">
           {lang && (
-            <div className="px-4 py-1.5 bg-slate-800 text-[10px] font-mono-retro text-slate-400 uppercase tracking-wider border-b border-white/10">
+            <div className="px-5 py-2 bg-slate-800 text-xs font-mono-retro text-slate-400 uppercase tracking-wider border-b border-white/10">
               {lang}
             </div>
           )}
-          <pre className="px-4 py-3 bg-slate-950 overflow-x-auto text-sm leading-relaxed">
-            <code className="text-emerald-300 font-mono-retro text-sm">{codeLines.join("\n")}</code>
+          <pre className="px-6 py-5 bg-slate-950 overflow-x-auto text-base leading-relaxed">
+            <code className="text-emerald-300 font-mono-retro text-base">{codeLines.join("\n")}</code>
           </pre>
         </div>
       );
@@ -90,12 +94,12 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
         const header = rows[0];
         const body = rows.slice(1);
         elements.push(
-          <div key={elements.length} className="my-4 overflow-hidden rounded-xl border border-white/10">
-            <table className="w-full text-sm">
+          <div key={elements.length} className="my-6 overflow-hidden rounded-2xl border border-white/10">
+            <table className="w-full text-base">
               <thead>
                 <tr className="bg-slate-800">
                   {header.map((cell, ci) => (
-                    <th key={ci} className="px-4 py-2 text-left font-pixel text-xs text-white font-bold border-b border-white/10">
+                    <th key={ci} className="px-5 py-3 text-left font-pixel text-sm text-white font-bold border-b border-white/10">
                       {renderInline(cell)}
                     </th>
                   ))}
@@ -105,7 +109,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
                 {body.map((row, ri) => (
                   <tr key={ri} className="border-b border-white/5 hover:bg-slate-900/50">
                     {row.map((cell, ci) => (
-                      <td key={ci} className="px-4 py-2 text-slate-300 text-xs">
+                      <td key={ci} className="px-5 py-3 text-slate-300 text-sm">
                         {renderInline(cell)}
                       </td>
                     ))}
@@ -122,7 +126,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
     // Heading
     if (line.startsWith("# ")) {
       elements.push(
-        <h1 key={elements.length} className="text-2xl font-pixel font-bold text-white mt-8 mb-3 leading-tight">
+        <h1 key={elements.length} className="text-4xl font-pixel font-bold text-white mt-12 mb-6 leading-tight">
           {renderInline(line.slice(2))}
         </h1>
       );
@@ -131,7 +135,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
     }
     if (line.startsWith("## ")) {
       elements.push(
-        <h2 key={elements.length} className="text-xl font-pixel font-bold text-emerald-400 mt-8 mb-2 leading-snug">
+        <h2 key={elements.length} className="text-3xl font-pixel font-bold text-emerald-400 mt-10 mb-5 leading-snug">
           {renderInline(line.slice(3))}
         </h2>
       );
@@ -140,7 +144,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
     }
     if (line.startsWith("### ")) {
       elements.push(
-        <h3 key={elements.length} className="text-base font-pixel font-bold text-white mt-5 mb-1.5">
+        <h3 key={elements.length} className="text-2xl font-pixel font-bold text-white mt-8 mb-4">
           {renderInline(line.slice(4))}
         </h3>
       );
@@ -151,46 +155,9 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
     // Horizontal rule
     if (line.trim() === "---") {
       elements.push(
-        <hr key={elements.length} className="my-6 border-white/10" />
+        <hr key={elements.length} className="my-8 border-white/10" />
       );
       i++;
-      continue;
-    }
-
-    // KEY INSIGHT block: > [!KEY] ...
-    if (line.trim().startsWith("> [!KEY]")) {
-      const keyLines: string[] = [];
-      // First line might have content after [!KEY]
-      const firstContent = line.trim().replace(/^>\s*\[!KEY\]\s*/, "").trim();
-      if (firstContent) keyLines.push(firstContent);
-      i++;
-      while (i < lines.length && lines[i].trim().startsWith(">")) {
-        keyLines.push(lines[i].trim().replace(/^>\s?/, ""));
-        i++;
-      }
-      elements.push(
-        <div
-          key={elements.length}
-          className="my-5 p-4 bg-gradient-to-r from-amber-500/10 to-amber-600/5 border-l-4 border-amber-400 rounded-r-xl relative overflow-hidden"
-        >
-          <div className="flex items-start gap-3">
-            <span className="text-xl shrink-0 mt-0.5">💡</span>
-            <div>
-              <span className="text-[9px] font-pixel text-amber-400 font-bold uppercase tracking-wider block mb-1">
-                Key Insight
-              </span>
-              <div className="text-sm text-amber-100/90 leading-relaxed font-medium">
-                {keyLines.map((kl, ki) => (
-                  <span key={ki}>
-                    {renderInline(kl)}
-                    {ki < keyLines.length - 1 && <br />}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
       continue;
     }
 
@@ -204,7 +171,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
       elements.push(
         <blockquote
           key={elements.length}
-          className="my-4 pl-4 border-l-3 border-slate-500 bg-slate-800/30 py-3 pr-4 rounded-r-lg text-sm text-slate-300/90 leading-relaxed italic"
+          className="my-6 pl-5 border-l-4 border-slate-500 bg-slate-800/30 py-4 pr-5 rounded-r-xl text-xl text-slate-300/90 leading-relaxed italic"
         >
           {quoteLines.map((ql, qi) => (
             <span key={qi}>
@@ -225,10 +192,10 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
         i++;
       }
       elements.push(
-        <ul key={elements.length} className="my-3 space-y-1.5 pl-1">
+        <ul key={elements.length} className="my-4 space-y-2.5 pl-2">
           {items.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-2 text-sm text-slate-300 leading-relaxed">
-              <span className="text-emerald-400 mt-1 shrink-0">▸</span>
+            <li key={idx} className="flex items-start gap-3 text-lg text-slate-300 leading-[1.7]">
+              <span className="text-emerald-400 mt-1.5 shrink-0 text-xl">▸</span>
               <span>{renderInline(item)}</span>
             </li>
           ))}
@@ -245,10 +212,10 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
         i++;
       }
       elements.push(
-        <ol key={elements.length} className="my-3 space-y-1.5 pl-1">
+        <ol key={elements.length} className="my-4 space-y-2.5 pl-2">
           {items.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-2.5 text-sm text-slate-300 leading-relaxed">
-              <span className="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-[10px] font-bold text-emerald-400 shrink-0 mt-0.5">
+            <li key={idx} className="flex items-start gap-3.5 text-lg text-slate-300 leading-[1.7]">
+              <span className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-[11px] font-bold text-emerald-400 shrink-0 mt-0.5">
                 {idx + 1}
               </span>
               <span>{renderInline(item)}</span>
@@ -261,14 +228,14 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
 
     // Regular paragraph
     elements.push(
-      <p key={elements.length} className="text-sm text-slate-300 leading-relaxed my-2.5">
+      <p key={elements.length} className="text-lg text-slate-300 leading-[1.8] my-4">
         {renderInline(line)}
       </p>
     );
     i++;
   }
 
-  return <div className="space-y-0.5">{elements}</div>;
+  return <div className="space-y-1 pb-10">{elements}</div>;
 };
 
 /**
@@ -299,7 +266,7 @@ function renderInline(text: string): React.ReactNode {
       );
     } else if (match[4]) {
       parts.push(
-        <code key={parts.length} className="px-1.5 py-0.5 bg-slate-800 border border-white/10 rounded text-emerald-300 text-xs font-mono-retro">
+        <code key={parts.length} className="px-2 py-1 bg-slate-800 border border-white/10 rounded text-emerald-300 text-sm font-mono-retro">
           {match[4]}
         </code>
       );
@@ -317,7 +284,45 @@ function renderInline(text: string): React.ReactNode {
 
 /**
  * Split markdown content by ---PAGE--- separator into pages.
+ * It also extracts `> [!KEY]` blocks into their own separate "insight" pages
+ * immediately following the content page.
  */
-export function splitIntoPages(content: string): string[] {
-  return content.split(/^---PAGE---$/m).map((p) => p.trim()).filter(Boolean);
+export function splitIntoPages(content: string): LessonPage[] {
+  const rawPages = content.split(/^---PAGE---$/m).map((p) => p.trim()).filter(Boolean);
+  const result: LessonPage[] = [];
+
+  for (const pageText of rawPages) {
+    const lines = pageText.split("\n");
+    const contentLines: string[] = [];
+    const insightLines: string[] = [];
+    let inInsight = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (line.trim().startsWith("> [!KEY]")) {
+        inInsight = true;
+        const firstLine = line.trim().replace(/^>\s*\[!KEY\]\s*/, "").trim();
+        if (firstLine) insightLines.push(firstLine);
+      } else if (inInsight && line.trim().startsWith(">")) {
+        insightLines.push(line.trim().replace(/^>\s?/, ""));
+      } else if (inInsight && (!line.trim().startsWith(">") || line.trim() === "")) {
+        // end of insight
+        inInsight = false;
+        if (line.trim() !== "") {
+          contentLines.push(line);
+        }
+      } else {
+        contentLines.push(line);
+      }
+    }
+
+    if (contentLines.join("").trim() !== "") {
+      result.push({ type: "content", content: contentLines.join("\n").trim() });
+    }
+    if (insightLines.length > 0) {
+      result.push({ type: "insight", content: insightLines.join("\n").trim() });
+    }
+  }
+
+  return result;
 }

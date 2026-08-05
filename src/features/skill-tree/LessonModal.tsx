@@ -181,10 +181,22 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
       {/* Content */}
       <div
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto overflow-x-hidden"
+        className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col"
       >
-        <div className="max-w-[720px] mx-auto px-8 py-10">
-          <MarkdownRenderer content={pages[currentPage] || ""} />
+        <div className="max-w-4xl w-full mx-auto px-8 py-12 flex-1 flex flex-col">
+          {pages[currentPage]?.type === "insight" ? (
+            <div className="flex-1 flex flex-col items-center justify-center animate-fade-in text-center max-w-2xl mx-auto py-10">
+              <span className="text-6xl mb-8">💡</span>
+              <h3 className="font-pixel text-xl text-amber-400 font-bold uppercase tracking-widest mb-10">
+                Key Insight
+              </h3>
+              <p className="text-3xl text-amber-100 leading-relaxed font-medium">
+                {pages[currentPage].content}
+              </p>
+            </div>
+          ) : (
+            <MarkdownRenderer content={pages[currentPage]?.content || ""} />
+          )}
         </div>
       </div>
 
