@@ -13,8 +13,8 @@
     "node3Title": "Deep Mastery",
     "startLesson": "Start lesson",
     "unit": "Unit {{num}} • Lesson 1 of 3",
-    "startLessonXP": "START LESSON (+25 XP)",
-    "repeatLessonXP": "REPEAT LESSON (+25 XP)",
+    "startLessonXP": "START LESSON",
+    "repeatLessonXP": "REPEAT LESSON",
     "lockedMsg": "Complete previous levels to unlock this lesson!",
     "lockedBadge": "LOCKED"
   },

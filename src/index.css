@@ -98,23 +98,20 @@
   animation: robotBlink 3.5s ease-in-out infinite;
 }
 
-/* Organic 2D Chaotic Floating Molecule Node Animations */
+/* Organic 2D Chaotic Floating Molecule Node Animations (Reverted to simple vertical float) */
 @keyframes floatingMolecule1 {
-  0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-  33% { transform: translate(8px, -6px) rotate(1.5deg); }
-  66% { transform: translate(-5px, 4px) rotate(-1deg); }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
 }
 
 @keyframes floatingMolecule2 {
-  0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-  33% { transform: translate(-9px, 7px) rotate(-1.5deg); }
-  66% { transform: translate(6px, -5px) rotate(1deg); }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(6px); }
 }
 
 @keyframes floatingMolecule3 {
-  0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-  33% { transform: translate(7px, 8px) rotate(1deg); }
-  66% { transform: translate(-7px, -6px) rotate(-1.5deg); }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
 }
 
 .animate-float-node-1 {

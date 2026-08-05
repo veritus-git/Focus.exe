@@ -13,8 +13,8 @@
     "node3Title": "Głębokie Mistrzostwo",
     "startLesson": "Rozpocznij lekcję",
     "unit": "Dział {{num}} • Lekcja 1 z 3",
-    "startLessonXP": "ROZPOCZNIJ NAUKĘ (+25 XP)",
-    "repeatLessonXP": "POWTÓRZ NAUKĘ (+25 XP)",
+    "startLessonXP": "ROZPOCZNIJ NAUKĘ",
+    "repeatLessonXP": "POWTÓRZ NAUKĘ",
     "lockedMsg": "Ukończ poprzednie poziomy, aby odblokować tę lekcję!",
     "lockedBadge": "ZABLOKOWANE"
   },

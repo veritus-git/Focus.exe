@@ -13,6 +13,7 @@ export const CalculatorWindow: React.FC = () => {
   const [newNum, setNewNum] = useState(true);
 
   const [windowPos, setWindowPos] = useState({ x: 120, y: 80 });
+  const [isDragging, setIsDragging] = useState(false);
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ startX: 0, startY: 0, posX: 120, posY: 80 });
 
@@ -22,6 +23,7 @@ export const CalculatorWindow: React.FC = () => {
 
     focusWindow("calculator");
     isDraggingRef.current = true;
+    setIsDragging(true);
     dragStartRef.current = {
       startX: e.clientX,
       startY: e.clientY,
@@ -47,6 +49,7 @@ export const CalculatorWindow: React.FC = () => {
     const handleMouseUp = () => {
       if (!isDraggingRef.current) return;
       isDraggingRef.current = false;
+      setIsDragging(false);
       if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
@@ -100,6 +103,9 @@ export const CalculatorWindow: React.FC = () => {
     ["1", "2", "3", "0"],
   ];
 
+  const { minimizedWindows } = useOSStore();
+  const isMinimized = minimizedWindows.includes("calculator");
+
   return (
     <div
       onMouseDown={() => focusWindow("calculator")}
@@ -110,7 +116,11 @@ export const CalculatorWindow: React.FC = () => {
         transform: `translate3d(${windowPos.x}px, ${windowPos.y}px, 0)`,
         willChange: "transform",
       }}
-      className="w-[280px] bg-slate-900 border border-white/20 rounded-2xl shadow-2xl z-30 select-none overflow-hidden"
+      className={`w-[280px] bg-slate-900 border border-white/20 rounded-2xl shadow-2xl z-30 select-none overflow-hidden ${
+        !isDragging ? "transition-all duration-300 ease-in-out" : ""
+      } ${
+        isMinimized ? "scale-95 opacity-0 pointer-events-none translate-y-8" : "scale-100 opacity-100 translate-y-0"
+      }`}
     >
       {/* Titlebar */}
       <div

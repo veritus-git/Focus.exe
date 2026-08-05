@@ -17,6 +17,7 @@ export const SkillTreeWindow: React.FC = () => {
   const [isMaximized, setIsMaximized] = useState(true);
   const [windowPos, setWindowPos] = useState({ x: 60, y: 60 });
   const [activeLessonNodeId, setActiveLessonNodeId] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const reactFlowInstance = useRef<any>(null);
   const isDraggingRef = useRef(false);
@@ -26,7 +27,7 @@ export const SkillTreeWindow: React.FC = () => {
   useEffect(() => {
     if (reactFlowInstance.current) {
       const timer = setTimeout(() => {
-        reactFlowInstance.current?.fitView({ padding: 0.35, duration: 250 });
+        reactFlowInstance.current?.fitView({ padding: 0.5, duration: 250 });
       }, 60);
       return () => clearTimeout(timer);
     }
@@ -40,6 +41,7 @@ export const SkillTreeWindow: React.FC = () => {
 
     focusWindow("skillTree");
     isDraggingRef.current = true;
+    setIsDragging(true);
     dragStartRef.current = {
       startX: e.clientX,
       startY: e.clientY,
@@ -65,6 +67,7 @@ export const SkillTreeWindow: React.FC = () => {
     const handleMouseUp = () => {
       if (!isDraggingRef.current) return;
       isDraggingRef.current = false;
+      setIsDragging(false);
       if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
@@ -162,8 +165,10 @@ export const SkillTreeWindow: React.FC = () => {
           isMaximized
             ? "fixed inset-0 top-0 left-0 w-screen h-[calc(100vh-44px)] rounded-none"
             : "w-[85vw] h-[75vh] max-w-[1100px] max-h-[750px] rounded-2xl border border-white/20 shadow-2xl"
-        } bg-slate-950 flex flex-col z-30 select-none overflow-hidden transition-opacity duration-200 ${
-          isMinimized ? "scale-95 opacity-0 pointer-events-none translate-y-8" : "scale-100 opacity-100"
+        } bg-slate-950 flex flex-col z-30 select-none overflow-hidden ${
+          !isDragging ? "transition-all duration-300 ease-in-out" : ""
+        } ${
+          isMinimized ? "scale-95 opacity-0 pointer-events-none translate-y-8" : "scale-100 opacity-100 translate-y-0"
         }`}
       >
         {/* Titlebar */}

@@ -10,6 +10,7 @@ export const NotesWindow: React.FC = () => {
   const [text, setText] = useState("");
   const [saved, setSaved] = useState(false);
   const [windowPos, setWindowPos] = useState({ x: 220, y: 120 });
+  const [isDragging, setIsDragging] = useState(false);
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ startX: 0, startY: 0, posX: 220, posY: 120 });
 
@@ -19,6 +20,7 @@ export const NotesWindow: React.FC = () => {
 
     focusWindow("notes");
     isDraggingRef.current = true;
+    setIsDragging(true);
     dragStartRef.current = {
       startX: e.clientX,
       startY: e.clientY,
@@ -44,6 +46,7 @@ export const NotesWindow: React.FC = () => {
     const handleMouseUp = () => {
       if (!isDraggingRef.current) return;
       isDraggingRef.current = false;
+      setIsDragging(false);
       if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
@@ -58,6 +61,9 @@ export const NotesWindow: React.FC = () => {
     setTimeout(() => setSaved(false), 2000);
   };
 
+  const { minimizedWindows } = useOSStore();
+  const isMinimized = minimizedWindows.includes("notes");
+
   return (
     <div
       onMouseDown={() => focusWindow("notes")}
@@ -68,7 +74,11 @@ export const NotesWindow: React.FC = () => {
         transform: `translate3d(${windowPos.x}px, ${windowPos.y}px, 0)`,
         willChange: "transform",
       }}
-      className="w-[380px] h-[340px] bg-slate-900 border border-white/20 rounded-2xl shadow-2xl z-30 select-none flex flex-col overflow-hidden"
+      className={`w-[380px] h-[340px] bg-slate-900 border border-white/20 rounded-2xl shadow-2xl z-30 select-none flex flex-col overflow-hidden ${
+        !isDragging ? "transition-all duration-300 ease-in-out" : ""
+      } ${
+        isMinimized ? "scale-95 opacity-0 pointer-events-none translate-y-8" : "scale-100 opacity-100 translate-y-0"
+      }`}
     >
       {/* Titlebar */}
       <div
