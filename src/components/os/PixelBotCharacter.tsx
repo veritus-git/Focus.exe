@@ -2,46 +2,40 @@ import React from "react";
 
 export const PixelBotCharacter: React.FC = () => {
   return (
-    <div className="flex flex-col items-center select-none group">
-      {/* Antenna Gem */}
-      <div className="w-3.5 h-3.5 bg-[#00ffcc] border-2 border-slate-950 rounded-sm animate-pulse shadow-[0_0_12px_#00ffcc]" />
-      {/* Antenna Pole */}
-      <div className="w-1.5 h-3.5 bg-indigo-400 border-x border-slate-950" />
+    <div className="flex flex-col items-center select-none">
+      {/* Clean Minimalist 8-Bit Vector Robot */}
+      <svg
+        width="80"
+        height="80"
+        viewBox="0 0 80 80"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="drop-shadow-lg"
+      >
+        {/* Antenna */}
+        <rect x="38" y="4" width="4" height="10" fill="#6366f1" />
+        <rect x="36" y="2" width="8" height="4" fill="#00ffcc" />
 
-      {/* Robot Head (Navy & Indigo Blue) */}
-      <div className="w-22 h-18 bg-indigo-900 border-4 border-slate-950 rounded-xl p-1.5 flex flex-col items-center justify-center relative shadow-2xl">
-        {/* Left Cute Ear / Headphone */}
-        <div className="absolute -left-2.5 top-4 w-3 h-5 bg-sky-500 border-2 border-slate-950 rounded-l-md" />
-        {/* Right Cute Ear / Headphone */}
-        <div className="absolute -right-2.5 top-4 w-3 h-5 bg-sky-500 border-2 border-slate-950 rounded-r-md" />
+        {/* Head Outer Container */}
+        <rect x="16" y="14" width="48" height="40" rx="8" fill="#1e1b4b" stroke="#6366f1" strokeWidth="4" />
 
-        {/* Screen Face Display */}
-        <div className="w-full h-full bg-[#0a0f24] border-2 border-slate-950 rounded-lg flex flex-col items-center justify-center relative overflow-hidden px-2 py-1">
-          {/* Eyes & Cheeks Row */}
-          <div className="flex items-center justify-between w-full px-1">
-            {/* Left Eye */}
-            <div className="w-3.5 h-4 bg-[#00ffcc] border border-slate-950 rounded-xs animate-pixel-blink shadow-[0_0_8px_#00ffcc]" />
-            {/* Blush Cheeks */}
-            <div className="w-1.5 h-1 bg-rose-400/80 rounded-full" />
-            <div className="w-1.5 h-1 bg-rose-400/80 rounded-full" />
-            {/* Right Eye */}
-            <div className="w-3.5 h-4 bg-[#00ffcc] border border-slate-950 rounded-xs animate-pixel-blink shadow-[0_0_8px_#00ffcc]" />
-          </div>
+        {/* Screen Face */}
+        <rect x="22" y="20" width="36" height="28" rx="4" fill="#0f172a" />
 
-          {/* Cute Smile Mouth */}
-          <div className="w-4 h-1.5 bg-[#ffd700] rounded-b-md mt-1 border-x border-b border-slate-950" />
-        </div>
-      </div>
+        {/* Eyes (Glowing Pixel Style) */}
+        <rect x="28" y="28" width="6" height="8" rx="1" fill="#00ffcc" />
+        <rect x="46" y="28" width="6" height="8" rx="1" fill="#00ffcc" />
 
-      {/* Robot Body & Arms */}
-      <div className="w-14 h-9 bg-slate-900 border-x-4 border-b-4 border-slate-950 rounded-b-lg flex items-center justify-center relative">
-        {/* Left Arm */}
-        <div className="absolute -left-2.5 top-1 w-2.5 h-5 bg-indigo-800 border-2 border-slate-950 rounded-l-sm" />
-        {/* Chest Core Gem */}
-        <div className="w-3.5 h-3.5 bg-sky-400 border border-slate-950 rounded-full animate-pulse shadow-[0_0_8px_#38bdf8]" />
-        {/* Right Arm */}
-        <div className="absolute -right-2.5 top-1 w-2.5 h-5 bg-indigo-800 border-2 border-slate-950 rounded-r-sm" />
-      </div>
+        {/* Minimalist Smile Mouth */}
+        <path d="M34 42 H46" stroke="#ffd700" strokeWidth="3" strokeLinecap="round" />
+
+        {/* Neck */}
+        <rect x="34" y="54" width="12" height="6" fill="#334155" />
+
+        {/* Body Base */}
+        <path d="M20 60 H60 V72 H20 Z" fill="#1e1b4b" stroke="#6366f1" strokeWidth="4" />
+        <circle cx="40" cy="66" r="3" fill="#00ffcc" />
+      </svg>
     </div>
   );
 };

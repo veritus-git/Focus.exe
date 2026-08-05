@@ -13,15 +13,15 @@ export const IntroMascot: React.FC = () => {
   const [dialogStage, setDialogStage] = useState<1 | 2>(1);
 
   useEffect(() => {
-    // 1. Gravity fall takes 1.8s
+    // 1. Fast gravity drop (0.65s)
     const fallTimer = setTimeout(() => {
       setBotState("standing");
-    }, 1800);
+    }, 650);
 
-    // 2. Speech bubble appears 0.2s after bot lands
+    // 2. Speech bubble appears right after landing (0.8s)
     const speechTimer = setTimeout(() => {
       setShowSpeech(true);
-    }, 2000);
+    }, 800);
 
     return () => {
       clearTimeout(fallTimer);
@@ -52,9 +52,9 @@ export const IntroMascot: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/50 backdrop-blur-xs select-none">
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/60 select-none">
       {/* Top right language switcher */}
-      <div className="absolute top-5 right-8 flex items-center bg-slate-900/80 border border-white/20 px-2.5 py-1 rounded-lg backdrop-blur-md">
+      <div className="absolute top-5 right-8 flex items-center bg-slate-900 border border-white/20 px-2.5 py-1 rounded-lg">
         <button
           onClick={() => setLanguage("pl")}
           className={`px-2 py-0.5 text-[10px] font-pixel cursor-pointer transition-all ${
@@ -83,23 +83,23 @@ export const IntroMascot: React.FC = () => {
         {showSpeech ? (
           <div
             onClick={advanceDialog}
-            className="w-full p-6 bg-slate-900/90 border border-white/20 text-white rounded-2xl shadow-2xl backdrop-blur-md cursor-pointer transition-all hover:border-white/40 relative flex flex-col items-center justify-center text-center"
+            className="w-full p-6 bg-slate-900 border border-white/20 text-white rounded-2xl shadow-2xl cursor-pointer transition-all hover:border-white/40 relative flex flex-col items-center justify-center text-center"
           >
-            <p className="text-sm font-pixel leading-relaxed text-slate-100 min-h-[44px] flex items-center justify-center text-center px-4">
+            <p className="text-base font-pixel leading-relaxed text-slate-100 min-h-[44px] flex items-center justify-center text-center px-4">
               "{dialogStage === 1 ? t("mascot.intro1") : t("mascot.intro2")}"
             </p>
 
             {/* Arrow positioned absolute bottom-right */}
             <div className="absolute bottom-2.5 right-3.5 text-indigo-400 hover:text-white transition-colors">
-              <ArrowRight size={15} className="animate-pulse" />
+              <ArrowRight size={16} className="animate-pulse" />
             </div>
           </div>
         ) : (
           <div className="h-[90px]" />
         )}
 
-        {/* Animated Custom 8-Bit Pixel Bot */}
-        <div className={botState === "falling" ? "animate-bot-fall" : ""}>
+        {/* Fast Snappy Drop Pixel Bot */}
+        <div className={botState === "falling" ? "animate-bot-fast-drop" : ""}>
           <PixelBotCharacter />
         </div>
       </div>

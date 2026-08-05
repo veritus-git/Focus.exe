@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Loader2, GitBranch } from "lucide-react";
 import { WindowId, useOSStore } from "../../store/useOSStore";
 
@@ -15,6 +15,19 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => 
   const [position, setPosition] = useState({ x: 30, y: 30 });
   const [isSelected, setIsSelected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const iconRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      if (iconRef.current && !iconRef.current.contains(e.target as Node)) {
+        setIsSelected(false);
+      }
+    };
+
+    window.addEventListener("click", handleGlobalClick);
+    return () => window.removeEventListener("click", handleGlobalClick);
+  }, []);
 
   const dragStartRef = useRef<{ startX: number; startY: number; posX: number; posY: number }>({
     startX: 0,
@@ -73,11 +86,12 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => 
     setTimeout(() => {
       setIsLoading(false);
       openWindow(id);
-    }, 800);
+    }, 600);
   };
 
   return (
     <div
+      ref={iconRef}
       style={{
         transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
         touchAction: "none",
@@ -103,7 +117,7 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => 
         )}
       </div>
 
-      {/* Label: Full name visible in clean 8-bit text */}
+      {/* Label: Full name visible */}
       <span className="text-[10px] text-center text-white font-pixel font-bold leading-tight mt-1.5 drop-shadow-md max-w-[110px] break-words pointer-events-none">
         {label}
       </span>
