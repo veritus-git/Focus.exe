@@ -23,29 +23,28 @@ export const FakeOSLayout: React.FC = () => {
       {/* Intro Animation Sequence with Falling Animated Pixel Bot */}
       <IntroMascot />
 
-      {/* Main Desktop Area with Desktop Icons */}
+      {/* Desktop Area with 3 Vertically Arranged Icons */}
       <div className="flex-1 relative p-8 z-10">
         <DesktopIcon
           id="skillTree"
           label={t("desktop.skillTree")}
           icon={<GitBranch size={22} className="text-[#ffd700]" />}
+          initialPos={{ x: 30, y: 30 }}
         />
 
-        <div className="mt-28">
-          <DesktopIcon
-            id="calculator"
-            label={t("desktop.calculator")}
-            icon={<Calculator size={22} className="text-emerald-400" />}
-          />
-        </div>
+        <DesktopIcon
+          id="calculator"
+          label={t("desktop.calculator")}
+          icon={<Calculator size={22} className="text-emerald-400" />}
+          initialPos={{ x: 30, y: 140 }}
+        />
 
-        <div className="mt-56">
-          <DesktopIcon
-            id="notes"
-            label={t("desktop.notes")}
-            icon={<FileText size={22} className="text-amber-400" />}
-          />
-        </div>
+        <DesktopIcon
+          id="notes"
+          label={t("desktop.notes")}
+          icon={<FileText size={22} className="text-amber-400" />}
+          initialPos={{ x: 30, y: 250 }}
+        />
       </div>
 
       {/* Render Open Windows */}

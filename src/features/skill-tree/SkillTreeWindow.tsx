@@ -19,7 +19,6 @@ export const SkillTreeWindow: React.FC = () => {
   const [activeLessonNodeId, setActiveLessonNodeId] = useState<string | null>(null);
 
   const reactFlowInstance = useRef<any>(null);
-  const windowRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ startX: 0, startY: 0, posX: 60, posY: 60 });
 
@@ -27,13 +26,13 @@ export const SkillTreeWindow: React.FC = () => {
   useEffect(() => {
     if (reactFlowInstance.current) {
       const timer = setTimeout(() => {
-        reactFlowInstance.current?.fitView({ padding: 0.2, duration: 250 });
+        reactFlowInstance.current?.fitView({ padding: 0.35, duration: 250 });
       }, 60);
       return () => clearTimeout(timer);
     }
   }, [isMaximized]);
 
-  // Native 144Hz 0ms Lag Direct DOM Dragging
+  // Smooth RequestAnimationFrame Window Dragging
   const handleTitleMouseDown = (e: React.MouseEvent) => {
     if (isMaximized) return;
     const target = e.target as HTMLElement;
@@ -48,27 +47,25 @@ export const SkillTreeWindow: React.FC = () => {
       posY: windowPos.y,
     };
 
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      if (!isDraggingRef.current || !windowRef.current) return;
-      const deltaX = moveEvent.clientX - dragStartRef.current.startX;
-      const deltaY = moveEvent.clientY - dragStartRef.current.startY;
-      const newX = Math.max(10, dragStartRef.current.posX + deltaX);
-      const newY = Math.max(10, dragStartRef.current.posY + deltaY);
+    let rafId: number | null = null;
 
-      // Direct DOM transform for 0ms lag!
-      windowRef.current.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      if (!isDraggingRef.current) return;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const deltaX = moveEvent.clientX - dragStartRef.current.startX;
+        const deltaY = moveEvent.clientY - dragStartRef.current.startY;
+        setWindowPos({
+          x: Math.max(10, dragStartRef.current.posX + deltaX),
+          y: Math.max(10, dragStartRef.current.posY + deltaY),
+        });
+      });
     };
 
-    const handleMouseUp = (upEvent: MouseEvent) => {
+    const handleMouseUp = () => {
       if (!isDraggingRef.current) return;
       isDraggingRef.current = false;
-      const deltaX = upEvent.clientX - dragStartRef.current.startX;
-      const deltaY = upEvent.clientY - dragStartRef.current.startY;
-      setWindowPos({
-        x: Math.max(10, dragStartRef.current.posX + deltaX),
-        y: Math.max(10, dragStartRef.current.posY + deltaY),
-      });
-
+      if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
@@ -151,18 +148,21 @@ export const SkillTreeWindow: React.FC = () => {
   return (
     <>
       <div
-        ref={windowRef}
         onMouseDown={() => focusWindow("skillTree")}
-        style={
-          !isMaximized
-            ? { transform: `translate3d(${windowPos.x}px, ${windowPos.y}px, 0)` }
-            : undefined
-        }
+        style={{
+          position: isMaximized ? "fixed" : "fixed",
+          top: 0,
+          left: 0,
+          transform: !isMaximized
+            ? `translate3d(${windowPos.x}px, ${windowPos.y}px, 0)`
+            : undefined,
+          willChange: "transform",
+        }}
         className={`${
           isMaximized
             ? "fixed inset-0 top-0 left-0 w-screen h-[calc(100vh-44px)] rounded-none"
-            : "fixed top-0 left-0 w-[85vw] h-[75vh] max-w-[1100px] max-h-[750px] rounded-2xl border border-white/20 shadow-2xl"
-        } bg-slate-950 flex flex-col z-30 select-none overflow-hidden transition-all duration-200 ${
+            : "w-[85vw] h-[75vh] max-w-[1100px] max-h-[750px] rounded-2xl border border-white/20 shadow-2xl"
+        } bg-slate-950 flex flex-col z-30 select-none overflow-hidden transition-opacity duration-200 ${
           isMinimized ? "scale-95 opacity-0 pointer-events-none translate-y-8" : "scale-100 opacity-100"
         }`}
       >
@@ -179,29 +179,26 @@ export const SkillTreeWindow: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2" onMouseDown={(e) => e.stopPropagation()}>
-            {/* Minimize */}
             <button
               onClick={() => toggleMinimizeWindow("skillTree")}
               className="w-6 h-6 bg-slate-800 hover:bg-slate-700 border border-white/20 rounded flex items-center justify-center text-white cursor-pointer active:scale-95 transition-all"
-              title="Minimalizuj"
+              title={t("taskbar.minimize")}
             >
               <Minus size={12} />
             </button>
 
-            {/* Maximize / Restore */}
             <button
               onClick={() => setIsMaximized(!isMaximized)}
               className="w-6 h-6 bg-slate-800 hover:bg-slate-700 border border-white/20 rounded flex items-center justify-center text-white cursor-pointer active:scale-95 transition-all"
-              title={isMaximized ? "Przywróć okno" : "Maksymalizuj"}
+              title={isMaximized ? t("taskbar.restore") : t("taskbar.maximize")}
             >
               {isMaximized ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
             </button>
 
-            {/* Close */}
             <button
               onClick={() => closeWindow("skillTree")}
               className="w-6 h-6 bg-rose-950/80 hover:bg-rose-800 border border-rose-500/40 rounded flex items-center justify-center text-white cursor-pointer active:scale-95 transition-all"
-              title="Zamknij okno"
+              title={t("taskbar.close")}
             >
               <X size={12} />
             </button>
@@ -216,12 +213,12 @@ export const SkillTreeWindow: React.FC = () => {
             nodeTypes={nodeTypes}
             onInit={(instance) => {
               reactFlowInstance.current = instance;
-              instance.fitView({ padding: 0.2 });
+              instance.fitView({ padding: 0.35 });
             }}
             fitView
-            fitViewOptions={{ padding: 0.2 }}
-            minZoom={0.5}
-            maxZoom={1.5}
+            fitViewOptions={{ padding: 0.35 }}
+            minZoom={0.4}
+            maxZoom={1.4}
             proOptions={{ hideAttribution: true }}
           >
             <Background color="#334155" gap={32} size={1} />

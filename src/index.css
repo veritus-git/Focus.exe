@@ -27,12 +27,12 @@
   letter-spacing: 0.05em;
 }
 
-/* Desaturated Pink / Blue / Purple Pastel Gradient Wallpaper */
+/* Wallpaper */
 .bg-pastel-dimmed {
   background: linear-gradient(135deg, #231f38 0%, #3e2b4d 35%, #663d63 70%, #333d59 100%);
 }
 
-/* 8-bit Windows - Dark Crisp Glass */
+/* 8-bit Windows Glass */
 .pixel-window {
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
@@ -69,7 +69,7 @@
   will-change: transform, opacity;
 }
 
-/* Bouncy Floating Animation for Mascot Head */
+/* Floating Animation for Mascot Head */
 @keyframes floatHead {
   0%, 100% {
     transform: translateY(0px) rotate(0deg);
@@ -96,6 +96,40 @@
 
 .animate-robot-blink {
   animation: robotBlink 3.5s ease-in-out infinite;
+}
+
+/* Organic 2D Chaotic Floating Molecule Node Animations */
+@keyframes floatingMolecule1 {
+  0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+  33% { transform: translate(8px, -6px) rotate(1.5deg); }
+  66% { transform: translate(-5px, 4px) rotate(-1deg); }
+}
+
+@keyframes floatingMolecule2 {
+  0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+  33% { transform: translate(-9px, 7px) rotate(-1.5deg); }
+  66% { transform: translate(6px, -5px) rotate(1deg); }
+}
+
+@keyframes floatingMolecule3 {
+  0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+  33% { transform: translate(7px, 8px) rotate(1deg); }
+  66% { transform: translate(-7px, -6px) rotate(-1.5deg); }
+}
+
+.animate-float-node-1 {
+  animation: floatingMolecule1 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-float-node-2 {
+  animation: floatingMolecule2 6.5s ease-in-out infinite 0.8s;
+  will-change: transform;
+}
+
+.animate-float-node-3 {
+  animation: floatingMolecule3 5.8s ease-in-out infinite 1.6s;
+  will-change: transform;
 }
 
 /* React Flow Dark Controls Override */

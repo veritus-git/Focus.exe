@@ -9,13 +9,10 @@ export const NotesWindow: React.FC = () => {
 
   const [text, setText] = useState("");
   const [saved, setSaved] = useState(false);
-
   const [windowPos, setWindowPos] = useState({ x: 220, y: 120 });
-  const windowRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ startX: 0, startY: 0, posX: 220, posY: 120 });
 
-  // Direct DOM transform dragging for 144Hz 0ms lag
   const handleTitleMouseDown = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     if (target.closest("button")) return;
@@ -29,26 +26,25 @@ export const NotesWindow: React.FC = () => {
       posY: windowPos.y,
     };
 
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      if (!isDraggingRef.current || !windowRef.current) return;
-      const deltaX = moveEvent.clientX - dragStartRef.current.startX;
-      const deltaY = moveEvent.clientY - dragStartRef.current.startY;
-      const newX = Math.max(10, dragStartRef.current.posX + deltaX);
-      const newY = Math.max(10, dragStartRef.current.posY + deltaY);
+    let rafId: number | null = null;
 
-      windowRef.current.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      if (!isDraggingRef.current) return;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const deltaX = moveEvent.clientX - dragStartRef.current.startX;
+        const deltaY = moveEvent.clientY - dragStartRef.current.startY;
+        setWindowPos({
+          x: Math.max(10, dragStartRef.current.posX + deltaX),
+          y: Math.max(10, dragStartRef.current.posY + deltaY),
+        });
+      });
     };
 
-    const handleMouseUp = (upEvent: MouseEvent) => {
+    const handleMouseUp = () => {
       if (!isDraggingRef.current) return;
       isDraggingRef.current = false;
-      const deltaX = upEvent.clientX - dragStartRef.current.startX;
-      const deltaY = upEvent.clientY - dragStartRef.current.startY;
-      setWindowPos({
-        x: Math.max(10, dragStartRef.current.posX + deltaX),
-        y: Math.max(10, dragStartRef.current.posY + deltaY),
-      });
-
+      if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
@@ -64,10 +60,15 @@ export const NotesWindow: React.FC = () => {
 
   return (
     <div
-      ref={windowRef}
       onMouseDown={() => focusWindow("notes")}
-      style={{ transform: `translate3d(${windowPos.x}px, ${windowPos.y}px, 0)` }}
-      className="fixed top-0 left-0 w-[380px] h-[340px] bg-slate-900 border border-white/20 rounded-2xl shadow-2xl z-30 select-none flex flex-col overflow-hidden"
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        transform: `translate3d(${windowPos.x}px, ${windowPos.y}px, 0)`,
+        willChange: "transform",
+      }}
+      className="w-[380px] h-[340px] bg-slate-900 border border-white/20 rounded-2xl shadow-2xl z-30 select-none flex flex-col overflow-hidden"
     >
       {/* Titlebar */}
       <div
@@ -83,7 +84,7 @@ export const NotesWindow: React.FC = () => {
           <button
             onClick={handleSave}
             className="p-1 bg-emerald-950 hover:bg-emerald-800 border border-emerald-500/40 rounded text-emerald-400 cursor-pointer"
-            title="Zapisz"
+            title={t("notes.saveTooltip")}
           >
             <Save size={11} />
           </button>
@@ -113,8 +114,8 @@ export const NotesWindow: React.FC = () => {
 
         {/* Footer Bar */}
         <div className="flex items-center justify-between text-[11px] font-pixel text-slate-400 px-1">
-          <span>{text.length} znaków</span>
-          {saved && <span className="text-emerald-400 font-bold">Zapisano!</span>}
+          <span>{t("notes.charCount", { count: text.length })}</span>
+          {saved && <span className="text-emerald-400 font-bold">{t("notes.saved")}</span>}
         </div>
       </div>
     </div>

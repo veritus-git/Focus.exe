@@ -23,7 +23,21 @@
   },
   "notes": {
     "title": "NOTATKI.EXE",
-    "placeholder": "Napisz swoje notatki naukowe tutaj..."
+    "placeholder": "Napisz swoje notatki naukowe tutaj...",
+    "charCount": "{{count}} znaków",
+    "saved": "Zapisano!",
+    "saveTooltip": "Zapisz"
+  },
+  "taskbar": {
+    "shutdownTitle": "Wyłączenie FocusOS",
+    "exitForbidden": "Zabronione! Musisz uczyć się jeszcze przez {{mins}} min.",
+    "exitAllowed": "Wymagany czas nauki minął. Możesz bezpiecznie wyjść z systemu.",
+    "cancel": "ANULUJ",
+    "exitApp": "WYJDŹ Z APKI",
+    "minimize": "Minimalizuj",
+    "maximize": "Maksymalizuj",
+    "restore": "Przywróć okno",
+    "close": "Zamknij okno"
   },
   "mascot": {
     "intro1": "Wystarczy tego scrollowania leniu, czas sie pouczyc!",

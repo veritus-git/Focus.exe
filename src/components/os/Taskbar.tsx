@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Power, GitBranch, Calculator, FileText, Lock, LogOut, Clock } from "lucide-react";
+import { Power, GitBranch, Calculator, FileText, Lock, LogOut } from "lucide-react";
 import { invoke } from "@tauri-apps/api/core";
 import { WindowId, useOSStore } from "../../store/useOSStore";
 
@@ -83,28 +83,27 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
   return (
     <>
       <div className="h-11 bg-slate-950/90 backdrop-blur-md border-t border-white/10 px-4 flex items-center justify-between z-40 select-none shadow-lg">
-        {/* Left: Joined Power Button + Attached Lockdown Timer Pill (Screenshot 4 Style) */}
+        {/* Left: Perfect h-9 Joined Power Pill with Lock Icon ONLY (Screenshot 1 Pill Design) */}
         <div className="flex items-center">
-          <div className="bg-rose-950/90 border border-rose-500/40 rounded-xl overflow-hidden flex items-center shadow-md">
-            {/* Shutdown Power Button */}
+          <div className="h-9 bg-rose-950/80 border border-rose-500/40 rounded-xl overflow-hidden flex items-center shadow-sm">
+            {/* Red Power Button Part (Same h-9 / w-9 dimensions as open taskbar icons!) */}
             <button
               onClick={() => setShowShutdownModal(true)}
-              className="bg-rose-700 hover:bg-rose-600 text-white p-2.5 flex items-center justify-center cursor-pointer transition-colors active:scale-95 border-r border-rose-500/40"
-              title="Wyłączenie Systemu FocusOS"
+              className="w-9 h-9 bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center cursor-pointer transition-colors active:scale-95 border-r border-rose-500/40 shrink-0"
+              title={t("taskbar.shutdownTitle")}
             >
               <Power size={15} />
             </button>
 
-            {/* Attached Joined Lighter Timer Pill */}
+            {/* Attached Joined Lighter Timer Pill (Lock Icon ONLY, NO Clock Icon!) */}
             <div
               onClick={() => setShowShutdownModal(true)}
-              className="bg-rose-900/60 hover:bg-rose-800/80 px-3.5 py-1.5 flex items-center gap-2 cursor-pointer transition-colors"
+              className="px-3 h-full bg-rose-900/40 hover:bg-rose-900/70 flex items-center gap-2 cursor-pointer transition-colors"
             >
-              <Clock size={13} className="text-rose-300 animate-pulse" />
               <span className="text-white font-mono-retro text-sm font-bold tracking-wider">
                 {formatCountdown(secondsLeft)}
               </span>
-              {isExitLocked && <Lock size={11} className="text-rose-400 opacity-80" />}
+              {isExitLocked && <Lock size={11} className="text-rose-300 opacity-90 shrink-0" />}
             </div>
           </div>
         </div>
@@ -127,7 +126,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
                     focusWindow(id);
                   }
                 }}
-                className={`w-9 h-9 rounded-lg border flex items-center justify-center cursor-pointer transition-all ${
+                className={`w-9 h-9 rounded-xl border flex items-center justify-center cursor-pointer transition-all ${
                   isActive
                     ? "bg-slate-800 border-white/40 text-[#ffd700] shadow-sm ring-1 ring-white/20"
                     : "bg-slate-900/60 border-white/10 text-slate-400 hover:bg-slate-800/80 hover:text-white"
@@ -174,7 +173,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
         </div>
       </div>
 
-      {/* Shutdown System UI Modal */}
+      {/* Shutdown System UI Modal (100% Translated!) */}
       {showShutdownModal && (
         <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-md flex items-center justify-center select-none p-4">
           <div className="pixel-window w-[440px] p-6 rounded-2xl bg-slate-900 border border-white/20 text-white flex flex-col items-center gap-4 text-center shadow-2xl">
@@ -183,21 +182,20 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
             </div>
 
             <div className="space-y-1">
-              <h3 className="font-pixel text-sm text-white font-bold">Wyłączenie FocusOS</h3>
+              <h3 className="font-pixel text-sm text-white font-bold">{t("taskbar.shutdownTitle")}</h3>
               <p className="text-xs font-mono-retro text-slate-300 leading-relaxed">
                 {isExitLocked
-                  ? `Zabronione! Musisz uczyć się jeszcze przez ${minutesLeft} min.`
-                  : "Wymagany czas nauki minął. Możesz bezpiecznie wyjść z systemu."}
+                  ? t("taskbar.exitForbidden", { mins: minutesLeft })
+                  : t("taskbar.exitAllowed")}
               </p>
             </div>
 
-            {/* Identical Button Heights & Sizing */}
             <div className="flex items-center gap-3 w-full pt-2">
               <button
                 onClick={() => setShowShutdownModal(false)}
                 className="h-10 px-4 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-lg text-xs font-pixel text-slate-300 cursor-pointer flex-1 flex items-center justify-center transition-all"
               >
-                ANULUJ
+                {t("taskbar.cancel")}
               </button>
 
               <button
@@ -211,7 +209,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
               >
                 {isExitLocked && <Lock size={12} />}
                 <LogOut size={14} />
-                <span>WYJDŹ Z APKI</span>
+                <span>{t("taskbar.exitApp")}</span>
               </button>
             </div>
           </div>

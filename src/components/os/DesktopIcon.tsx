@@ -6,13 +6,19 @@ interface DesktopIconProps {
   id: WindowId;
   label: string;
   icon?: React.ReactNode;
+  initialPos?: { x: number; y: number };
 }
 
-export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => {
+export const DesktopIcon: React.FC<DesktopIconProps> = ({
+  id,
+  label,
+  icon,
+  initialPos = { x: 30, y: 30 },
+}) => {
   const { openWindow, openWindows, focusWindow } = useOSStore();
   const isOpen = openWindows.includes(id);
 
-  const [position, setPosition] = useState({ x: 30, y: 30 });
+  const [position, setPosition] = useState(initialPos);
   const [isSelected, setIsSelected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -33,8 +39,8 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => 
   const dragStartRef = useRef<{ startX: number; startY: number; posX: number; posY: number }>({
     startX: 0,
     startY: 0,
-    posX: 30,
-    posY: 30,
+    posX: initialPos.x,
+    posY: initialPos.y,
   });
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -87,7 +93,7 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => 
     setTimeout(() => {
       setIsLoading(false);
       openWindow(id);
-    }, 600);
+    }, 400);
   };
 
   return (
@@ -98,12 +104,11 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => 
         left: `${position.x}px`,
         top: `${position.y}px`,
         willChange: "left, top",
-        backfaceVisibility: "hidden",
       }}
       onDragStart={(e) => e.preventDefault()}
       onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
-      className={`group inline-flex flex-col items-center justify-center p-2 rounded-xl cursor-grab active:cursor-grabbing select-none transition-shadow z-10 ${
+      className={`group inline-flex flex-col items-center justify-center p-2 rounded-xl cursor-grab active:cursor-grabbing select-none z-10 ${
         isSelected
           ? "bg-slate-900/60 border border-white/30 shadow-lg ring-2 ring-indigo-400/40"
           : "hover:bg-slate-900/30 border border-transparent"

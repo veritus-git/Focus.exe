@@ -23,10 +23,24 @@
   },
   "notes": {
     "title": "NOTES.EXE",
-    "placeholder": "Write your study notes here..."
+    "placeholder": "Write your study notes here...",
+    "charCount": "{{count}} characters",
+    "saved": "Saved!",
+    "saveTooltip": "Save"
+  },
+  "taskbar": {
+    "shutdownTitle": "FocusOS Shutdown",
+    "exitForbidden": "Forbidden! You must study for another {{mins}} min.",
+    "exitAllowed": "Required study time elapsed. You can safely exit system.",
+    "cancel": "CANCEL",
+    "exitApp": "EXIT APP",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore Window",
+    "close": "Close Window"
   },
   "mascot": {
-    "intro1": "Enough doomscrolling lazybones, time to study!",
+    "intro1": "Enough doomscrolling bum, time to study!",
     "intro2": "Complete at least one section within 15 minutes to unlock system exit! Good luck"
   },
   "lesson": {
