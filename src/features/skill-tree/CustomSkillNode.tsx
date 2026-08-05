@@ -3,6 +3,7 @@ import { Handle, Position } from "@xyflow/react";
 import { Lock, Check, Play, X, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
+import { COURSES } from "../../content/courseIndex";
 
 interface CustomSkillNodeProps {
   data: {
@@ -99,7 +100,7 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
               <div className="space-y-1 pr-6">
                 <span className="text-xs font-pixel font-bold text-emerald-400 uppercase tracking-wide flex items-center gap-1">
                   <Zap size={14} className="fill-emerald-400" />
-                  <span>{t("skillTree.unit", { num: data.levelNumber })}</span>
+                  <span>{t("skillTree.unit", { num: data.levelNumber, count: COURSES[data.levelNumber - 1]?.lessons.length || 1 })}</span>
                 </span>
                 <h4 className="text-xs font-pixel font-bold text-white leading-tight">
                   {t(data.titleKey)}

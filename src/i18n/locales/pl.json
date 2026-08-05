@@ -4,58 +4,61 @@
     "calculator": "Kalkulator.exe",
     "notes": "Notatki.exe",
     "kioskActive": "Tryb Kiosk Aktywny",
-    "lockNotice": "Ukończ lekcję aby odblokować wyjście!"
+    "lockNotice": "Ukończ lekcję, aby odblokować wyjście!"
   },
   "skillTree": {
     "windowTitle": "SKILLTREE.EXE - SYSTEM NAUKI",
-    "node1Title": "Fundamenty Skupienia",
-    "node2Title": "Technika Pomodoro",
-    "node3Title": "Głębokie Mistrzostwo",
+    "node1Title": "Jak Działa Komputer",
+    "node2Title": "Sztuczna Inteligencja",
+    "node3Title": "Internet i Sieci",
     "startLesson": "Rozpocznij lekcję",
-    "unit": "Dział {{num}} • Lekcja 1 z 3",
-    "startLessonXP": "ROZPOCZNIJ NAUKĘ",
-    "repeatLessonXP": "POWTÓRZ NAUKĘ",
-    "lockedMsg": "Ukończ poprzednie poziomy, aby odblokować tę lekcję!",
+    "unit": "Kurs {{num}} • {{count}} lekcji",
+    "startLessonXP": "OTWÓRZ KURS",
+    "repeatLessonXP": "POWTÓRZ KURS",
+    "lockedMsg": "Ukończ poprzednie kursy, aby odblokować!",
     "lockedBadge": "ZABLOKOWANE"
+  },
+  "courses": {
+    "howComputerWorks": "Jak Działa Komputer",
+    "cpuTitle": "Jak działa procesor (CPU) od środka?",
+    "cpuDesc": "Tranzystory, bramki logiczne, pipeline i miliardy operacji na sekundę.",
+    "ai": "Sztuczna Inteligencja",
+    "transformerTitle": "Jak działa Transformer?",
+    "transformerDesc": "Attention, tokeny, embeddingi — mózg stojący za ChatGPT.",
+    "internet": "Internet i Sieci",
+    "urlTitle": "Co dzieje się po wpisaniu adresu strony?",
+    "urlDesc": "DNS, TCP, TLS, HTTP — pełna podróż zapytania webowego."
+  },
+  "lessonReader": {
+    "pickLesson": "Wybierz lekcję, aby rozpocząć",
+    "back": "Wróć",
+    "complete": "Lekcja ukończona!",
+    "completeDesc": "Przeczytałeś całą lekcję. Oznacz jako ukończoną, aby odblokować kolejny kurs.",
+    "markComplete": "OZNACZ JAKO UKOŃCZONE"
   },
   "calculator": {
     "title": "KALKULATOR.EXE"
   },
   "notes": {
     "title": "NOTATKI.EXE",
-    "placeholder": "Napisz swoje notatki naukowe tutaj...",
+    "placeholder": "Pisz swoje notatki tutaj...",
     "charCount": "{{count}} znaków",
     "saved": "Zapisano!",
     "saveTooltip": "Zapisz"
   },
   "taskbar": {
-    "shutdownTitle": "Wyłączenie FocusOS",
-    "exitForbidden": "Zabronione! Musisz uczyć się jeszcze przez {{mins}} min.",
+    "shutdownTitle": "Wyłączanie FocusOS",
+    "exitForbidden": "Zabronione! Musisz się uczyć jeszcze {{mins}} min.",
     "exitAllowed": "Wymagany czas nauki minął. Możesz bezpiecznie wyjść z systemu.",
     "cancel": "ANULUJ",
-    "exitApp": "WYJDŹ Z APKI",
+    "exitApp": "WYJDŹ Z APLIKACJI",
     "minimize": "Minimalizuj",
     "maximize": "Maksymalizuj",
-    "restore": "Przywróć okno",
-    "close": "Zamknij okno"
+    "restore": "Przywróć Okno",
+    "close": "Zamknij Okno"
   },
   "mascot": {
-    "intro1": "Wystarczy tego scrollowania leniu, czas sie pouczyc!",
-    "intro2": "Przejdź przez przynajmniej jeden dział w przeciągu 15 minut aby odblokować wyjście z tego trybu! Powodzenia"
-  },
-  "lesson": {
-    "lessonTitle": "Lekcja: Poziom {{num}}",
-    "questionCount": "Pytanie 1 z 1",
-    "question1": "Jaka jest kluczowa zasada techniki Głębokiej Pracy (Deep Work)?",
-    "optA": "Praca wielozadaniowa (multitasking) z włączonymi powiadomieniami.",
-    "optB": "Eliminacja rozpraszaczy i pełne skupienie na jednym zadaniu przez wyznaczony czas.",
-    "optC": "Przeglądanie mediów społecznościowych w przerwach co 3 minuty.",
-    "correct": "Świetnie! Poprawna odpowiedź!",
-    "incorrect": "Spróbuj ponownie!",
-    "correctNotice": "+25 XP dodane do Twojego konta.",
-    "next": "DALEJ",
-    "finishTitle": "Lekcja Ukończona!",
-    "finishBadge": "+25 XP • Poziom Odblokowany",
-    "returnTree": "WRÓĆ DO DRZEWKA"
+    "intro1": "Dość tego doomscrollingu, czas na naukę!",
+    "intro2": "Ukończ przynajmniej jedną sekcję w ciągu 15 minut, aby odblokować wyjście z systemu! Powodzenia"
   }
 }

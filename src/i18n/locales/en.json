@@ -8,15 +8,33 @@
   },
   "skillTree": {
     "windowTitle": "SKILLTREE.EXE - LEARNING SYSTEM",
-    "node1Title": "Focus Fundamentals",
-    "node2Title": "Pomodoro Technique",
-    "node3Title": "Deep Mastery",
+    "node1Title": "How Computers Work",
+    "node2Title": "Artificial Intelligence",
+    "node3Title": "Internet & Networking",
     "startLesson": "Start lesson",
-    "unit": "Unit {{num}} • Lesson 1 of 3",
-    "startLessonXP": "START LESSON",
-    "repeatLessonXP": "REPEAT LESSON",
-    "lockedMsg": "Complete previous levels to unlock this lesson!",
+    "unit": "Course {{num}} • {{count}} lessons",
+    "startLessonXP": "OPEN COURSE",
+    "repeatLessonXP": "REVIEW COURSE",
+    "lockedMsg": "Complete previous courses to unlock!",
     "lockedBadge": "LOCKED"
+  },
+  "courses": {
+    "howComputerWorks": "How Computers Work",
+    "cpuTitle": "How does a CPU work from the inside?",
+    "cpuDesc": "Transistors, logic gates, pipelines, and billions of operations per second.",
+    "ai": "Artificial Intelligence",
+    "transformerTitle": "How does a Transformer work?",
+    "transformerDesc": "Attention, tokens, embeddings — the brain behind ChatGPT.",
+    "internet": "Internet & Networking",
+    "urlTitle": "What happens after typing a URL?",
+    "urlDesc": "DNS, TCP, TLS, HTTP — the full journey of a web request."
+  },
+  "lessonReader": {
+    "pickLesson": "Choose a lesson to begin",
+    "back": "Back",
+    "complete": "Lesson Complete!",
+    "completeDesc": "You've read through the entire lesson. Mark it as complete to unlock the next course.",
+    "markComplete": "MARK AS COMPLETE"
   },
   "calculator": {
     "title": "CALCULATOR.EXE"
@@ -42,20 +60,5 @@
   "mascot": {
     "intro1": "Enough doomscrolling bum, time to study!",
     "intro2": "Complete at least one section within 15 minutes to unlock system exit! Good luck"
-  },
-  "lesson": {
-    "lessonTitle": "Lesson: Level {{num}}",
-    "questionCount": "Question 1 of 1",
-    "question1": "What is the core rule of Deep Work technique?",
-    "optA": "Multitasking with active notifications.",
-    "optB": "Elimination of distractions and full focus on a single task for a designated period.",
-    "optC": "Browsing social media every 3 minutes.",
-    "correct": "Awesome! Correct answer!",
-    "incorrect": "Try again!",
-    "correctNotice": "+25 XP added to your balance.",
-    "next": "NEXT",
-    "finishTitle": "Lesson Completed!",
-    "finishBadge": "+25 XP • Level Unlocked",
-    "returnTree": "RETURN TO SKILL TREE"
   }
 }
