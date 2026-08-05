@@ -127,7 +127,7 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({
       </div>
 
       {/* Label */}
-      <span className="text-xs text-center text-white font-pixel font-bold leading-tight mt-1.5 drop-shadow-md max-w-[110px] break-words pointer-events-none">
+      <span className="text-[10px] text-center text-white font-pixel font-bold leading-tight mt-1.5 drop-shadow-md max-w-[110px] break-words pointer-events-none">
         {label}
       </span>
     </div>

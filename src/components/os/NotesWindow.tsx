@@ -14,6 +14,14 @@ export const NotesWindow: React.FC = () => {
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ startX: 0, startY: 0, posX: 220, posY: 120 });
 
+  // Load from localStorage on mount
+  React.useEffect(() => {
+    const savedNotes = localStorage.getItem("focusos_notes_content");
+    if (savedNotes) {
+      setText(savedNotes);
+    }
+  }, []);
+
   const handleTitleMouseDown = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     if (target.closest("button")) return;
@@ -57,6 +65,7 @@ export const NotesWindow: React.FC = () => {
   };
 
   const handleSave = () => {
+    localStorage.setItem("focusos_notes_content", text);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
