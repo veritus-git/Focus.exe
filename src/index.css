@@ -44,7 +44,7 @@
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
 }
 
-/* 60 FPS Buttery Smooth Gravity Fall Animation for Bot */
+/* 60 FPS Smooth Bot Drop Animation */
 @keyframes botSmoothDrop {
   0% {
     transform: translateY(-500px) scaleY(1.2);
@@ -57,7 +57,7 @@
     transform: translateY(0px) scaleY(0.8) scaleX(1.15);
   }
   92% {
-    transform: translateY(-8px) scaleY(1.03) scaleX(0.97);
+    transform: translateY(-6px) scaleY(1.02) scaleX(0.98);
   }
   100% {
     transform: translateY(0px) scaleY(1) scaleX(1);
@@ -72,10 +72,10 @@
 /* Bouncy Floating Animation for Mascot Head */
 @keyframes floatHead {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translateY(0px) rotate(0deg);
   }
   50% {
-    transform: translateY(-6px);
+    transform: translateY(-6px) rotate(1deg);
   }
 }
 
@@ -84,35 +84,18 @@
   will-change: transform;
 }
 
-/* Floating Molecules Node Animation for Skill Tree */
-@keyframes floatingMolecule1 {
-  0% { transform: translate(0px, 0px); }
-  50% { transform: translate(6px, -5px); }
-  100% { transform: translate(0px, 0px); }
+/* Eye Blinking Animation */
+@keyframes robotBlink {
+  0%, 90%, 100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
 }
 
-@keyframes floatingMolecule2 {
-  0% { transform: translate(0px, 0px); }
-  50% { transform: translate(-7px, 6px); }
-  100% { transform: translate(0px, 0px); }
-}
-
-@keyframes floatingMolecule3 {
-  0% { transform: translate(0px, 0px); }
-  50% { transform: translate(5px, 7px); }
-  100% { transform: translate(0px, 0px); }
-}
-
-.animate-float-node-1 {
-  animation: floatingMolecule1 5s ease-in-out infinite;
-}
-
-.animate-float-node-2 {
-  animation: floatingMolecule2 6s ease-in-out infinite 1s;
-}
-
-.animate-float-node-3 {
-  animation: floatingMolecule3 5.5s ease-in-out infinite 2s;
+.animate-robot-blink {
+  animation: robotBlink 3.5s ease-in-out infinite;
 }
 
 /* React Flow Dark Controls Override */

@@ -18,7 +18,7 @@ export const IntroMascot: React.FC = () => {
       setBotState("standing");
     }, 650);
 
-    // 2. Speech bubble appears right after landing (0.8s)
+    // 2. Speech bubble appears smoothly right after landing (0.8s)
     const speechTimer = setTimeout(() => {
       setShowSpeech(true);
     }, 800);
@@ -79,24 +79,24 @@ export const IntroMascot: React.FC = () => {
       </div>
 
       <div className="flex flex-col items-center gap-6 max-w-md w-full p-4">
-        {/* Perfectly Centered Speech Bubble */}
-        {showSpeech ? (
-          <div
-            onClick={advanceDialog}
-            className="w-full p-6 bg-slate-900 border border-white/20 text-white rounded-2xl shadow-2xl cursor-pointer transition-all hover:border-white/40 relative flex flex-col items-center justify-center text-center"
-          >
-            <p className="text-base font-pixel leading-relaxed text-slate-100 min-h-[44px] flex items-center justify-center text-center px-4">
-              "{dialogStage === 1 ? t("mascot.intro1") : t("mascot.intro2")}"
-            </p>
+        {/* Smooth Fade-in Speech Bubble without ANY layout shift or flicker */}
+        <div
+          onClick={advanceDialog}
+          className={`w-full p-6 bg-slate-900 border border-white/20 text-white rounded-2xl shadow-2xl cursor-pointer transition-all duration-300 relative flex flex-col items-center justify-center text-center ${
+            showSpeech
+              ? "opacity-100 translate-y-0 scale-100"
+              : "opacity-0 translate-y-3 scale-95 pointer-events-none"
+          }`}
+        >
+          <p className="text-base font-pixel leading-relaxed text-slate-100 min-h-[44px] flex items-center justify-center text-center px-4">
+            "{dialogStage === 1 ? t("mascot.intro1") : t("mascot.intro2")}"
+          </p>
 
-            {/* Arrow positioned absolute bottom-right */}
-            <div className="absolute bottom-2.5 right-3.5 text-indigo-400 hover:text-white transition-colors">
-              <ArrowRight size={18} className="animate-pulse" />
-            </div>
+          {/* Arrow positioned absolute bottom-right */}
+          <div className="absolute bottom-2.5 right-3.5 text-indigo-400 hover:text-white transition-colors">
+            <ArrowRight size={18} className="animate-pulse" />
           </div>
-        ) : (
-          <div className="h-[90px]" />
-        )}
+        </div>
 
         {/* Smooth 60 FPS Falling Pixel Bot Head */}
         <div className={botState === "falling" ? "animate-bot-smooth-drop" : ""}>

@@ -1,21 +1,24 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { ReactFlow, Background, Controls, Edge, Node, ReactFlowInstance } from "@xyflow/react";
+import { ReactFlow, Background, Controls, Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useTranslation } from "react-i18next";
 import { GitBranch, Minus, Maximize2, Minimize2, X } from "lucide-react";
 import { CustomSkillNode } from "./CustomSkillNode";
 import { LessonModal } from "./LessonModal";
 import { useOSStore } from "../../store/useOSStore";
+import { useSkillTreeStore } from "../../store/useSkillTreeStore";
 
 export const SkillTreeWindow: React.FC = () => {
   const { t } = useTranslation();
   const { closeWindow, toggleMinimizeWindow } = useOSStore();
+  const { selectedNodeId } = useSkillTreeStore();
+
   const [isMaximized, setIsMaximized] = useState(true);
   const [windowPos, setWindowPos] = useState({ x: 60, y: 60 });
   const [activeLessonNodeId, setActiveLessonNodeId] = useState<string | null>(null);
 
-  const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
-  const windowRef = useRef<HTMLDivElement>(null);
+  const reactFlowInstance = useRef<any>(null);
+  const isDraggingRef = useRef(false);
   const dragStartRef = useRef<{ startX: number; startY: number; posX: number; posY: number }>({
     startX: 0,
     startY: 0,
@@ -23,22 +26,24 @@ export const SkillTreeWindow: React.FC = () => {
     posY: 60,
   });
 
-  // Automatically trigger fitView when maximize state changes so nodes scale seamlessly inside window
+  // FitView on maximize/unmaximize
   useEffect(() => {
     if (reactFlowInstance.current) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         reactFlowInstance.current?.fitView({ padding: 0.25, duration: 300 });
-      }, 50);
+      }, 60);
+      return () => clearTimeout(timer);
     }
   }, [isMaximized]);
 
-  // Pointer Capture based 60 FPS Buttery-Smooth Window Dragging
-  const handlePointerDown = (e: React.PointerEvent) => {
+  // Robust 60 FPS Window Dragging with Window Level Event Listeners (Never Sticks!)
+  const handleTitleMouseDown = (e: React.MouseEvent) => {
     if (isMaximized) return;
     const target = e.target as HTMLElement;
     if (target.closest("button")) return;
 
-    e.currentTarget.setPointerCapture(e.pointerId);
+    e.preventDefault();
+    isDraggingRef.current = true;
 
     dragStartRef.current = {
       startX: e.clientX,
@@ -49,7 +54,8 @@ export const SkillTreeWindow: React.FC = () => {
 
     let rafId: number | null = null;
 
-    const handlePointerMove = (moveEvent: PointerEvent) => {
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      if (!isDraggingRef.current) return;
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
         const deltaX = moveEvent.clientX - dragStartRef.current.startX;
@@ -61,15 +67,15 @@ export const SkillTreeWindow: React.FC = () => {
       });
     };
 
-    const handlePointerUp = (upEvent: PointerEvent) => {
+    const handleMouseUp = () => {
+      isDraggingRef.current = false;
       if (rafId) cancelAnimationFrame(rafId);
-      e.currentTarget.releasePointerCapture(upEvent.pointerId);
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
 
-    window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleStartLesson = (nodeId: string) => {
@@ -78,41 +84,52 @@ export const SkillTreeWindow: React.FC = () => {
 
   const nodeTypes = useMemo(() => ({ customSkill: CustomSkillNode }), []);
 
-  const initialNodes: Node[] = [
-    {
-      id: "node_1",
-      type: "customSkill",
-      position: { x: 450, y: 40 },
-      data: {
-        nodeId: "node_1",
-        titleKey: "skillTree.node1Title",
-        levelNumber: 1,
-        onStartLesson: handleStartLesson,
+  const baseNodes: Node[] = useMemo(
+    () => [
+      {
+        id: "node_1",
+        type: "customSkill",
+        position: { x: 450, y: 40 },
+        data: {
+          nodeId: "node_1",
+          titleKey: "skillTree.node1Title",
+          levelNumber: 1,
+          onStartLesson: handleStartLesson,
+        },
       },
-    },
-    {
-      id: "node_2",
-      type: "customSkill",
-      position: { x: 450, y: 220 },
-      data: {
-        nodeId: "node_2",
-        titleKey: "skillTree.node2Title",
-        levelNumber: 2,
-        onStartLesson: handleStartLesson,
+      {
+        id: "node_2",
+        type: "customSkill",
+        position: { x: 450, y: 220 },
+        data: {
+          nodeId: "node_2",
+          titleKey: "skillTree.node2Title",
+          levelNumber: 2,
+          onStartLesson: handleStartLesson,
+        },
       },
-    },
-    {
-      id: "node_3",
-      type: "customSkill",
-      position: { x: 450, y: 400 },
-      data: {
-        nodeId: "node_3",
-        titleKey: "skillTree.node3Title",
-        levelNumber: 3,
-        onStartLesson: handleStartLesson,
+      {
+        id: "node_3",
+        type: "customSkill",
+        position: { x: 450, y: 400 },
+        data: {
+          nodeId: "node_3",
+          titleKey: "skillTree.node3Title",
+          levelNumber: 3,
+          onStartLesson: handleStartLesson,
+        },
       },
-    },
-  ];
+    ],
+    []
+  );
+
+  // CRITICAL Z-INDEX FIX: Explicitly set zIndex: 1000 on the selected node object for React Flow!
+  const nodes = useMemo(() => {
+    return baseNodes.map((n) => ({
+      ...n,
+      zIndex: selectedNodeId === n.id ? 1000 : 1,
+    }));
+  }, [baseNodes, selectedNodeId]);
 
   const initialEdges: Edge[] = [
     {
@@ -136,7 +153,6 @@ export const SkillTreeWindow: React.FC = () => {
   return (
     <>
       <div
-        ref={windowRef}
         style={
           !isMaximized
             ? { transform: `translate3d(${windowPos.x}px, ${windowPos.y}px, 0)` }
@@ -148,10 +164,10 @@ export const SkillTreeWindow: React.FC = () => {
             : "fixed top-0 left-0 w-[85vw] h-[75vh] max-w-[1100px] max-h-[750px] rounded-2xl border border-white/20 shadow-2xl"
         } bg-slate-950 flex flex-col z-30 select-none overflow-hidden transition-shadow duration-150`}
       >
-        {/* Titlebar with Pointer Capture Dragging */}
+        {/* Titlebar */}
         <div
-          onPointerDown={handlePointerDown}
-          className={`h-9 px-4 bg-slate-900 border-b border-white/10 flex items-center justify-between touch-none ${
+          onMouseDown={handleTitleMouseDown}
+          className={`h-9 px-4 bg-slate-900 border-b border-white/10 flex items-center justify-between ${
             !isMaximized ? "cursor-grab active:cursor-grabbing" : ""
           }`}
         >
@@ -160,7 +176,7 @@ export const SkillTreeWindow: React.FC = () => {
             <span className="font-bold">{t("skillTree.windowTitle")}</span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" onMouseDown={(e) => e.stopPropagation()}>
             {/* Minimize */}
             <button
               onClick={() => toggleMinimizeWindow("skillTree")}
@@ -190,10 +206,10 @@ export const SkillTreeWindow: React.FC = () => {
           </div>
         </div>
 
-        {/* Centered Canvas Container */}
+        {/* Canvas Container */}
         <div className="flex-1 bg-slate-950 relative overflow-hidden flex items-center justify-center">
           <ReactFlow
-            nodes={initialNodes}
+            nodes={nodes}
             edges={initialEdges}
             nodeTypes={nodeTypes}
             onInit={(instance) => {
@@ -202,8 +218,8 @@ export const SkillTreeWindow: React.FC = () => {
             }}
             fitView
             fitViewOptions={{ padding: 0.25 }}
-            minZoom={0.6}
-            maxZoom={1.3}
+            minZoom={0.5}
+            maxZoom={1.5}
             proOptions={{ hideAttribution: true }}
           >
             <Background color="#334155" gap={32} size={1} />

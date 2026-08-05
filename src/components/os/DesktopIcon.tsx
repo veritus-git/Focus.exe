@@ -15,6 +15,7 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => 
   const [position, setPosition] = useState({ x: 30, y: 30 });
   const [isSelected, setIsSelected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const iconRef = useRef<HTMLDivElement>(null);
 
@@ -32,13 +33,14 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => 
   const dragStartRef = useRef<{ startX: number; startY: number; posX: number; posY: number }>({
     startX: 0,
     startY: 0,
-    posX: position.x,
-    posY: position.y,
+    posX: 30,
+    posY: 30,
   });
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsSelected(true);
+    setIsDragging(true);
 
     dragStartRef.current = {
       startX: e.clientX,
@@ -51,20 +53,19 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => 
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       if (rafId) cancelAnimationFrame(rafId);
-
       rafId = requestAnimationFrame(() => {
         const deltaX = moveEvent.clientX - dragStartRef.current.startX;
         const deltaY = moveEvent.clientY - dragStartRef.current.startY;
-
-        const newX = Math.max(10, dragStartRef.current.posX + deltaX);
-        const newY = Math.max(10, dragStartRef.current.posY + deltaY);
-
-        setPosition({ x: newX, y: newY });
+        setPosition({
+          x: Math.max(10, dragStartRef.current.posX + deltaX),
+          y: Math.max(10, dragStartRef.current.posY + deltaY),
+        });
       });
     };
 
     const handleMouseUp = () => {
       if (rafId) cancelAnimationFrame(rafId);
+      setIsDragging(false);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
@@ -93,17 +94,20 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => 
     <div
       ref={iconRef}
       style={{
-        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
-        touchAction: "none",
+        position: "absolute",
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        willChange: "left, top",
+        backfaceVisibility: "hidden",
       }}
       onDragStart={(e) => e.preventDefault()}
       onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
-      className={`fixed top-0 left-0 group inline-flex flex-col items-center justify-center p-2 rounded-xl cursor-grab active:cursor-grabbing select-none transition-shadow z-10 ${
+      className={`group inline-flex flex-col items-center justify-center p-2 rounded-xl cursor-grab active:cursor-grabbing select-none transition-shadow z-10 ${
         isSelected
-          ? "bg-slate-900/40 border border-white/30 backdrop-blur-xs shadow-md ring-2 ring-indigo-400/40"
-          : "hover:bg-slate-900/20 border border-transparent"
-      } ${isLoading ? "cursor-wait" : ""}`}
+          ? "bg-slate-900/60 border border-white/30 shadow-lg ring-2 ring-indigo-400/40"
+          : "hover:bg-slate-900/30 border border-transparent"
+      } ${isDragging ? "opacity-90 cursor-grabbing shadow-2xl" : ""}`}
     >
       {/* Icon Box */}
       <div className="w-12 h-12 bg-slate-900/90 border border-white/20 rounded-lg flex items-center justify-center text-white relative shadow-md group-hover:scale-105 transition-transform pointer-events-none">
@@ -117,8 +121,8 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({ id, label, icon }) => 
         )}
       </div>
 
-      {/* Label: Full name visible */}
-      <span className="text-[10px] text-center text-white font-pixel font-bold leading-tight mt-1.5 drop-shadow-md max-w-[110px] break-words pointer-events-none">
+      {/* Label */}
+      <span className="text-xs text-center text-white font-pixel font-bold leading-tight mt-1.5 drop-shadow-md max-w-[110px] break-words pointer-events-none">
         {label}
       </span>
     </div>
