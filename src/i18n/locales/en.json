@@ -1,0 +1,32 @@
+{
+  "os": {
+    "title": "Focus.exe OS v0.1.0",
+    "kioskMode": "KIOSK MODE ACTIVE",
+    "systemStatus": "SYSTEM: LOCKED",
+    "start": "START",
+    "lang": "Language"
+  },
+  "desktop": {
+    "skillTree": "SkillTree.exe"
+  },
+  "skillTree": {
+    "windowTitle": "SKILLTREE.EXE - LEARNING SYSTEM",
+    "header": "Mastery Roadmap",
+    "node1Title": "Focus Foundations",
+    "node1Desc": "Deep work without digital noise.",
+    "node2Title": "Pomodoro Technique",
+    "node2Desc": "25 min focus cycles.",
+    "node3Title": "Deep Mastery",
+    "node3Desc": "Peak efficiency.",
+    "nodeStatusLocked": "LOCKED",
+    "nodeStatusActive": "ACTIVE",
+    "nodeStatusDone": "COMPLETED",
+    "startLesson": "START LESSON"
+  },
+  "mascot": {
+    "name": "Focus Bot",
+    "intro1": "Enough scrolling you lazy bum, time to study!",
+    "intro2": "Complete at least one section within 15 minutes to unlock exit mode! Good luck",
+    "pressEnter": "[ Press ENTER to continue ]"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "os": {
+    "title": "Focus.exe OS v0.1.0",
+    "kioskMode": "TRYB KIOSK AKTYWNY",
+    "systemStatus": "SYSTEM: ZABEZPIECZONY",
+    "start": "START",
+    "lang": "Język"
+  },
+  "desktop": {
+    "skillTree": "SkillTree.exe"
+  },
+  "skillTree": {
+    "windowTitle": "SKILLTREE.EXE - SYSTEM NAUKI",
+    "header": "Ścieżka Rozwoju",
+    "node1Title": "Fundamenty Skupienia",
+    "node1Desc": "Głęboka praca bez cyfrowego hałasu.",
+    "node2Title": "Technika Pomodoro",
+    "node2Desc": "Cykle 25 min skupienia.",
+    "node3Title": "Głębokie Mistrzostwo",
+    "node3Desc": "Mistrzowska efektywność.",
+    "nodeStatusLocked": "ZABLOKOWANE",
+    "nodeStatusActive": "AKTYWNE",
+    "nodeStatusDone": "UKOŃCZONE",
+    "startLesson": "ROZPOCZNIJ LEKCJĘ"
+  },
+  "mascot": {
+    "name": "Bot Skupienia",
+    "intro1": "Wystarczy tego scrollowania leniu, czas sie pouczyc!",
+    "intro2": "Przejdz przez przynajmniej jeden dział w przeciągu 15 minut aby odblokować wyjscie z tego trybu! Powodzenia",
+    "pressEnter": "[ Naciśnij ENTER, aby kontynuować ]"
+  }
+}
