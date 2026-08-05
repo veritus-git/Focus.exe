@@ -101,34 +101,34 @@
 /* Organic 2D Chaotic Floating Molecule Node Animations (Subtle & Gentle) */
 @keyframes floatingMolecule1 {
   0%, 100% { transform: translate(0px, 0px); }
-  33% { transform: translate(4px, -3px); }
-  66% { transform: translate(-3px, 2px); }
+  33% { transform: translate(2px, -2px); }
+  66% { transform: translate(-2px, 1px); }
 }
 
 @keyframes floatingMolecule2 {
   0%, 100% { transform: translate(0px, 0px); }
-  33% { transform: translate(-4px, 4px); }
-  66% { transform: translate(3px, -3px); }
+  33% { transform: translate(-2px, 2px); }
+  66% { transform: translate(1px, -2px); }
 }
 
 @keyframes floatingMolecule3 {
   0%, 100% { transform: translate(0px, 0px); }
-  33% { transform: translate(3px, 5px); }
-  66% { transform: translate(-4px, -3px); }
+  33% { transform: translate(1px, 2px); }
+  66% { transform: translate(-2px, -1px); }
 }
 
 .animate-float-node-1 {
-  animation: floatingMolecule1 5s ease-in-out infinite;
+  animation: floatingMolecule1 8s ease-in-out infinite;
   will-change: transform;
 }
 
 .animate-float-node-2 {
-  animation: floatingMolecule2 6.5s ease-in-out infinite 0.8s;
+  animation: floatingMolecule2 10s ease-in-out infinite 0.8s;
   will-change: transform;
 }
 
 .animate-float-node-3 {
-  animation: floatingMolecule3 5.8s ease-in-out infinite 1.6s;
+  animation: floatingMolecule3 9s ease-in-out infinite 1.6s;
   will-change: transform;
 }
 
