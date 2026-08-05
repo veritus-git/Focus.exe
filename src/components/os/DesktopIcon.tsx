@@ -108,7 +108,7 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({
       onDragStart={(e) => e.preventDefault()}
       onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
-      className={`group w-24 inline-flex flex-col items-center justify-center p-2 rounded-xl cursor-grab active:cursor-grabbing select-none z-10 ${
+      className={`group w-28 inline-flex flex-col items-center justify-center p-2 rounded-xl cursor-grab active:cursor-grabbing select-none z-10 ${
         isSelected
           ? "bg-slate-900/60 border border-white/30 shadow-lg ring-2 ring-indigo-400/40"
           : "hover:bg-slate-900/30 border border-transparent"
@@ -127,7 +127,7 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({
       </div>
 
       {/* Label */}
-      <span className="text-[10px] text-center text-white font-pixel font-bold leading-tight mt-1.5 drop-shadow-md max-w-[110px] break-words pointer-events-none">
+      <span className="text-[9px] text-center text-white font-pixel font-bold leading-tight mt-1.5 drop-shadow-md whitespace-nowrap pointer-events-none">
         {label}
       </span>
     </div>
