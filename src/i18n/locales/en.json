@@ -1,32 +1,38 @@
 {
-  "os": {
-    "title": "Focus.exe OS v0.1.0",
-    "kioskMode": "KIOSK MODE ACTIVE",
-    "systemStatus": "SYSTEM: LOCKED",
-    "start": "START",
-    "lang": "Language"
-  },
   "desktop": {
-    "skillTree": "SkillTree.exe"
+    "skillTree": "SkillTree.exe",
+    "kioskActive": "Kiosk Mode Active",
+    "lockNotice": "Complete a lesson to unlock exit!"
   },
   "skillTree": {
     "windowTitle": "SKILLTREE.EXE - LEARNING SYSTEM",
-    "header": "Mastery Roadmap",
-    "node1Title": "Focus Foundations",
-    "node1Desc": "Deep work without digital noise.",
+    "node1Title": "Focus Fundamentals",
     "node2Title": "Pomodoro Technique",
-    "node2Desc": "25 min focus cycles.",
     "node3Title": "Deep Mastery",
-    "node3Desc": "Peak efficiency.",
-    "nodeStatusLocked": "LOCKED",
-    "nodeStatusActive": "ACTIVE",
-    "nodeStatusDone": "COMPLETED",
-    "startLesson": "START LESSON"
+    "startLesson": "Start lesson",
+    "unit": "Unit {{num}} • Lesson 1 of 3",
+    "startLessonXP": "START LESSON (+25 XP)",
+    "repeatLessonXP": "REPEAT LESSON (+25 XP)",
+    "lockedMsg": "Complete previous levels to unlock this lesson!",
+    "lockedBadge": "LOCKED"
   },
   "mascot": {
-    "name": "Focus Bot",
-    "intro1": "Enough scrolling you lazy bum, time to study!",
-    "intro2": "Complete at least one section within 15 minutes to unlock exit mode! Good luck",
-    "pressEnter": "[ Press ENTER to continue ]"
+    "intro1": "Enough doomscrolling lazybones, time to study!",
+    "intro2": "Complete at least one section within 15 minutes to unlock system exit! Good luck"
+  },
+  "lesson": {
+    "lessonTitle": "Lesson: Level {{num}}",
+    "questionCount": "Question 1 of 1",
+    "question1": "What is the core rule of Deep Work technique?",
+    "optA": "Multitasking with active notifications.",
+    "optB": "Elimination of distractions and full focus on a single task for a designated period.",
+    "optC": "Browsing social media every 3 minutes.",
+    "correct": "Awesome! Correct answer!",
+    "incorrect": "Try again!",
+    "correctNotice": "+25 XP added to your balance.",
+    "next": "NEXT",
+    "finishTitle": "Lesson Completed!",
+    "finishBadge": "+25 XP • Level Unlocked",
+    "returnTree": "RETURN TO SKILL TREE"
   }
 }

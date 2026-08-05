@@ -33,7 +33,9 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
         e.stopPropagation();
         selectNode(data.nodeId);
       }}
-      className={`flex flex-col items-center cursor-pointer group select-none relative ${floatAnimClass}`}
+      className={`flex flex-col items-center cursor-pointer group select-none relative ${floatAnimClass} ${
+        isSelected ? "z-[9999]" : "z-10"
+      }`}
     >
       <Handle
         type="target"
@@ -73,11 +75,11 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
         </span>
       </div>
 
-      {/* DUOLINGO STYLE POPUP CARD (Rendered Floating Below Node when Selected) */}
+      {/* DUOLINGO STYLE POPUP CARD (Z-Index 9999 ON TOP OF ALL NODES) */}
       {isSelected && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute top-[105px] left-1/2 -translate-x-1/2 w-[280px] z-50 animate-fade-in select-none"
+          className="absolute top-[105px] left-1/2 -translate-x-1/2 w-[300px] z-[9999] animate-fade-in select-none"
         >
           {/* Card Arrow Tip */}
           <div className="w-4 h-4 bg-slate-900 border-t border-l border-white/20 rotate-45 mx-auto -mb-2 relative z-10" />
@@ -93,13 +95,13 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
                 }}
                 className="absolute top-3 right-3 text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800"
               >
-                <X size={14} />
+                <X size={16} />
               </button>
 
               <div className="space-y-1 pr-6">
-                <span className="text-[10px] font-pixel font-bold text-emerald-400 uppercase tracking-wide flex items-center gap-1">
-                  <Zap size={12} className="fill-emerald-400" />
-                  <span>Dział {data.levelNumber} • Lekcja 1 z 3</span>
+                <span className="text-xs font-pixel font-bold text-emerald-400 uppercase tracking-wide flex items-center gap-1">
+                  <Zap size={14} className="fill-emerald-400" />
+                  <span>{t("skillTree.unit", { num: data.levelNumber })}</span>
                 </span>
                 <h4 className="text-sm font-pixel font-bold text-white leading-tight">
                   {t(data.titleKey)}
@@ -115,7 +117,9 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
                 className="w-full py-3 bg-[#58cc02] hover:bg-[#46a302] border-b-4 border-[#3ca100] text-white font-pixel text-xs font-bold rounded-2xl shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-1"
               >
                 <Play size={14} className="fill-white" />
-                <span>{isCompleted ? "POWTÓRZ NAUKĘ (+25 XP)" : "ROZPOCZNIJ NAUKĘ (+25 XP)"}</span>
+                <span>
+                  {isCompleted ? t("skillTree.repeatLessonXP") : t("skillTree.startLessonXP")}
+                </span>
               </button>
             </div>
           ) : (
@@ -128,21 +132,21 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
                 }}
                 className="absolute top-3 right-3 text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800"
               >
-                <X size={14} />
+                <X size={16} />
               </button>
 
               <div className="space-y-1 pr-6">
                 <h4 className="text-xs font-pixel font-bold text-slate-200">
                   {t(data.titleKey)}
                 </h4>
-                <p className="text-[11px] font-pixel text-slate-400 leading-relaxed">
-                  Ukończ poprzednie poziomy, aby odblokować tę lekcję!
+                <p className="text-xs font-pixel text-slate-400 leading-relaxed">
+                  {t("skillTree.lockedMsg")}
                 </p>
               </div>
 
               <div className="w-full py-2.5 bg-slate-800 border-b-4 border-slate-950 text-slate-500 font-pixel text-xs font-bold rounded-2xl text-center uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-not-allowed mt-1">
-                <Lock size={12} />
-                <span>ZABLOKOWANE</span>
+                <Lock size={14} />
+                <span>{t("skillTree.lockedBadge")}</span>
               </div>
             </div>
           )}

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { CheckCircle2, XCircle, Award, ArrowRight, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
 
 interface LessonModalProps {
@@ -8,6 +9,7 @@ interface LessonModalProps {
 }
 
 export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => {
+  const { t } = useTranslation();
   const { completeNode } = useSkillTreeStore();
 
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -15,10 +17,12 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
   const [isCorrect, setIsCorrect] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
 
+  const levelNum = nodeId.replace("node_", "");
+
   const options = [
-    { id: 0, text: "Praca wielozadaniowa (multitasking) z włączonym powiadomieniami.", correct: false },
-    { id: 1, text: "Eliminacja rozpraszaczy i pełne skupienie na jednym zadaniu przez wyznaczony czas.", correct: true },
-    { id: 2, text: "Przeglądanie mediów społecznościowych w przerwach co 3 minuty.", correct: false },
+    { id: 0, text: t("lesson.optA"), correct: false },
+    { id: 1, text: t("lesson.optB"), correct: true },
+    { id: 2, text: t("lesson.optC"), correct: false },
   ];
 
   const handleSelect = (index: number) => {
@@ -36,7 +40,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
 
   return (
     <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 select-none animate-fade-in">
-      <div className="w-[520px] bg-slate-900 border-2 border-emerald-500/40 rounded-3xl p-6 shadow-2xl flex flex-col gap-5 relative text-white">
+      <div className="w-[540px] bg-slate-900 border-2 border-emerald-500/40 rounded-3xl p-6 shadow-2xl flex flex-col gap-5 relative text-white">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -49,7 +53,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
         <div className="space-y-2">
           <div className="flex items-center justify-between pr-8">
             <span className="text-xs font-pixel text-emerald-400 font-bold uppercase tracking-wider">
-              {nodeId ? `Lekcja: Poziom ${nodeId.replace('node_', '')}` : "Lekcja Skupienia"}
+              {t("lesson.lessonTitle", { num: levelNum })}
             </span>
             <span className="text-xs font-pixel text-slate-400">+25 XP</span>
           </div>
@@ -66,11 +70,11 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
         {!isFinished ? (
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <h3 className="text-lg font-pixel font-bold text-white leading-snug">
-                Pytanie 1 z 1
+              <h3 className="text-base font-pixel font-bold text-white leading-snug">
+                {t("lesson.questionCount")}
               </h3>
               <p className="text-sm text-slate-300 font-medium">
-                Jaka jest kluczowa zasada techniki Głębokiej Pracy (Deep Work)?
+                {t("lesson.question1")}
               </p>
             </div>
 
@@ -95,7 +99,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
                     disabled={isAnswered}
                     className={`w-full p-4 border-2 rounded-2xl text-left text-xs font-pixel font-medium transition-all flex items-start gap-3 cursor-pointer ${btnStyle}`}
                   >
-                    <span className="w-6 h-6 rounded-full bg-slate-950 border border-white/20 flex items-center justify-center text-[10px] shrink-0">
+                    <span className="w-6 h-6 rounded-full bg-slate-950 border border-white/20 flex items-center justify-center text-xs font-bold shrink-0">
                       {String.fromCharCode(65 + idx)}
                     </span>
                     <span className="flex-1 leading-relaxed">{opt.text}</span>
@@ -121,10 +125,10 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
                   )}
                   <div>
                     <h4 className="font-pixel text-xs font-bold">
-                      {isCorrect ? "Świetnie! Poprawna odpowiedź!" : "Spróbuj ponownie!"}
+                      {isCorrect ? t("lesson.correct") : t("lesson.incorrect")}
                     </h4>
-                    <p className="text-[11px] opacity-90">
-                      {isCorrect ? "+25 XP dodane do Twojego konta." : "Wybierz inną odpowiedź."}
+                    <p className="text-[11px] font-pixel opacity-90">
+                      {isCorrect ? t("lesson.correctNotice") : ""}
                     </p>
                   </div>
                 </div>
@@ -134,7 +138,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
                     onClick={handleFinish}
                     className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel text-xs font-bold rounded-xl shadow-lg cursor-pointer flex items-center gap-1.5 transition-all"
                   >
-                    <span>DALEJ</span>
+                    <span>{t("lesson.next")}</span>
                     <ArrowRight size={14} />
                   </button>
                 )}
@@ -149,15 +153,15 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-xl font-pixel font-bold text-white">Lekcja Ukończona!</h3>
-              <p className="text-xs font-pixel text-emerald-400 font-bold">+25 XP • Poziom Odblokowany</p>
+              <h3 className="text-xl font-pixel font-bold text-white">{t("lesson.finishTitle")}</h3>
+              <p className="text-xs font-pixel text-emerald-400 font-bold">{t("lesson.finishBadge")}</p>
             </div>
 
             <button
               onClick={onClose}
               className="mt-4 px-8 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel text-xs font-bold rounded-2xl shadow-xl cursor-pointer active:scale-95 transition-all"
             >
-              WRÓĆ DO DRZEWKA
+              {t("lesson.returnTree")}
             </button>
           </div>
         )}

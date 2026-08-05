@@ -1,32 +1,38 @@
 {
-  "os": {
-    "title": "Focus.exe OS v0.1.0",
-    "kioskMode": "TRYB KIOSK AKTYWNY",
-    "systemStatus": "SYSTEM: ZABEZPIECZONY",
-    "start": "START",
-    "lang": "Język"
-  },
   "desktop": {
-    "skillTree": "SkillTree.exe"
+    "skillTree": "SkillTree.exe",
+    "kioskActive": "Tryb Kiosk Aktywny",
+    "lockNotice": "Ukończ lekcję aby odblokować wyjście!"
   },
   "skillTree": {
     "windowTitle": "SKILLTREE.EXE - SYSTEM NAUKI",
-    "header": "Ścieżka Rozwoju",
     "node1Title": "Fundamenty Skupienia",
-    "node1Desc": "Głęboka praca bez cyfrowego hałasu.",
     "node2Title": "Technika Pomodoro",
-    "node2Desc": "Cykle 25 min skupienia.",
     "node3Title": "Głębokie Mistrzostwo",
-    "node3Desc": "Mistrzowska efektywność.",
-    "nodeStatusLocked": "ZABLOKOWANE",
-    "nodeStatusActive": "AKTYWNE",
-    "nodeStatusDone": "UKOŃCZONE",
-    "startLesson": "ROZPOCZNIJ LEKCJĘ"
+    "startLesson": "Rozpocznij lekcję",
+    "unit": "Dział {{num}} • Lekcja 1 z 3",
+    "startLessonXP": "ROZPOCZNIJ NAUKĘ (+25 XP)",
+    "repeatLessonXP": "POWTÓRZ NAUKĘ (+25 XP)",
+    "lockedMsg": "Ukończ poprzednie poziomy, aby odblokować tę lekcję!",
+    "lockedBadge": "ZABLOKOWANE"
   },
   "mascot": {
-    "name": "Bot Skupienia",
     "intro1": "Wystarczy tego scrollowania leniu, czas sie pouczyc!",
-    "intro2": "Przejdz przez przynajmniej jeden dział w przeciągu 15 minut aby odblokować wyjscie z tego trybu! Powodzenia",
-    "pressEnter": "[ Naciśnij ENTER, aby kontynuować ]"
+    "intro2": "Przejdź przez przynajmniej jeden dział w przeciągu 15 minut aby odblokować wyjście z tego trybu! Powodzenia"
+  },
+  "lesson": {
+    "lessonTitle": "Lekcja: Poziom {{num}}",
+    "questionCount": "Pytanie 1 z 1",
+    "question1": "Jaka jest kluczowa zasada techniki Głębokiej Pracy (Deep Work)?",
+    "optA": "Praca wielozadaniowa (multitasking) z włączonymi powiadomieniami.",
+    "optB": "Eliminacja rozpraszaczy i pełne skupienie na jednym zadaniu przez wyznaczony czas.",
+    "optC": "Przeglądanie mediów społecznościowych w przerwach co 3 minuty.",
+    "correct": "Świetnie! Poprawna odpowiedź!",
+    "incorrect": "Spróbuj ponownie!",
+    "correctNotice": "+25 XP dodane do Twojego konta.",
+    "next": "DALEJ",
+    "finishTitle": "Lekcja Ukończona!",
+    "finishBadge": "+25 XP • Poziom Odblokowany",
+    "returnTree": "WRÓĆ DO DRZEWKA"
   }
 }

@@ -13,7 +13,7 @@ export const IntroMascot: React.FC = () => {
   const [dialogStage, setDialogStage] = useState<1 | 2>(1);
 
   useEffect(() => {
-    // 1. Fast gravity drop (0.65s)
+    // 1. Smooth 60 FPS gravity drop (0.65s)
     const fallTimer = setTimeout(() => {
       setBotState("standing");
     }, 650);
@@ -57,7 +57,7 @@ export const IntroMascot: React.FC = () => {
       <div className="absolute top-5 right-8 flex items-center bg-slate-900 border border-white/20 px-2.5 py-1 rounded-lg">
         <button
           onClick={() => setLanguage("pl")}
-          className={`px-2 py-0.5 text-[10px] font-pixel cursor-pointer transition-all ${
+          className={`px-2 py-0.5 text-xs font-pixel cursor-pointer transition-all ${
             language === "pl"
               ? "bg-white text-slate-900 rounded font-bold"
               : "text-slate-300 hover:text-white"
@@ -65,10 +65,10 @@ export const IntroMascot: React.FC = () => {
         >
           PL
         </button>
-        <span className="text-slate-500 text-[10px] px-1">|</span>
+        <span className="text-slate-500 text-xs px-1">|</span>
         <button
           onClick={() => setLanguage("en")}
-          className={`px-2 py-0.5 text-[10px] font-pixel cursor-pointer transition-all ${
+          className={`px-2 py-0.5 text-xs font-pixel cursor-pointer transition-all ${
             language === "en"
               ? "bg-white text-slate-900 rounded font-bold"
               : "text-slate-300 hover:text-white"
@@ -91,15 +91,15 @@ export const IntroMascot: React.FC = () => {
 
             {/* Arrow positioned absolute bottom-right */}
             <div className="absolute bottom-2.5 right-3.5 text-indigo-400 hover:text-white transition-colors">
-              <ArrowRight size={16} className="animate-pulse" />
+              <ArrowRight size={18} className="animate-pulse" />
             </div>
           </div>
         ) : (
           <div className="h-[90px]" />
         )}
 
-        {/* Fast Snappy Drop Pixel Bot */}
-        <div className={botState === "falling" ? "animate-bot-fast-drop" : ""}>
+        {/* Smooth 60 FPS Falling Pixel Bot Head */}
+        <div className={botState === "falling" ? "animate-bot-smooth-drop" : ""}>
           <PixelBotCharacter />
         </div>
       </div>
