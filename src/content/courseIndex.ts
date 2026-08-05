@@ -1,17 +1,24 @@
 // Centralized lesson & course definitions
-// Each course maps to a category from the skill tree
-// Each lesson is a markdown file imported at build time
+// Each course maps to a category in the skill tree
+// Bilingual: each lesson has both Polish and English markdown
 
-import cpuLesson from "./lessons/cpu-from-inside.md?raw";
-import transformerLesson from "./lessons/how-transformer-works.md?raw";
-import urlLesson from "./lessons/what-happens-after-typing-url.md?raw";
+// Polish lessons
+import cpuLessonPl from "./lessons/pl/cpu-from-inside.md?raw";
+import transformerLessonPl from "./lessons/pl/how-transformer-works.md?raw";
+import urlLessonPl from "./lessons/pl/what-happens-after-typing-url.md?raw";
+
+// English lessons
+import cpuLessonEn from "./lessons/en/cpu-from-inside.md?raw";
+import transformerLessonEn from "./lessons/en/how-transformer-works.md?raw";
+import urlLessonEn from "./lessons/en/what-happens-after-typing-url.md?raw";
 
 export interface Lesson {
   id: string;
   titleKey: string;       // i18n key
   descriptionKey: string; // i18n key
   icon: string;           // emoji
-  markdown: string;       // raw md content
+  markdownPl: string;     // raw md content (Polish)
+  markdownEn: string;     // raw md content (English)
   readTimeMin: number;
 }
 
@@ -35,7 +42,8 @@ export const COURSES: Course[] = [
         titleKey: "courses.cpuTitle",
         descriptionKey: "courses.cpuDesc",
         icon: "⚡",
-        markdown: cpuLesson,
+        markdownPl: cpuLessonPl,
+        markdownEn: cpuLessonEn,
         readTimeMin: 8,
       },
     ],
@@ -51,7 +59,8 @@ export const COURSES: Course[] = [
         titleKey: "courses.transformerTitle",
         descriptionKey: "courses.transformerDesc",
         icon: "🔮",
-        markdown: transformerLesson,
+        markdownPl: transformerLessonPl,
+        markdownEn: transformerLessonEn,
         readTimeMin: 10,
       },
     ],
@@ -67,7 +76,8 @@ export const COURSES: Course[] = [
         titleKey: "courses.urlTitle",
         descriptionKey: "courses.urlDesc",
         icon: "🔗",
-        markdown: urlLesson,
+        markdownPl: urlLessonPl,
+        markdownEn: urlLessonEn,
         readTimeMin: 9,
       },
     ],
@@ -81,6 +91,6 @@ export function getLessonById(id: string): Lesson | undefined {
   return ALL_LESSONS.find((l) => l.id === id);
 }
 
-export function getCourseForLesson(lessonId: string): Course | undefined {
-  return COURSES.find((c) => c.lessons.some((l) => l.id === lessonId));
+export function getLessonMarkdown(lesson: Lesson, lang: string): string {
+  return lang === "pl" ? lesson.markdownPl : lesson.markdownEn;
 }

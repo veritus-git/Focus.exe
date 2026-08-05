@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Power, GitBranch, Calculator, FileText, Lock, LogOut } from "lucide-react";
+import { Power, GitBranch, Calculator, FileText, Lock, LockOpen, LogOut } from "lucide-react";
 import { invoke } from "@tauri-apps/api/core";
 import { WindowId, useOSStore } from "../../store/useOSStore";
 
@@ -83,27 +83,45 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
   return (
     <>
       <div className="h-11 bg-slate-950/90 backdrop-blur-md border-t border-white/10 px-4 flex items-center justify-between z-40 select-none shadow-lg">
-        {/* Left: Perfect h-8 Joined Power Pill with Lock Icon ONLY (Screenshot 1 Pill Design) */}
+        {/* Left: Power Pill with timer or unlock icon */}
         <div className="flex items-center">
-          <div className="h-8 bg-rose-950/80 border border-rose-500/40 rounded-xl overflow-hidden flex items-center shadow-sm">
-            {/* Red Power Button Part (Same h-8 / w-8 dimensions as open taskbar icons!) */}
+          <div className={`h-8 border rounded-xl overflow-hidden flex items-center shadow-sm ${
+            isExitLocked
+              ? "bg-rose-950/80 border-rose-500/40"
+              : "bg-emerald-950/80 border-emerald-500/40"
+          }`}>
+            {/* Power Button */}
             <button
               onClick={() => setShowShutdownModal(true)}
-              className="w-8 h-8 bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center cursor-pointer transition-colors active:scale-95 border-r border-rose-500/40 shrink-0"
+              className={`w-8 h-8 text-white flex items-center justify-center cursor-pointer transition-colors active:scale-95 border-r shrink-0 ${
+                isExitLocked
+                  ? "bg-rose-600 hover:bg-rose-500 border-rose-500/40"
+                  : "bg-emerald-600 hover:bg-emerald-500 border-emerald-500/40"
+              }`}
               title={t("taskbar.shutdownTitle")}
             >
               <Power size={14} />
             </button>
 
-            {/* Attached Joined Lighter Timer Pill (Lock Icon ONLY, NO Clock Icon!) */}
+            {/* Timer or Unlock Icon */}
             <div
               onClick={() => setShowShutdownModal(true)}
-              className="px-3 h-full bg-rose-900/40 hover:bg-rose-900/70 flex items-center gap-1.5 cursor-pointer transition-colors"
+              className={`px-3 h-full flex items-center gap-1.5 cursor-pointer transition-colors ${
+                isExitLocked
+                  ? "bg-rose-900/40 hover:bg-rose-900/70"
+                  : "bg-emerald-900/40 hover:bg-emerald-900/70"
+              }`}
             >
-              <span className="text-white font-mono-retro text-xs font-bold tracking-wider">
-                {formatCountdown(secondsLeft)}
-              </span>
-              {isExitLocked && <Lock size={10} className="text-rose-300 opacity-90 shrink-0" />}
+              {isExitLocked ? (
+                <>
+                  <span className="text-white font-mono-retro text-xs font-bold tracking-wider">
+                    {formatCountdown(secondsLeft)}
+                  </span>
+                  <Lock size={10} className="text-rose-300 opacity-90 shrink-0" />
+                </>
+              ) : (
+                <LockOpen size={14} className="text-emerald-300 shrink-0" />
+              )}
             </div>
           </div>
         </div>

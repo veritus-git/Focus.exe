@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { X, Award, ArrowLeft, BookOpen, Clock, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
+import { useOSStore } from "../../store/useOSStore";
 import { MarkdownRenderer } from "../../components/ui/MarkdownRenderer";
-import { getLessonById, COURSES } from "../../content/courseIndex";
+import { getLessonById, getLessonMarkdown, COURSES } from "../../content/courseIndex";
 import type { Lesson } from "../../content/courseIndex";
 
 interface LessonModalProps {
@@ -14,6 +15,7 @@ interface LessonModalProps {
 export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => {
   const { t } = useTranslation();
   const { completeNode } = useSkillTreeStore();
+  const { language } = useOSStore();
 
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [readProgress, setReadProgress] = useState(0);
@@ -171,7 +173,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
         className="flex-1 overflow-y-auto overflow-x-hidden"
       >
         <div className="max-w-[720px] mx-auto px-8 py-10">
-          <MarkdownRenderer content={activeLesson.markdown} />
+          <MarkdownRenderer content={getLessonMarkdown(activeLesson, language)} />
 
           {/* Completion Card (appears after scrolling to bottom) */}
           {hasFinished && (
