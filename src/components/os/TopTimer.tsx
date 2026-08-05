@@ -1,37 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Timer } from "lucide-react";
-import { useOSStore } from "../../store/useOSStore";
 
-export const TopTimer: React.FC = () => {
-  const { introFinished } = useOSStore();
-  const [secondsLeft, setSecondsLeft] = useState(15 * 60);
+interface TopTimerProps {
+  onTimeChange?: (secondsLeft: number) => void;
+}
+
+export const TopTimer: React.FC<TopTimerProps> = ({ onTimeChange }) => {
+  const [secondsLeft, setSecondsLeft] = useState(15 * 60); // 15 minutes
 
   useEffect(() => {
-    if (!introFinished) return;
-
     const interval = setInterval(() => {
       setSecondsLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          return 0;
-        }
-        return prev - 1;
+        const next = prev <= 1 ? 0 : prev - 1;
+        if (onTimeChange) onTimeChange(next);
+        if (next === 0) clearInterval(interval);
+        return next;
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [introFinished]);
-
-  if (!introFinished) return null;
+  }, []);
 
   const minutes = Math.floor(secondsLeft / 60);
   const secs = secondsLeft % 60;
   const timeFormatted = `${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 
   return (
-    <div className="fixed top-4 right-6 z-40 flex items-center gap-2 text-slate-800/80 hover:text-slate-900 select-none transition-opacity">
-      <Timer size={16} className="text-slate-800/70" />
-      <span className="font-pixel text-base font-bold tracking-wider drop-shadow-xs">
+    <div className="fixed top-5 right-8 z-[60] select-none">
+      <span className="font-pixel text-3xl font-bold tracking-[0.18em] text-white/35 hover:text-white transition-colors duration-200 cursor-default scale-y-130 inline-block origin-top-right drop-shadow-md">
         {timeFormatted}
       </span>
     </div>

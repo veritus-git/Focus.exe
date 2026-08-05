@@ -1,33 +1,60 @@
 import { create } from "zustand";
 
-export interface SkillNodeData {
+export interface SkillNodeState {
   id: string;
   status: "locked" | "active" | "completed";
   progress: number;
 }
 
-interface SkillTreeState {
-  nodes: Record<string, SkillNodeData>;
+interface SkillTreeStore {
+  nodes: Record<string, SkillNodeState>;
   selectedNodeId: string | null;
-  selectNode: (id: string | null) => void;
+  selectNode: (id: string) => void;
   completeNode: (id: string) => void;
 }
 
-export const useSkillTreeStore = create<SkillTreeState>((set) => ({
-  nodes: {
-    node_1: { id: "node_1", status: "completed", progress: 100 },
-    node_2: { id: "node_2", status: "active", progress: 45 },
-    node_3: { id: "node_3", status: "locked", progress: 0 },
-  },
-  selectedNodeId: "node_2",
+const INITIAL_NODES: Record<string, SkillNodeState> = {
+  node_1: { id: "node_1", status: "active", progress: 0 },
+  node_2: { id: "node_2", status: "locked", progress: 0 },
+  node_3: { id: "node_3", status: "locked", progress: 0 },
+};
+
+const NODE_ORDER = ["node_1", "node_2", "node_3"];
+
+export const useSkillTreeStore = create<SkillTreeStore>((set) => ({
+  nodes: INITIAL_NODES,
+  selectedNodeId: "node_1",
 
   selectNode: (id) => set({ selectedNodeId: id }),
 
   completeNode: (id) =>
-    set((state) => ({
-      nodes: {
-        ...state.nodes,
-        [id]: { ...state.nodes[id], status: "completed", progress: 100 },
-      },
-    })),
+    set((state) => {
+      const updatedNodes = { ...state.nodes };
+      
+      // Complete current node
+      if (updatedNodes[id]) {
+        updatedNodes[id] = {
+          ...updatedNodes[id],
+          status: "completed",
+          progress: 100,
+        };
+      }
+
+      // Automatically unlock the next node in sequence
+      const currentIndex = NODE_ORDER.indexOf(id);
+      if (currentIndex !== -1 && currentIndex + 1 < NODE_ORDER.length) {
+        const nextNodeId = NODE_ORDER[currentIndex + 1];
+        if (updatedNodes[nextNodeId] && updatedNodes[nextNodeId].status === "locked") {
+          updatedNodes[nextNodeId] = {
+            ...updatedNodes[nextNodeId],
+            status: "active",
+          };
+        }
+      }
+
+      return {
+        nodes: updatedNodes,
+        selectedNodeId: id,
+      };
+    }),
 }));

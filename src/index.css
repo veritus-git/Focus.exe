@@ -2,100 +2,119 @@
 
 @layer base {
   body {
-    font-family: 'Press Start 2P', monospace;
-    background-color: #e0e7ff;
-    color: #0f172a;
+    font-family: 'Pixelify Sans', 'VT323', system-ui, sans-serif;
+    background-color: #231f38;
+    color: #ffffff;
     user-select: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
 .font-pixel {
-  font-family: 'Press Start 2P', monospace;
+  font-family: 'Pixelify Sans', 'VT323', monospace;
 }
 
 .font-mono-retro {
   font-family: 'VT323', monospace;
 }
 
-/* Light, flowy pastel gradient wallpaper (White, Pink & Soft Blue) */
-.bg-pastel-wallpaper {
-  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 30%, #f472b6 70%, #60a5fa 100%);
+/* Desaturated Pink / Blue / Purple Pastel Gradient Wallpaper */
+.bg-pastel-dimmed {
+  background: linear-gradient(135deg, #231f38 0%, #3e2b4d 35%, #663d63 70%, #333d59 100%);
 }
 
-/* Glassmorphism Window Styling - macOS / iOS style minimalist dark glass */
+/* 8-bit Windows - Dark glassmorphism */
 .pixel-window {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-  background-color: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(16px);
-  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  background-color: rgba(18, 18, 30, 0.95);
+  backdrop-filter: blur(12px);
 }
 
 .pixel-window-active {
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
 }
 
-.pixel-button {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(30, 41, 59, 0.8);
-  color: #ffffff;
-  border-radius: 6px;
-  transition: all 0.15s ease;
-}
-
-.pixel-button:hover {
-  background-color: rgba(51, 65, 85, 0.9);
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-/* Slower, natural bot fall animation */
-@keyframes botSlowDrop {
+/* Natural Gravity Fall Animation for Bot */
+@keyframes botNaturalFall {
   0% {
-    transform: translateY(-600px) rotate(0deg);
+    transform: translateY(-500px) scaleX(0.9) scaleY(1.1);
     opacity: 0;
   }
-  20% {
+  40% {
     opacity: 1;
   }
-  65% {
-    transform: translateY(0px) rotate(-35deg); /* Faceplant */
+  75% {
+    transform: translateY(0px) scaleX(0.85) scaleY(1.15);
   }
-  80% {
-    transform: translateY(-25px) rotate(-10deg); /* Slow bounce */
+  84% {
+    transform: translateY(0px) scaleX(1.25) scaleY(0.75);
+  }
+  92% {
+    transform: translateY(-10px) scaleX(0.95) scaleY(1.05);
   }
   100% {
-    transform: translateY(0px) rotate(0deg); /* Stand upright */
+    transform: translateY(0px) scaleX(1) scaleY(1);
   }
 }
 
-.animate-bot-slow-drop {
-  animation: botSlowDrop 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.animate-bot-fall {
+  animation: botNaturalFall 1.8s cubic-bezier(0.45, 0, 0.55, 1) forwards;
 }
 
-/* Custom React Flow Controls Override */
+/* Floating Molecules Node Animation for Skill Tree */
+@keyframes floatingMolecule1 {
+  0% { transform: translate(0px, 0px); }
+  50% { transform: translate(6px, -5px); }
+  100% { transform: translate(0px, 0px); }
+}
+
+@keyframes floatingMolecule2 {
+  0% { transform: translate(0px, 0px); }
+  50% { transform: translate(-7px, 6px); }
+  100% { transform: translate(0px, 0px); }
+}
+
+@keyframes floatingMolecule3 {
+  0% { transform: translate(0px, 0px); }
+  50% { transform: translate(5px, 7px); }
+  100% { transform: translate(0px, 0px); }
+}
+
+.animate-float-node-1 {
+  animation: floatingMolecule1 5s ease-in-out infinite;
+}
+
+.animate-float-node-2 {
+  animation: floatingMolecule2 6s ease-in-out infinite 1s;
+}
+
+.animate-float-node-3 {
+  animation: floatingMolecule3 5.5s ease-in-out infinite 2s;
+}
+
+/* React Flow Dark Glass Controls Override */
 .react-flow__controls {
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
+  background: rgba(15, 17, 30, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
   border-radius: 8px !important;
   overflow: hidden !important;
-  border: 1px solid rgba(255,255,255,0.2) !important;
-  background: rgba(15, 23, 42, 0.9) !important;
 }
 
 .react-flow__controls-button {
-  background: rgba(15, 23, 42, 0.9) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+  background: rgba(15, 17, 30, 0.95) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   fill: #ffffff !important;
   color: #ffffff !important;
-  width: 28px !important;
-  height: 28px !important;
 }
 
 .react-flow__controls-button:hover {
-  background: rgba(51, 65, 85, 0.9) !important;
+  background: rgba(40, 45, 75, 0.9) !important;
 }
 
 .react-flow__controls-button svg {
@@ -110,7 +129,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(18, 18, 30, 0.6);
 }
 
 ::-webkit-scrollbar-thumb {

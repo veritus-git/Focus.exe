@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Bot, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useOSStore } from "../../store/useOSStore";
+import { PixelBotCharacter } from "./PixelBotCharacter";
 
 export const IntroMascot: React.FC = () => {
   const { t } = useTranslation();
@@ -12,15 +13,15 @@ export const IntroMascot: React.FC = () => {
   const [dialogStage, setDialogStage] = useState<1 | 2>(1);
 
   useEffect(() => {
-    // 1. Bot falls smoothly for 1.8s
+    // 1. Gravity fall takes 1.8s
     const fallTimer = setTimeout(() => {
       setBotState("standing");
     }, 1800);
 
-    // 2. Text appears 0.4s after bot stands upright
+    // 2. Speech bubble appears 0.2s after bot lands
     const speechTimer = setTimeout(() => {
       setShowSpeech(true);
-    }, 2200);
+    }, 2000);
 
     return () => {
       clearTimeout(fallTimer);
@@ -51,9 +52,9 @@ export const IntroMascot: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950/40 backdrop-blur-xs select-none">
-      {/* Top right language switcher on Intro screen */}
-      <div className="absolute top-4 right-6 flex items-center bg-slate-900/80 border border-white/20 px-2 py-1 rounded-lg backdrop-blur-md">
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/50 backdrop-blur-xs select-none">
+      {/* Top right language switcher */}
+      <div className="absolute top-5 right-8 flex items-center bg-slate-900/80 border border-white/20 px-2.5 py-1 rounded-lg backdrop-blur-md">
         <button
           onClick={() => setLanguage("pl")}
           className={`px-2 py-0.5 text-[10px] font-pixel cursor-pointer transition-all ${
@@ -78,31 +79,28 @@ export const IntroMascot: React.FC = () => {
       </div>
 
       <div className="flex flex-col items-center gap-6 max-w-md w-full p-4">
-        {/* Clean Speech Bubble (Only appears after bot stands up) */}
+        {/* Perfectly Centered Speech Bubble */}
         {showSpeech ? (
           <div
             onClick={advanceDialog}
-            className="w-full p-5 bg-slate-900/90 border border-white/20 text-white rounded-2xl shadow-2xl backdrop-blur-md cursor-pointer transition-all hover:border-white/40"
+            className="w-full p-6 bg-slate-900/90 border border-white/20 text-white rounded-2xl shadow-2xl backdrop-blur-md cursor-pointer transition-all hover:border-white/40 relative flex flex-col items-center justify-center text-center"
           >
-            <p className="text-sm font-pixel leading-relaxed text-slate-100 min-h-[48px] flex items-center justify-center text-center">
+            <p className="text-sm font-pixel leading-relaxed text-slate-100 min-h-[44px] flex items-center justify-center text-center px-4">
               "{dialogStage === 1 ? t("mascot.intro1") : t("mascot.intro2")}"
             </p>
 
-            {/* Simple small arrow icon at bottom right */}
-            <div className="flex justify-end pt-2 text-slate-400 hover:text-white transition-colors">
-              <div className="flex items-center gap-1 text-[10px] font-pixel">
-                <ArrowRight size={14} className="animate-pulse text-indigo-400" />
-              </div>
+            {/* Arrow positioned absolute bottom-right */}
+            <div className="absolute bottom-2.5 right-3.5 text-indigo-400 hover:text-white transition-colors">
+              <ArrowRight size={15} className="animate-pulse" />
             </div>
           </div>
         ) : (
-          /* Empty placeholder to keep vertical layout stable while falling */
           <div className="h-[90px]" />
         )}
 
-        {/* Clean 8-bit Bot Sprite (No boxes, no frames!) */}
-        <div className={`transition-all ${botState === "falling" ? "animate-bot-slow-drop" : ""}`}>
-          <Bot size={72} className="text-indigo-400 drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />
+        {/* Animated Custom 8-Bit Pixel Bot */}
+        <div className={botState === "falling" ? "animate-bot-fall" : ""}>
+          <PixelBotCharacter />
         </div>
       </div>
     </div>
