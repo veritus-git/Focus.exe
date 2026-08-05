@@ -8,7 +8,9 @@ Wyobraź sobie restaurację. Masz kuchnię, masz kelnerów, masz stoły z zamów
 
 Każdy klik myszką, każda klatka animacji, każde sprawdzenie pisowni — to wszystko to "zamówienia", które lądują na jego stole. I on musi je ogarnąć. Miliardy takich zamówień. **Na sekundę.**
 
----
+> [!KEY] CPU to jedyny element w komputerze, który naprawdę "robi rzeczy". Wszystko inne (RAM, SSD, GPU) to tylko jego narzędzia i asystenci.
+
+---PAGE---
 
 ## Tranzystor — najmniejszy pracownik
 
@@ -20,7 +22,9 @@ Tyle że tranzystory w twoim CPU to nie są duże przełączniki na ścianie. S�
 
 Te tranzystory nie myślą. Nie wiedzą, co robią. Jedyne co potrafią to: **być włączone lub wyłączone**. Ale kiedy połączysz je ze sobą w odpowiednie wzorce — tak zwane **bramki logiczne** — nagle potrafią dodawać, porównywać, przesuwać dane, a w końcu... uruchamiać Minecrafta.
 
----
+> [!KEY] Cała potęga komputera wynika z jednej prostej rzeczy: miliardów malutkich przełączników, które mogą być albo 0, albo 1. Nic więcej.
+
+---PAGE---
 
 ## Bramki logiczne — z niczego powstaje matematyka
 
@@ -32,9 +36,13 @@ Z tych prostych przełączników budujesz podstawowe "cegiełki":
 
 Z tych trzech cegieł budujesz **wszystko**. Dosłownie. Sumator (dodawanie), komparator (porównywanie), multiplekser (wybieranie)... a z tych z kolei budujesz cały procesor.
 
-To jest piękne w informatyce — **z absurdalnej prostoty wyłania się niepojęta złożoność**.
+> [!KEY] Z zaledwie trzech typów bramek (AND, OR, NOT) można zbudować KAŻDĄ operację, którą komputer kiedykolwiek wykona.
 
----
+**Spróbuj sam — kliknij w inputy poniżej i zobacz jak działają bramki logiczne:**
+
+<!-- INTERACTIVE: logic-gates -->
+
+---PAGE---
 
 ## Cykl pobrania i wykonania — serce procesora bije
 
@@ -49,33 +57,29 @@ CPU "czyta" tę instrukcję i rozpoznaje, co ma zrobić. To jak kelner, który p
 ### 3. Execute (Wykonaj)
 CPU faktycznie wykonuje operację — dodaje dwie liczby, porównuje wartości, przesyła dane. Wynik ląduje w jednym z **rejestrów** (szybkie, malutkie komórki pamięci wewnątrz samego procesora).
 
-I zaraz potem? **Od początku.** Fetch. Decode. Execute. Fetch. Decode. Execute. Na procesorze 5 GHz ten cykl powtarza się **5 miliardów razy na sekundę**.
+I zaraz potem? **Od początku.** Fetch. Decode. Execute. Na procesorze 5 GHz ten cykl powtarza się **5 miliardów razy na sekundę**.
 
----
+> [!KEY] CPU nie "myśli". On tylko w kółko pobiera instrukcję, rozszyfrowuje ją i wykonuje. Miliardy razy na sekundę. To WSZYSTKO co robi.
+
+---PAGE---
 
 ## Rejestry — pamięć podręczna szefa
 
 CPU nie lata po dane do RAMu za każdym razem — to byłoby jak szef kuchni, który biegnie do magazynu po każdą szczyptę soli. Zamiast tego ma **rejestry** — kilkadziesiąt malutkich "kieszeni" bezpośrednio w sobie, do których ma dostęp **natychmiast**.
 
-Rejestry to najszybsza pamięć, jaka istnieje w twoim komputerze. Odczyt z rejestru trwa dosłownie **jeden cykl zegara** — mniej niż nanosekunda. Dla porównania, odczyt z RAMu to ~100 nanosekund. Z dysku SSD? ~100 000 nanosekund.
+Rejestry to najszybsza pamięć, jaka istnieje w twoim komputerze. Odczyt z rejestru trwa dosłownie **jeden cykl zegara** — mniej niż nanosekunda. Dla porównania:
 
-> **Analogia do zapamiętania:** Rejestr to kieszeń szefa kuchni. Cache to blat roboczy. RAM to lodówka. SSD to piwnica z zapasami. Im dalej, tym wolniej.
+| Pamięć | Czas dostępu | Analogia |
+|--------|-------------|----------|
+| Rejestr | ~0.3 ns | Kieszeń szefa |
+| Cache L1 | ~1 ns | Blat roboczy |
+| Cache L3 | ~10 ns | Szafka w kuchni |
+| RAM | ~100 ns | Lodówka |
+| SSD | ~100 000 ns | Piwnica |
 
----
+> [!KEY] Im bliżej procesora pamięć, tym szybciej działa — ale tym mniej jej jest. Rejestr to nanosekundy, SSD to milisekundy. Różnica jest milionkrotna.
 
-## Zegar — dlaczego GHz ma znaczenie (ale nie aż takie)
-
-Słyszysz "ten procesor ma 5 GHz" — ale co to w ogóle znaczy?
-
-Procesor ma w sobie **zegar** — kryształ kwarcu, który wibruje z niezwykłą regularnością. Każda "wibracja" (cykl) to jedno uderzenie serca procesora. Przy 5 GHz to **5 miliardów uderzeń na sekundę**.
-
-Ale uwaga — więcej GHz ≠ automatycznie szybszy procesor. To tak samo, jak szybciej kręcące się koło w samochodzie nie znaczy, że jedziesz szybciej (może masz mniejsze koła). Liczy się też:
-
-- Ile **instrukcji na cykl** (IPC) procesor potrafi wykonać
-- Jak sprytny jest **pipeline** (o tym za chwilę)
-- Ile ma **rdzeni**
-
----
+---PAGE---
 
 ## Pipeline — taśma produkcyjna w procesorze
 
@@ -94,7 +98,9 @@ W cyklu 3 procesor jednocześnie pobiera instrukcję C, dekoduje B i wykonuje A.
 
 Nowoczesne procesory (np. Intel 14th gen) mają pipeline o **20+ etapach**. To jak fabryka z dwudziestoma stacjami — przepustowość jest kosmiczna.
 
----
+> [!KEY] Pipeline to powód, dla którego procesory są tak szybkie — nie dlatego, że jedna instrukcja jest szybka, ale dlatego, że WIELE instrukcji jest przetwarzanych jednocześnie.
+
+---PAGE---
 
 ## Wielordzeniowość — klonowanie szefa kuchni
 

@@ -8,7 +8,9 @@ Imagine a restaurant. You have a kitchen, waiters, and tables with orders piling
 
 Every mouse click, every animation frame, every spell-check — these are all "orders" that land on his table. And he has to handle them. Billions of such orders. **Every single second.**
 
----
+> [!KEY] The CPU is the only component in your computer that actually "does things." Everything else (RAM, SSD, GPU) are just its tools and assistants.
+
+---PAGE---
 
 ## The Transistor — the tiniest worker
 
@@ -20,7 +22,9 @@ Except the transistors in your CPU aren't big switches on a wall. They're **smal
 
 These transistors don't think. They don't know what they're doing. All they can do is: **be on or off**. But when you wire them together in specific patterns — so-called **logic gates** — suddenly they can add, compare, shift data around, and eventually... run Minecraft.
 
----
+> [!KEY] All of computing power comes from one simple thing: billions of tiny switches that can be either 0 or 1. Nothing more.
+
+---PAGE---
 
 ## Logic Gates — math from nothing
 
@@ -32,9 +36,13 @@ From these simple switches you build fundamental "bricks":
 
 From these three bricks you build **everything**. Literally. Adders (addition), comparators (comparison), multiplexers (selection)... and from those you build the entire processor.
 
-This is the beautiful thing about computer science — **from absurd simplicity emerges incomprehensible complexity**.
+> [!KEY] From just three types of gates (AND, OR, NOT) you can build EVERY operation a computer will ever perform.
 
----
+**Try it yourself — click the inputs below and see how logic gates work:**
+
+<!-- INTERACTIVE: logic-gates -->
+
+---PAGE---
 
 ## The Fetch-Decode-Execute Cycle — the heartbeat
 
@@ -49,33 +57,29 @@ The CPU "reads" this instruction and figures out what to do. Like a waiter who l
 ### 3. Execute
 The CPU actually performs the operation — adds two numbers, compares values, moves data. The result goes into one of the **registers** (fast, tiny memory cells inside the CPU itself).
 
-And then? **Back to the top.** Fetch. Decode. Execute. Fetch. Decode. Execute. On a 5 GHz processor, this cycle repeats **5 billion times per second**.
+And then? **Back to the top.** Fetch. Decode. Execute. On a 5 GHz processor, this cycle repeats **5 billion times per second**.
 
----
+> [!KEY] A CPU doesn't "think." It just keeps fetching an instruction, decoding it, and executing it. Billions of times per second. That's ALL it does.
+
+---PAGE---
 
 ## Registers — the chef's pockets
 
 The CPU doesn't run to RAM for data every single time — that would be like the head chef sprinting to the warehouse for every pinch of salt. Instead, it has **registers** — a few dozen tiny "pockets" directly inside itself, accessible **instantly**.
 
-Registers are the fastest memory in your entire computer. Reading a register takes literally **one clock cycle** — less than a nanosecond. For comparison, reading from RAM takes ~100 nanoseconds. From an SSD? ~100,000 nanoseconds.
+Registers are the fastest memory in your entire computer. Reading a register takes literally **one clock cycle** — less than a nanosecond. For comparison:
 
-> **Analogy to remember:** A register is the chef's pocket. Cache is the prep counter. RAM is the fridge. SSD is the basement storage. The further away, the slower.
+| Memory | Access time | Analogy |
+|--------|------------|---------|
+| Register | ~0.3 ns | Chef's pocket |
+| Cache L1 | ~1 ns | Prep counter |
+| Cache L3 | ~10 ns | Kitchen cabinet |
+| RAM | ~100 ns | Fridge |
+| SSD | ~100,000 ns | Basement storage |
 
----
+> [!KEY] The closer memory is to the CPU, the faster it works — but the less of it there is. Registers are nanoseconds, SSD is milliseconds. That's a million-fold difference.
 
-## The Clock — why GHz matters (but not as much as you think)
-
-You hear "this CPU is 5 GHz" — but what does that actually mean?
-
-The processor has a **clock** inside it — a quartz crystal that vibrates with extraordinary regularity. Each "vibration" (cycle) is one heartbeat of the CPU. At 5 GHz, that's **5 billion heartbeats per second**.
-
-But beware — more GHz ≠ automatically faster. It's the same as faster-spinning wheels not meaning a faster car (maybe you have smaller wheels). What also matters:
-
-- How many **instructions per cycle** (IPC) the processor can handle
-- How smart the **pipeline** is (more on that in a moment)
-- How many **cores** it has
-
----
+---PAGE---
 
 ## The Pipeline — an assembly line inside your processor
 
@@ -94,7 +98,9 @@ In cycle 3, the processor simultaneously fetches instruction C, decodes B, and e
 
 Modern processors (e.g., Intel 14th gen) have pipelines with **20+ stages**. Like a factory with twenty workstations — the throughput is astronomical.
 
----
+> [!KEY] Pipelining is WHY processors are so fast — not because one instruction is fast, but because MANY instructions are processed simultaneously.
+
+---PAGE---
 
 ## Multi-core — cloning the head chef
 

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { X, Award, ArrowLeft, BookOpen, Clock, CheckCircle2 } from "lucide-react";
+import { X, ArrowLeft, ArrowRight, BookOpen, Clock, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
 import { useOSStore } from "../../store/useOSStore";
-import { MarkdownRenderer } from "../../components/ui/MarkdownRenderer";
+import { MarkdownRenderer, splitIntoPages } from "../../components/ui/MarkdownRenderer";
 import { getLessonById, getLessonMarkdown, COURSES } from "../../content/courseIndex";
 import type { Lesson } from "../../content/courseIndex";
 
@@ -18,8 +18,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
   const { language } = useOSStore();
 
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
-  const [readProgress, setReadProgress] = useState(0);
-  const [hasFinished, setHasFinished] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Map nodeId to course
@@ -30,32 +29,31 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
     ? getLessonById(activeLessonId)
     : undefined;
 
-  // Track scroll progress
+  // Get pages for active lesson
+  const pages = activeLesson
+    ? splitIntoPages(getLessonMarkdown(activeLesson, language))
+    : [];
+  const totalPages = pages.length || 1;
+  const isLastPage = currentPage >= totalPages - 1;
+
+  // Reset scroll on page change
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container || !activeLesson) return;
-
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = container;
-      const progress = Math.min(100, (scrollTop / (scrollHeight - clientHeight)) * 100);
-      setReadProgress(progress);
-      if (progress > 90 && !hasFinished) {
-        setHasFinished(true);
-      }
-    };
-
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, [activeLesson, hasFinished]);
-
-  // Reset state when switching lessons
-  useEffect(() => {
-    setReadProgress(0);
-    setHasFinished(false);
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0;
     }
-  }, [activeLessonId]);
+  }, [currentPage, activeLessonId]);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage((p) => p + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage((p) => p - 1);
+    }
+  };
 
   const handleComplete = () => {
     completeNode(nodeId);
@@ -91,7 +89,10 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
             {course.lessons.map((lesson) => (
               <button
                 key={lesson.id}
-                onClick={() => setActiveLessonId(lesson.id)}
+                onClick={() => {
+                  setActiveLessonId(lesson.id);
+                  setCurrentPage(0);
+                }}
                 className="w-full p-4 bg-slate-800/60 hover:bg-slate-800 border border-white/10 hover:border-white/25 rounded-2xl cursor-pointer transition-all flex items-center gap-4 group text-left"
               >
                 <div
@@ -120,14 +121,17 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
     );
   }
 
-  // ── LESSON READER VIEW ──
+  // ── LESSON READER VIEW (PAGED) ──
   return (
     <div className="fixed inset-0 z-[120] bg-slate-950 flex flex-col select-none animate-fade-in">
       {/* Top Bar */}
       <div className="h-12 px-5 bg-slate-900 border-b border-white/10 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setActiveLessonId(null)}
+            onClick={() => {
+              setActiveLessonId(null);
+              setCurrentPage(0);
+            }}
             className="p-1.5 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-lg text-slate-400 hover:text-white cursor-pointer transition-all flex items-center gap-1.5"
           >
             <ArrowLeft size={14} />
@@ -143,6 +147,13 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Page indicator */}
+          <div className="flex items-center gap-1.5 text-slate-400">
+            <span className="text-[10px] font-pixel">
+              {currentPage + 1} / {totalPages}
+            </span>
+          </div>
+
           {/* Reading time */}
           <div className="flex items-center gap-1.5 text-slate-500">
             <Clock size={12} />
@@ -159,11 +170,11 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
         </div>
       </div>
 
-      {/* Progress Bar */}
+      {/* Page Progress Bar */}
       <div className="h-1 bg-slate-900 shrink-0">
         <div
-          className="h-full bg-emerald-500 transition-all duration-200"
-          style={{ width: `${readProgress}%` }}
+          className="h-full bg-emerald-500 transition-all duration-300"
+          style={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}
         />
       </div>
 
@@ -173,28 +184,61 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
         className="flex-1 overflow-y-auto overflow-x-hidden"
       >
         <div className="max-w-[720px] mx-auto px-8 py-10">
-          <MarkdownRenderer content={getLessonMarkdown(activeLesson, language)} />
-
-          {/* Completion Card (appears after scrolling to bottom) */}
-          {hasFinished && (
-            <div className="mt-10 mb-6 p-6 bg-slate-900 border-2 border-emerald-500/50 rounded-3xl flex flex-col items-center text-center gap-4 animate-fade-in">
-              <div className="w-14 h-14 bg-emerald-500/15 border-2 border-emerald-500 rounded-full flex items-center justify-center text-emerald-400">
-                <Award size={28} />
-              </div>
-              <div>
-                <h3 className="font-pixel text-base font-bold text-white">{t("lessonReader.complete")}</h3>
-                <p className="text-xs font-pixel text-slate-400 mt-1">{t("lessonReader.completeDesc")}</p>
-              </div>
-              <button
-                onClick={handleComplete}
-                className="px-8 py-3 bg-[#58cc02] hover:bg-[#46a302] border-b-4 border-[#3ca100] text-white font-pixel text-xs font-bold rounded-2xl shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2"
-              >
-                <CheckCircle2 size={16} />
-                <span>{t("lessonReader.markComplete")}</span>
-              </button>
-            </div>
-          )}
+          <MarkdownRenderer content={pages[currentPage] || ""} />
         </div>
+      </div>
+
+      {/* Bottom Navigation Bar */}
+      <div className="h-16 px-6 bg-slate-900 border-t border-white/10 flex items-center justify-between shrink-0">
+        {/* Previous */}
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 0}
+          className={`px-5 py-2.5 rounded-xl font-pixel text-xs font-bold flex items-center gap-2 transition-all ${
+            currentPage === 0
+              ? "bg-slate-800/50 text-slate-600 cursor-not-allowed"
+              : "bg-slate-800 hover:bg-slate-700 text-white cursor-pointer border border-white/10 active:scale-95"
+          }`}
+        >
+          <ArrowLeft size={14} />
+          <span>{t("lessonReader.prev")}</span>
+        </button>
+
+        {/* Page dots */}
+        <div className="flex items-center gap-1.5">
+          {Array.from({ length: totalPages }).map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentPage(idx)}
+              className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
+                idx === currentPage
+                  ? "bg-emerald-400 scale-125"
+                  : idx <= currentPage
+                  ? "bg-emerald-400/40"
+                  : "bg-slate-700"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Next / Complete */}
+        {isLastPage ? (
+          <button
+            onClick={handleComplete}
+            className="px-5 py-2.5 bg-[#58cc02] hover:bg-[#46a302] border-b-3 border-[#3ca100] text-white font-pixel text-xs font-bold rounded-xl shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2"
+          >
+            <CheckCircle2 size={14} />
+            <span>{t("lessonReader.markComplete")}</span>
+          </button>
+        ) : (
+          <button
+            onClick={handleNextPage}
+            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-pixel text-xs font-bold rounded-xl shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2 border border-emerald-400/30"
+          >
+            <span>{t("lessonReader.next")}</span>
+            <ArrowRight size={14} />
+          </button>
+        )}
       </div>
     </div>
   );

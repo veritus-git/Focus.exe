@@ -1,13 +1,22 @@
 import React from "react";
+import { BinaryCounter } from "../interactive/BinaryCounter";
+import { LogicGates } from "../interactive/LogicGates";
 
 interface MarkdownRendererProps {
   content: string;
 }
 
+// Registry of interactive components that can be embedded via <!-- INTERACTIVE: name -->
+const INTERACTIVE_COMPONENTS: Record<string, React.FC> = {
+  "binary-counter": BinaryCounter,
+  "logic-gates": LogicGates,
+};
+
 /**
  * Lightweight Markdown-to-JSX renderer.
  * Supports: headings, bold, italic, code blocks, inline code, blockquotes,
- * unordered/ordered lists, horizontal rules, tables, and paragraphs.
+ * Key Insight cards (> [!KEY]), unordered/ordered lists, horizontal rules,
+ * tables, interactive embeds, and paragraphs.
  * No external dependencies.
  */
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
@@ -20,6 +29,18 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
 
     // Blank line
     if (line.trim() === "") {
+      i++;
+      continue;
+    }
+
+    // Interactive component embed: <!-- INTERACTIVE: name -->
+    const interactiveMatch = line.trim().match(/^<!--\s*INTERACTIVE:\s*(.+?)\s*-->$/);
+    if (interactiveMatch) {
+      const componentName = interactiveMatch[1].trim();
+      const Component = INTERACTIVE_COMPONENTS[componentName];
+      if (Component) {
+        elements.push(<Component key={elements.length} />);
+      }
       i++;
       continue;
     }
@@ -56,9 +77,8 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
         tableLines.push(lines[i]);
         i++;
       }
-      // Parse table
       const rows = tableLines
-        .filter((tl) => !tl.trim().match(/^\|[\s\-:|]+\|$/)) // skip separator row
+        .filter((tl) => !tl.trim().match(/^\|[\s\-:|]+\|$/))
         .map((tl) =>
           tl
             .split("|")
@@ -137,7 +157,44 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
       continue;
     }
 
-    // Blockquote
+    // KEY INSIGHT block: > [!KEY] ...
+    if (line.trim().startsWith("> [!KEY]")) {
+      const keyLines: string[] = [];
+      // First line might have content after [!KEY]
+      const firstContent = line.trim().replace(/^>\s*\[!KEY\]\s*/, "").trim();
+      if (firstContent) keyLines.push(firstContent);
+      i++;
+      while (i < lines.length && lines[i].trim().startsWith(">")) {
+        keyLines.push(lines[i].trim().replace(/^>\s?/, ""));
+        i++;
+      }
+      elements.push(
+        <div
+          key={elements.length}
+          className="my-5 p-4 bg-gradient-to-r from-amber-500/10 to-amber-600/5 border-l-4 border-amber-400 rounded-r-xl relative overflow-hidden"
+        >
+          <div className="flex items-start gap-3">
+            <span className="text-xl shrink-0 mt-0.5">💡</span>
+            <div>
+              <span className="text-[9px] font-pixel text-amber-400 font-bold uppercase tracking-wider block mb-1">
+                Key Insight
+              </span>
+              <div className="text-sm text-amber-100/90 leading-relaxed font-medium">
+                {keyLines.map((kl, ki) => (
+                  <span key={ki}>
+                    {renderInline(kl)}
+                    {ki < keyLines.length - 1 && <br />}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+      continue;
+    }
+
+    // Regular blockquote
     if (line.trim().startsWith(">")) {
       const quoteLines: string[] = [];
       while (i < lines.length && lines[i].trim().startsWith(">")) {
@@ -147,7 +204,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
       elements.push(
         <blockquote
           key={elements.length}
-          className="my-4 pl-4 border-l-3 border-amber-400 bg-amber-400/5 py-3 pr-4 rounded-r-lg text-sm text-amber-200/90 leading-relaxed italic"
+          className="my-4 pl-4 border-l-3 border-slate-500 bg-slate-800/30 py-3 pr-4 rounded-r-lg text-sm text-slate-300/90 leading-relaxed italic"
         >
           {quoteLines.map((ql, qi) => (
             <span key={qi}>
@@ -188,7 +245,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
         i++;
       }
       elements.push(
-        <ol key={elements.length} className="my-3 space-y-1.5 pl-1 counter-reset-item">
+        <ol key={elements.length} className="my-3 space-y-1.5 pl-1">
           {items.map((item, idx) => (
             <li key={idx} className="flex items-start gap-2.5 text-sm text-slate-300 leading-relaxed">
               <span className="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-[10px] font-bold text-emerald-400 shrink-0 mt-0.5">
@@ -219,33 +276,28 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
  */
 function renderInline(text: string): React.ReactNode {
   const parts: React.ReactNode[] = [];
-  // Match **bold**, *italic*, `code`
   const regex = /(\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`)/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 
   while ((match = regex.exec(text)) !== null) {
-    // Text before match
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index));
     }
 
     if (match[2]) {
-      // Bold
       parts.push(
         <strong key={parts.length} className="text-white font-bold">
           {match[2]}
         </strong>
       );
     } else if (match[3]) {
-      // Italic
       parts.push(
         <em key={parts.length} className="text-slate-200 italic">
           {match[3]}
         </em>
       );
     } else if (match[4]) {
-      // Inline code
       parts.push(
         <code key={parts.length} className="px-1.5 py-0.5 bg-slate-800 border border-white/10 rounded text-emerald-300 text-xs font-mono-retro">
           {match[4]}
@@ -256,10 +308,16 @@ function renderInline(text: string): React.ReactNode {
     lastIndex = match.index + match[0].length;
   }
 
-  // Remaining text
   if (lastIndex < text.length) {
     parts.push(text.slice(lastIndex));
   }
 
   return parts.length === 1 ? parts[0] : <>{parts}</>;
+}
+
+/**
+ * Split markdown content by ---PAGE--- separator into pages.
+ */
+export function splitIntoPages(content: string): string[] {
+  return content.split(/^---PAGE---$/m).map((p) => p.trim()).filter(Boolean);
 }

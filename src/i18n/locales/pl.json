@@ -34,6 +34,8 @@
     "back": "Wróć",
     "complete": "Lekcja ukończona!",
     "completeDesc": "Przeczytałeś całą lekcję. Oznacz jako ukończoną, aby odblokować kolejny kurs.",
+    "prev": "WSTECZ",
+    "next": "DALEJ",
     "markComplete": "OZNACZ JAKO UKOŃCZONE"
   },
   "calculator": {
