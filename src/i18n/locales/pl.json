@@ -1,6 +1,8 @@
 {
   "desktop": {
     "skillTree": "SkillTree.exe",
+    "calculator": "Kalkulator.exe",
+    "notes": "Notatki.exe",
     "kioskActive": "Tryb Kiosk Aktywny",
     "lockNotice": "Ukończ lekcję aby odblokować wyjście!"
   },
@@ -15,6 +17,13 @@
     "repeatLessonXP": "POWTÓRZ NAUKĘ (+25 XP)",
     "lockedMsg": "Ukończ poprzednie poziomy, aby odblokować tę lekcję!",
     "lockedBadge": "ZABLOKOWANE"
+  },
+  "calculator": {
+    "title": "KALKULATOR.EXE"
+  },
+  "notes": {
+    "title": "NOTATKI.EXE",
+    "placeholder": "Napisz swoje notatki naukowe tutaj..."
   },
   "mascot": {
     "intro1": "Wystarczy tego scrollowania leniu, czas sie pouczyc!",

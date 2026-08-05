@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Power, GitBranch, Lock, LogOut } from "lucide-react";
+import { Power, GitBranch, Calculator, FileText, Lock, LogOut, Clock } from "lucide-react";
 import { invoke } from "@tauri-apps/api/core";
-import { useOSStore } from "../../store/useOSStore";
+import { WindowId, useOSStore } from "../../store/useOSStore";
 
 interface TaskbarProps {
   secondsLeft: number;
+  setSecondsLeft: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft }) => {
+export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft }) => {
   const { t } = useTranslation();
   const {
     openWindows,
@@ -23,6 +24,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft }) => {
   const [timeStr, setTimeStr] = useState("");
   const [showShutdownModal, setShowShutdownModal] = useState(false);
 
+  // 1-second Clock Interval
   useEffect(() => {
     const updateTime = () => {
       const d = new Date();
@@ -40,6 +42,17 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft }) => {
     return () => clearInterval(interval);
   }, []);
 
+  // 1-second Lockdown Timer Countdown
+  useEffect(() => {
+    if (secondsLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [secondsLeft, setSecondsLeft]);
+
   const handleExit = async () => {
     if (secondsLeft > 0) return;
 
@@ -51,21 +64,49 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft }) => {
     }
   };
 
+  const formatCountdown = (totalSec: number) => {
+    const mins = Math.floor(totalSec / 60);
+    const secs = totalSec % 60;
+    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  };
+
   const isExitLocked = secondsLeft > 0;
   const minutesLeft = Math.ceil(secondsLeft / 60);
+
+  const getWindowIcon = (id: WindowId) => {
+    if (id === "skillTree") return <GitBranch size={16} />;
+    if (id === "calculator") return <Calculator size={16} />;
+    if (id === "notes") return <FileText size={16} />;
+    return null;
+  };
 
   return (
     <>
       <div className="h-11 bg-slate-950/90 backdrop-blur-md border-t border-white/10 px-4 flex items-center justify-between z-40 select-none shadow-lg">
-        {/* Left: Power Off Button */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowShutdownModal(true)}
-            className="p-2 bg-rose-950/60 hover:bg-rose-900 border border-rose-500/40 rounded-lg text-rose-300 hover:text-white transition-all cursor-pointer shadow-sm active:scale-95 flex items-center justify-center"
-            title="Wyłączenie Systemu FocusOS"
-          >
-            <Power size={16} />
-          </button>
+        {/* Left: Joined Power Button + Attached Lockdown Timer Pill (Screenshot 4 Style) */}
+        <div className="flex items-center">
+          <div className="bg-rose-950/90 border border-rose-500/40 rounded-xl overflow-hidden flex items-center shadow-md">
+            {/* Shutdown Power Button */}
+            <button
+              onClick={() => setShowShutdownModal(true)}
+              className="bg-rose-700 hover:bg-rose-600 text-white p-2.5 flex items-center justify-center cursor-pointer transition-colors active:scale-95 border-r border-rose-500/40"
+              title="Wyłączenie Systemu FocusOS"
+            >
+              <Power size={15} />
+            </button>
+
+            {/* Attached Joined Lighter Timer Pill */}
+            <div
+              onClick={() => setShowShutdownModal(true)}
+              className="bg-rose-900/60 hover:bg-rose-800/80 px-3.5 py-1.5 flex items-center gap-2 cursor-pointer transition-colors"
+            >
+              <Clock size={13} className="text-rose-300 animate-pulse" />
+              <span className="text-white font-mono-retro text-sm font-bold tracking-wider">
+                {formatCountdown(secondsLeft)}
+              </span>
+              {isExitLocked && <Lock size={11} className="text-rose-400 opacity-80" />}
+            </div>
+          </div>
         </div>
 
         {/* Center: Open windows task list (ICONS ONLY!) */}
@@ -91,15 +132,15 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft }) => {
                     ? "bg-slate-800 border-white/40 text-[#ffd700] shadow-sm ring-1 ring-white/20"
                     : "bg-slate-900/60 border-white/10 text-slate-400 hover:bg-slate-800/80 hover:text-white"
                 }`}
-                title={t("desktop.skillTree")}
+                title={t(`desktop.${id}`)}
               >
-                <GitBranch size={16} />
+                {getWindowIcon(id)}
               </button>
             );
           })}
         </div>
 
-        {/* Right: Language switcher & Live Clock (NO BOX, CLEAR & READABLE) */}
+        {/* Right: Language switcher & Live Clock */}
         <div className="flex items-center gap-4">
           {/* Language selector */}
           <div className="flex items-center bg-slate-900 border border-white/10 p-0.5 rounded-lg">
@@ -133,7 +174,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft }) => {
         </div>
       </div>
 
-      {/* Shutdown System UI Modal with IDENTICAL BUTTON HEIGHTS */}
+      {/* Shutdown System UI Modal */}
       {showShutdownModal && (
         <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-md flex items-center justify-center select-none p-4">
           <div className="pixel-window w-[440px] p-6 rounded-2xl bg-slate-900 border border-white/20 text-white flex flex-col items-center gap-4 text-center shadow-2xl">

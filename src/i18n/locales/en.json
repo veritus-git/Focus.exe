@@ -1,6 +1,8 @@
 {
   "desktop": {
     "skillTree": "SkillTree.exe",
+    "calculator": "Calculator.exe",
+    "notes": "Notes.exe",
     "kioskActive": "Kiosk Mode Active",
     "lockNotice": "Complete a lesson to unlock exit!"
   },
@@ -15,6 +17,13 @@
     "repeatLessonXP": "REPEAT LESSON (+25 XP)",
     "lockedMsg": "Complete previous levels to unlock this lesson!",
     "lockedBadge": "LOCKED"
+  },
+  "calculator": {
+    "title": "CALCULATOR.EXE"
+  },
+  "notes": {
+    "title": "NOTES.EXE",
+    "placeholder": "Write your study notes here..."
   },
   "mascot": {
     "intro1": "Enough doomscrolling lazybones, time to study!",

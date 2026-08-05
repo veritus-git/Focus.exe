@@ -10,41 +10,37 @@ import { useSkillTreeStore } from "../../store/useSkillTreeStore";
 
 export const SkillTreeWindow: React.FC = () => {
   const { t } = useTranslation();
-  const { closeWindow, toggleMinimizeWindow } = useOSStore();
+  const { closeWindow, toggleMinimizeWindow, focusWindow, minimizedWindows } = useOSStore();
   const { selectedNodeId } = useSkillTreeStore();
 
+  const isMinimized = minimizedWindows.includes("skillTree");
   const [isMaximized, setIsMaximized] = useState(true);
   const [windowPos, setWindowPos] = useState({ x: 60, y: 60 });
   const [activeLessonNodeId, setActiveLessonNodeId] = useState<string | null>(null);
 
   const reactFlowInstance = useRef<any>(null);
+  const windowRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
-  const dragStartRef = useRef<{ startX: number; startY: number; posX: number; posY: number }>({
-    startX: 0,
-    startY: 0,
-    posX: 60,
-    posY: 60,
-  });
+  const dragStartRef = useRef({ startX: 0, startY: 0, posX: 60, posY: 60 });
 
-  // FitView on maximize/unmaximize
+  // Auto-fit canvas on maximize toggle
   useEffect(() => {
     if (reactFlowInstance.current) {
       const timer = setTimeout(() => {
-        reactFlowInstance.current?.fitView({ padding: 0.25, duration: 300 });
+        reactFlowInstance.current?.fitView({ padding: 0.2, duration: 250 });
       }, 60);
       return () => clearTimeout(timer);
     }
   }, [isMaximized]);
 
-  // Robust 60 FPS Window Dragging with Window Level Event Listeners (Never Sticks!)
+  // Native 144Hz 0ms Lag Direct DOM Dragging
   const handleTitleMouseDown = (e: React.MouseEvent) => {
     if (isMaximized) return;
     const target = e.target as HTMLElement;
     if (target.closest("button")) return;
 
-    e.preventDefault();
+    focusWindow("skillTree");
     isDraggingRef.current = true;
-
     dragStartRef.current = {
       startX: e.clientX,
       startY: e.clientY,
@@ -52,24 +48,27 @@ export const SkillTreeWindow: React.FC = () => {
       posY: windowPos.y,
     };
 
-    let rafId: number | null = null;
-
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      if (!isDraggingRef.current) return;
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const deltaX = moveEvent.clientX - dragStartRef.current.startX;
-        const deltaY = moveEvent.clientY - dragStartRef.current.startY;
-        setWindowPos({
-          x: Math.max(10, dragStartRef.current.posX + deltaX),
-          y: Math.max(10, dragStartRef.current.posY + deltaY),
-        });
-      });
+      if (!isDraggingRef.current || !windowRef.current) return;
+      const deltaX = moveEvent.clientX - dragStartRef.current.startX;
+      const deltaY = moveEvent.clientY - dragStartRef.current.startY;
+      const newX = Math.max(10, dragStartRef.current.posX + deltaX);
+      const newY = Math.max(10, dragStartRef.current.posY + deltaY);
+
+      // Direct DOM transform for 0ms lag!
+      windowRef.current.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
     };
 
-    const handleMouseUp = () => {
+    const handleMouseUp = (upEvent: MouseEvent) => {
+      if (!isDraggingRef.current) return;
       isDraggingRef.current = false;
-      if (rafId) cancelAnimationFrame(rafId);
+      const deltaX = upEvent.clientX - dragStartRef.current.startX;
+      const deltaY = upEvent.clientY - dragStartRef.current.startY;
+      setWindowPos({
+        x: Math.max(10, dragStartRef.current.posX + deltaX),
+        y: Math.max(10, dragStartRef.current.posY + deltaY),
+      });
+
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
@@ -123,7 +122,6 @@ export const SkillTreeWindow: React.FC = () => {
     []
   );
 
-  // CRITICAL Z-INDEX FIX: Explicitly set zIndex: 1000 on the selected node object for React Flow!
   const nodes = useMemo(() => {
     return baseNodes.map((n) => ({
       ...n,
@@ -153,6 +151,8 @@ export const SkillTreeWindow: React.FC = () => {
   return (
     <>
       <div
+        ref={windowRef}
+        onMouseDown={() => focusWindow("skillTree")}
         style={
           !isMaximized
             ? { transform: `translate3d(${windowPos.x}px, ${windowPos.y}px, 0)` }
@@ -162,7 +162,9 @@ export const SkillTreeWindow: React.FC = () => {
           isMaximized
             ? "fixed inset-0 top-0 left-0 w-screen h-[calc(100vh-44px)] rounded-none"
             : "fixed top-0 left-0 w-[85vw] h-[75vh] max-w-[1100px] max-h-[750px] rounded-2xl border border-white/20 shadow-2xl"
-        } bg-slate-950 flex flex-col z-30 select-none overflow-hidden transition-shadow duration-150`}
+        } bg-slate-950 flex flex-col z-30 select-none overflow-hidden transition-all duration-200 ${
+          isMinimized ? "scale-95 opacity-0 pointer-events-none translate-y-8" : "scale-100 opacity-100"
+        }`}
       >
         {/* Titlebar */}
         <div
@@ -214,10 +216,10 @@ export const SkillTreeWindow: React.FC = () => {
             nodeTypes={nodeTypes}
             onInit={(instance) => {
               reactFlowInstance.current = instance;
-              instance.fitView({ padding: 0.25 });
+              instance.fitView({ padding: 0.2 });
             }}
             fitView
-            fitViewOptions={{ padding: 0.25 }}
+            fitViewOptions={{ padding: 0.2 }}
             minZoom={0.5}
             maxZoom={1.5}
             proOptions={{ hideAttribution: true }}

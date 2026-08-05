@@ -23,6 +23,7 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
   const isCompleted = nodeState.status === "completed";
   const isActive = nodeState.status === "active";
 
+  // Restored Floating Molecule Animation per Node Level!
   let floatAnimClass = "animate-float-node-1";
   if (data.levelNumber === 2) floatAnimClass = "animate-float-node-2";
   if (data.levelNumber === 3) floatAnimClass = "animate-float-node-3";
@@ -33,9 +34,7 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
         e.stopPropagation();
         selectNode(data.nodeId);
       }}
-      className={`flex flex-col items-center cursor-pointer group select-none relative ${floatAnimClass} ${
-        isSelected ? "z-[9999]" : "z-10"
-      }`}
+      className={`flex flex-col items-center cursor-pointer group select-none relative ${floatAnimClass}`}
     >
       <Handle
         type="target"
@@ -46,26 +45,26 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
       {/* Main Circle Node Container */}
       <div className="relative flex items-center justify-center">
         <div
-          className={`w-20 h-20 rounded-full border-4 flex items-center justify-center transition-all duration-200 ${
+          className={`w-16 h-16 rounded-full border-3 flex items-center justify-center transition-all duration-200 ${
             isLocked
               ? "bg-slate-950 border-slate-700 text-slate-500 opacity-60"
               : isCompleted
-              ? "bg-[#2d0938] border-[#ffd700] text-white shadow-[0_0_25px_rgba(255,215,0,0.5)]"
-              : "bg-[#1f0528] border-[#00ffcc] text-white shadow-[0_0_25px_rgba(0,255,204,0.5)]"
+              ? "bg-[#2d0938] border-[#ffd700] text-white shadow-[0_0_20px_rgba(255,215,0,0.5)]"
+              : "bg-[#1f0528] border-[#00ffcc] text-white shadow-[0_0_20px_rgba(0,255,204,0.5)]"
           } ${isSelected ? "scale-110 ring-4 ring-white/60" : "group-hover:scale-105"}`}
         >
           {isLocked ? (
-            <Lock size={26} className="text-slate-500" />
+            <Lock size={20} className="text-slate-500" />
           ) : isCompleted ? (
-            <Check size={32} className="text-[#ffd700]" />
+            <Check size={26} className="text-[#ffd700]" />
           ) : (
-            <span className="font-pixel text-xl text-white">0{data.levelNumber}</span>
+            <span className="font-pixel text-base text-white">0{data.levelNumber}</span>
           )}
         </div>
       </div>
 
       {/* Node Short Label */}
-      <div className="mt-2 text-center max-w-[140px]">
+      <div className="mt-1.5 text-center max-w-[130px]">
         <span
           className={`text-xs font-pixel font-bold block leading-snug drop-shadow ${
             isLocked ? "text-slate-500" : "text-white"
@@ -75,14 +74,14 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
         </span>
       </div>
 
-      {/* DUOLINGO STYLE POPUP CARD (Z-Index 9999 ON TOP OF ALL NODES) */}
+      {/* DUOLINGO STYLE POPUP CARD */}
       {isSelected && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute top-[105px] left-1/2 -translate-x-1/2 w-[300px] z-[9999] animate-fade-in select-none"
+          className="absolute top-[90px] left-1/2 -translate-x-1/2 w-[280px] z-[9999] animate-fade-in select-none"
         >
           {/* Card Arrow Tip */}
-          <div className="w-4 h-4 bg-slate-900 border-t border-l border-white/20 rotate-45 mx-auto -mb-2 relative z-10" />
+          <div className="w-3.5 h-3.5 bg-slate-900 border-t border-l border-white/20 rotate-45 mx-auto -mb-2 relative z-10" />
 
           {/* Card Body */}
           {isActive || isCompleted ? (
@@ -103,7 +102,7 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
                   <Zap size={14} className="fill-emerald-400" />
                   <span>{t("skillTree.unit", { num: data.levelNumber })}</span>
                 </span>
-                <h4 className="text-sm font-pixel font-bold text-white leading-tight">
+                <h4 className="text-xs font-pixel font-bold text-white leading-tight">
                   {t(data.titleKey)}
                 </h4>
               </div>
@@ -114,7 +113,7 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
                   e.stopPropagation();
                   if (data.onStartLesson) data.onStartLesson(data.nodeId);
                 }}
-                className="w-full py-3 bg-[#58cc02] hover:bg-[#46a302] border-b-4 border-[#3ca100] text-white font-pixel text-xs font-bold rounded-2xl shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-1"
+                className="w-full py-2.5 bg-[#58cc02] hover:bg-[#46a302] border-b-4 border-[#3ca100] text-white font-pixel text-xs font-bold rounded-2xl shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer mt-1"
               >
                 <Play size={14} className="fill-white" />
                 <span>
@@ -144,7 +143,7 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
                 </p>
               </div>
 
-              <div className="w-full py-2.5 bg-slate-800 border-b-4 border-slate-950 text-slate-500 font-pixel text-xs font-bold rounded-2xl text-center uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-not-allowed mt-1">
+              <div className="w-full py-2 bg-slate-800 border-b-4 border-slate-950 text-slate-500 font-pixel text-xs font-bold rounded-2xl text-center uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-not-allowed mt-1">
                 <Lock size={14} />
                 <span>{t("skillTree.lockedBadge")}</span>
               </div>

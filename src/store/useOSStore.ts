@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import i18n from "../i18n/i18n";
 
-export type WindowId = "skillTree";
+export type WindowId = "skillTree" | "calculator" | "notes";
 
 export interface WindowPosition {
   x: number;
@@ -26,11 +26,13 @@ interface OSState {
 }
 
 const DEFAULT_POSITIONS: Record<WindowId, WindowPosition> = {
-  skillTree: { x: 30, y: 30 },
+  skillTree: { x: 50, y: 50 },
+  calculator: { x: 120, y: 100 },
+  notes: { x: 200, y: 150 },
 };
 
 export const useOSStore = create<OSState>((set) => ({
-  openWindows: [], // Start with CLEAN desktop, NOTHING open!
+  openWindows: [],
   activeWindow: null,
   minimizedWindows: [],
   windowPositions: DEFAULT_POSITIONS,
