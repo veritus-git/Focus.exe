@@ -23,7 +23,7 @@ const NODE_ORDER = ["node_1", "node_2", "node_3"];
 
 export const useSkillTreeStore = create<SkillTreeStore>((set) => ({
   nodes: INITIAL_NODES,
-  selectedNodeId: "node_1",
+  selectedNodeId: null,
 
   selectNode: (id) => set({ selectedNodeId: id }),
 

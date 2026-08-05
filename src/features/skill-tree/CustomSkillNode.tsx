@@ -33,7 +33,7 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
         e.stopPropagation();
         selectNode(data.nodeId);
       }}
-      className={`flex flex-col items-center cursor-pointer group select-none relative ${floatAnimClass}`}
+      className="flex flex-col items-center cursor-pointer group select-none relative"
     >
       <Handle
         type="target"
@@ -42,7 +42,7 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
       />
 
       {/* Main Circle Node Container (Compact 56px size) */}
-      <div className="relative flex items-center justify-center">
+      <div className={`relative flex items-center justify-center ${floatAnimClass}`}>
         <div
           className={`w-14 h-14 rounded-full border-3 flex items-center justify-center transition-all duration-200 ${
             isLocked
