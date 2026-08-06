@@ -4,14 +4,10 @@
 
 import level0En from "./lessons/en/what-is-information.md?raw";
 import level0Pl from "./lessons/pl/what-is-information.md?raw";
-import cpuEn from "./lessons/en/cpu-from-inside.md?raw";
-import cpuPl from "./lessons/pl/cpu-from-inside.md?raw";
-import transformerEn from "./lessons/en/how-transformer-works.md?raw";
-import transformerPl from "./lessons/pl/how-transformer-works.md?raw";
-import urlEn from "./lessons/en/what-happens-after-typing-url.md?raw";
-import urlPl from "./lessons/pl/what-happens-after-typing-url.md?raw";
 import bitEn from "./lessons/en/how-bit-works.md?raw";
 import bitPl from "./lessons/pl/how-bit-works.md?raw";
+import gatesEn from "./lessons/en/logic-gates.md?raw";
+import gatesPl from "./lessons/pl/logic-gates.md?raw";
 
 export interface Lesson {
   id: string;
@@ -44,8 +40,8 @@ export const TRACKS: Track[] = [
     id: "hardware", titleKey: "tracks.hardware", icon: "🧠", color: "#00ffcc",
     lessons: [
       { id: "hw-how-bit-works", titleKey: "courses.hwBitTitle", descriptionKey: "courses.hwBitDesc", icon: "💡", markdownPl: bitPl, markdownEn: bitEn, readTimeMin: 5, requires: ["what-is-information"] },
-      { id: "hw-logic-gates", titleKey: "courses.hwGatesTitle", descriptionKey: "courses.hwGatesDesc", icon: "⚡", markdownPl: S, markdownEn: S, readTimeMin: 7, requires: ["hw-how-bit-works"] },
-      { id: "hw-cpu-instructions", titleKey: "courses.hwCpuTitle", descriptionKey: "courses.hwCpuDesc", icon: "🔧", markdownPl: cpuPl, markdownEn: cpuEn, readTimeMin: 8, requires: ["hw-logic-gates"] },
+      { id: "hw-logic-gates", titleKey: "courses.hwGatesTitle", descriptionKey: "courses.hwGatesDesc", icon: "⚡", markdownPl: gatesPl, markdownEn: gatesEn, readTimeMin: 7, requires: ["hw-how-bit-works"] },
+      { id: "hw-cpu-instructions", titleKey: "courses.hwCpuTitle", descriptionKey: "courses.hwCpuDesc", icon: "🔧", markdownPl: S, markdownEn: S, readTimeMin: 8, requires: ["hw-logic-gates"] },
       { id: "hw-pipeline", titleKey: "courses.hwPipeTitle", descriptionKey: "courses.hwPipeDesc", icon: "🔄", markdownPl: S, markdownEn: S, readTimeMin: 7, requires: ["hw-cpu-instructions"] },
       { id: "hw-cache", titleKey: "courses.hwCacheTitle", descriptionKey: "courses.hwCacheDesc", icon: "📦", markdownPl: S, markdownEn: S, readTimeMin: 6, requires: ["hw-cpu-instructions"] },
       { id: "hw-ram", titleKey: "courses.hwRamTitle", descriptionKey: "courses.hwRamDesc", icon: "🧩", markdownPl: S, markdownEn: S, readTimeMin: 6, requires: ["hw-cpu-instructions"] },
@@ -70,7 +66,7 @@ export const TRACKS: Track[] = [
       { id: "net-ip-address", titleKey: "courses.netIpTitle", descriptionKey: "courses.netIpDesc", icon: "🏠", markdownPl: S, markdownEn: S, readTimeMin: 5, requires: ["what-is-information"] },
       { id: "net-dns", titleKey: "courses.netDnsTitle", descriptionKey: "courses.netDnsDesc", icon: "📖", markdownPl: S, markdownEn: S, readTimeMin: 6, requires: ["net-ip-address"] },
       { id: "net-tcp", titleKey: "courses.netTcpTitle", descriptionKey: "courses.netTcpDesc", icon: "🤝", markdownPl: S, markdownEn: S, readTimeMin: 7, requires: ["net-ip-address"] },
-      { id: "net-what-happens-url", titleKey: "courses.urlTitle", descriptionKey: "courses.urlDesc", icon: "🔗", markdownPl: urlPl, markdownEn: urlEn, readTimeMin: 9, requires: ["net-dns", "net-tcp"] },
+      { id: "net-what-happens-url", titleKey: "courses.urlTitle", descriptionKey: "courses.urlDesc", icon: "🔗", markdownPl: S, markdownEn: S, readTimeMin: 9, requires: ["net-dns", "net-tcp"] },
       { id: "net-http", titleKey: "courses.netHttpTitle", descriptionKey: "courses.netHttpDesc", icon: "📡", markdownPl: S, markdownEn: S, readTimeMin: 6, requires: ["net-what-happens-url"] },
       { id: "net-https", titleKey: "courses.netHttpsTitle", descriptionKey: "courses.netHttpsDesc", icon: "🔒", markdownPl: S, markdownEn: S, readTimeMin: 7, requires: ["net-http", "crypto-keys"] },
     ],
@@ -94,7 +90,7 @@ export const TRACKS: Track[] = [
       { id: "ai-tokenization", titleKey: "courses.aiTokenTitle", descriptionKey: "courses.aiTokenDesc", icon: "✂️", markdownPl: S, markdownEn: S, readTimeMin: 5, requires: ["ai-how-understands-text"] },
       { id: "ai-embeddings", titleKey: "courses.aiEmbTitle", descriptionKey: "courses.aiEmbDesc", icon: "🧬", markdownPl: S, markdownEn: S, readTimeMin: 8, requires: ["ai-how-understands-text", "math-vector-space"] },
       { id: "ai-attention", titleKey: "courses.aiAttnTitle", descriptionKey: "courses.aiAttnDesc", icon: "🎯", markdownPl: S, markdownEn: S, readTimeMin: 9, requires: ["ai-embeddings", "math-matrices"] },
-      { id: "ai-transformer", titleKey: "courses.transformerTitle", descriptionKey: "courses.transformerDesc", icon: "🔮", markdownPl: transformerPl, markdownEn: transformerEn, readTimeMin: 10, requires: ["ai-attention"] },
+      { id: "ai-transformer", titleKey: "courses.transformerTitle", descriptionKey: "courses.transformerDesc", icon: "🔮", markdownPl: S, markdownEn: S, readTimeMin: 10, requires: ["ai-attention"] },
       { id: "ai-chatgpt", titleKey: "courses.aiGptTitle", descriptionKey: "courses.aiGptDesc", icon: "🧠", markdownPl: S, markdownEn: S, readTimeMin: 8, requires: ["ai-transformer"] },
       { id: "ai-context-window", titleKey: "courses.aiCtxTitle", descriptionKey: "courses.aiCtxDesc", icon: "📏", markdownPl: S, markdownEn: S, readTimeMin: 6, requires: ["ai-transformer", "hw-cache"] },
     ],

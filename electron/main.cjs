@@ -62,6 +62,11 @@ function createWindow() {
     }
   });
 
+  // If the primary window is closed (e.g. Alt+F4), quit the whole app
+  mainWindow.on('closed', () => {
+    app.quit();
+  });
+
   // Hardware pointer confinement using XFixes Pointer Barriers
   mainWindow.once('ready-to-show', () => {
     if (displays.length > 1) {

@@ -8,7 +8,7 @@ import { LessonModal } from "./LessonModal";
 import { LessonSidePanel } from "./LessonSidePanel";
 import { useOSStore } from "../../store/useOSStore";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
-import { LEVEL_0, TRACKS } from "../../content/courseIndex";
+import { LEVEL_0, TRACKS, ALL_LESSONS } from "../../content/courseIndex";
 
 // ═══════════════════════════════════════════════════════════════════
 // Mind-map positions — organic layout, not a grid
@@ -82,14 +82,13 @@ export const SkillTreeWindow: React.FC = () => {
   }, [isMaximized]);
 
   // Calculate viewport offset for the 65% left-aligned area
-  const centerNodeInLeftArea = (pos: { x: number; y: number }, duration: number) => {
+  const centerNode = (pos: { x: number; y: number }, percentageX: number, duration: number) => {
     if (!reactFlowInstance.current) return;
-    const vpWidth = window.innerWidth; // Because app is fullscreen
+    const vpWidth = window.innerWidth;
     const vpHeight = window.innerHeight;
     const zoom = 1.5;
     
-    // We want the node to be at the center of the left 65% area
-    const centerX = vpWidth * 0.325;
+    const centerX = vpWidth * percentageX;
     const centerY = vpHeight * 0.5;
     
     const targetX = centerX - (pos.x + 32) * zoom;
@@ -110,12 +109,16 @@ export const SkillTreeWindow: React.FC = () => {
       const pos = P[selectedNodeId];
 
       if (panelOpen) {
-        // Panel already open — pan to new selected node
-        centerNodeInLeftArea(pos, 400);
+        // Panel already open — pan directly to left area
+        centerNode(pos, 0.325, 400);
       } else {
-        // First selection: zoom to node, then open panel
-        centerNodeInLeftArea(pos, 300);
-        const timer = setTimeout(() => setPanelOpen(true), 320);
+        // First selection: zoom to dead center of screen
+        centerNode(pos, 0.5, 300);
+        // Then open panel and simultaneously shift to left area
+        const timer = setTimeout(() => {
+          setPanelOpen(true);
+          centerNode(pos, 0.325, 500); // 500ms matches the panel transition duration
+        }, 300);
         return () => clearTimeout(timer);
       }
     } else if (!selectedNodeId) {
@@ -193,6 +196,32 @@ export const SkillTreeWindow: React.FC = () => {
     window.addEventListener("mouseup", handleMouseUp);
   };
 
+  const [navGroup, setNavGroup] = useState<string[]>([]);
+
+  // When a node on the map is clicked, calculate its navigation group (children if any, else siblings)
+  const handleNodeClick = useCallback((nodeId: string) => {
+    // Helper functions for navigation group
+    const getChildren = (id: string) => ALL_LESSONS.filter((l: any) => l.requires.includes(id)).map((l: any) => l.id);
+    const getParentNode = (id: string) => {
+      const lesson = ALL_LESSONS.find((l: any) => l.id === id);
+      return lesson && lesson.requires.length > 0 ? lesson.requires[0] : null;
+    };
+
+    const children = getChildren(nodeId);
+    if (children.length > 0) {
+      setNavGroup([nodeId, ...children]);
+    } else {
+      const parentId = getParentNode(nodeId);
+      if (parentId) {
+        const siblings = getChildren(parentId);
+        setNavGroup([parentId, ...siblings]);
+      } else {
+        setNavGroup([nodeId]);
+      }
+    }
+    selectNode(nodeId);
+  }, [selectNode]);
+
   const handleStartLesson = useCallback((nodeId: string) => {
     setActiveLessonNodeId(nodeId);
   }, []);
@@ -202,7 +231,7 @@ export const SkillTreeWindow: React.FC = () => {
     selectNode("");
   }, [selectNode]);
 
-  // Navigate to a different node via side panel arrows
+  // Navigate to a different node via side panel arrows (does NOT change navGroup)
   const handleNavigate = useCallback((nodeId: string) => {
     selectNode(nodeId);
   }, [selectNode]);
@@ -217,7 +246,7 @@ export const SkillTreeWindow: React.FC = () => {
     const l0pos = P[LEVEL_0.id] || { x: 2500, y: 50 };
     fNodes.push({
       id: LEVEL_0.id, type: "customSkill", position: l0pos,
-      data: { nodeId: LEVEL_0.id, titleKey: LEVEL_0.titleKey, icon: LEVEL_0.icon, isLevel0: true, onStartLesson: handleStartLesson },
+      data: { nodeId: LEVEL_0.id, titleKey: LEVEL_0.titleKey, icon: LEVEL_0.icon, isLevel0: true, onClick: handleNodeClick, onStartLesson: handleStartLesson },
     });
 
     for (const track of TRACKS) {
@@ -297,9 +326,10 @@ export const SkillTreeWindow: React.FC = () => {
           >
             <ReactFlow
               nodes={nodes} edges={flowEdges} nodeTypes={nodeTypes}
+              fitView
+              fitViewOptions={{ padding: 0.15, duration: 0 }}
               onInit={(inst) => {
                 reactFlowInstance.current = inst;
-                inst.fitView({ padding: 0.15, duration: 0 });
               }}
               onPaneClick={handlePaneClick}
               defaultViewport={{ x: 0, y: 0, zoom: 1.0 }}
@@ -361,14 +391,16 @@ export const SkillTreeWindow: React.FC = () => {
             </div>
           </div>
 
-          {/* Side panel — slides in from right, OUTSIDE React Flow viewport = always sharp */}
+          {/* Side panel — absolutely positioned over the right 35%, slides in/out */}
           <div
-            className="h-full overflow-hidden transition-all duration-500 ease-out"
-            style={{ width: panelOpen ? "35%" : "0%" }}
+            className={`absolute top-0 right-0 h-full w-[35%] bg-slate-900 border-l border-white/10 shadow-2xl transition-transform duration-500 ease-out z-40 ${
+              panelOpen ? "translate-x-0" : "translate-x-full"
+            }`}
           >
             {selectedNodeId && (
               <LessonSidePanel
                 nodeId={selectedNodeId}
+                navGroup={navGroup}
                 onClose={() => selectNode("")}
                 onStartLesson={handleStartLesson}
                 onNavigate={handleNavigate}

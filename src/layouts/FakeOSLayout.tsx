@@ -46,7 +46,7 @@ export const FakeOSLayout: React.FC = () => {
           id="skillTree"
           label={t("desktop.skillTree")}
           icon={<GitBranch size={22} className="text-[#ffd700]" />}
-          initialPos={{ x: 30, y: 30 }}
+          initialPos={{ x: window.innerWidth / 2 - 40, y: window.innerHeight / 2 - 60 }}
         />
       </div>
 

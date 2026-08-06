@@ -4,36 +4,40 @@ Zanim zanurzymy się w procesory, sztuczną inteligencję czy kryptografię — 
 
 ## Czym w ogóle JEST informacja?
 
-Wyobraź sobie, że stoisz w kompletnie ciemnym pokoju. Ktoś naciska przełącznik. Światło jest albo **włączone**, albo **wyłączone**. To wszystko. Dwa stany. Dwie możliwości.
+Wyobraź sobie, że stoisz w kompletnie ciemnym pokoju. Ktoś naciska przełącznik. Światło jest albo **włączone**, albo **wyłączone**. To wszystko. Dwa stany. Dwie możliwości. 
 
-To pojedyncze "włączone lub wyłączone" — to **bit**. Najmniejszy możliwy kawałek informacji we wszechświecie.
+Ten pojedynczy podział na "włączone lub wyłączone" — to **bit**. Najmniejszy możliwy kawałek informacji we wszechświecie.
+
+Intuicyjnie, informacja to po prostu **redukcja niepewności**. Zanim ktoś kliknął przełącznik, nie wiedziałeś, czy będzie jasno, czy ciemno. Gdy światło się zapaliło, Twoja niepewność spadła do zera. Otrzymałeś jeden bit informacji.
 
 *Właśnie teraz, kiedy czytasz to zdanie, Twój ekran wyświetla miliony takich maleńkich sygnałów włącz/wyłącz. Każdy piksel, każda litera, każdy kolor — wszystko sprowadza się do astronomicznej liczby bitów przetwarzanych niesamowicie szybko.*
 
 ---PAGE---
 
-## Wszystko to liczby
+## Wszystko jest liczbą
 
-Oto coś, co może wysadzić Ci głowę:
+Oto coś, co może lekko zburzyć Twój światopogląd:
 
-- **Zdjęcie?** Miliony pikseli. Każdy piksel to 3 liczby (Czerwony, Zielony, Niebieski), każda między 0 a 255.
-- **Piosenka?** 44 100 pomiarów ciśnienia powietrza na sekundę, każdy zapisany jako liczba.
+- **Zdjęcie?** Miliony pikseli. Każdy piksel to 3 liczby (czerwony, zielony, niebieski), każda z zakresu 0-255.
+- **Piosenka?** 44 100 pomiarów ciśnienia powietrza na sekundę, zapisanych jako liczby.
 - **Ten tekst?** Każda litera to liczba. A = 65. B = 66. Spacja = 32.
-- **Gra wideo?** Twoja pozycja, zdrowie, ekwipunek — same liczby aktualizowane 60 razy na sekundę.
+- **Gra wideo?** Twoja pozycja, punkty życia, ekwipunek — to wszystko liczby aktualizowane 60 razy na sekundę.
 
-Nie ma żadnej magii. Żadnej specjalnej "substancji obrazu" ani "materii dźwięku". Twój komputer rozumie tylko jedną rzecz: **liczby**. A na samym dole, te liczby składają się z bitów — zer i jedynek.
+Nie ma w tym żadnej magii. Wewnątrz komputera nie ma specjalnej "substancji obrazu" ani "materiału dźwiękowego". Jest tylko jeden język: **liczby**. A na samym dnie tego wszystkiego, te liczby zbudowane są z bitów — zer i jedynek. 
+
+I co ciekawe, natura robi to samo. Twoje DNA to też informacja, tyle że zamiast dwóch stanów (0 i 1), używa czterech (A, C, G, T).
 
 ---PAGE---
 
 ## Dlaczego zera i jedynki?
 
-Nie dlatego, że ktoś uznał to za fajne. Z powodu **fizyki**.
+To nie jest tak, że zera i jedynki to najpiękniejszy system matematyczny. Używamy ich z powodu **praw fizyki**.
 
-Tranzystor — mikroskopijny przełącznik wewnątrz Twojego procesora — może być w dwóch stanach: **prąd płynie** lub **prąd nie płynie**. Włączony lub wyłączony. 1 lub 0.
+Tranzystor — mikroskopijny przełącznik wewnątrz Twojego procesora — ma dwa stany: **prąd płynie** lub **prąd nie płynie**. Włączony lub wyłączony. 1 lub 0. 
 
-Twój procesor ma **miliardy** takich przełączników. Chip Apple M2 ma 20 miliardów tranzystorów na chipie wielkości paznokcia.
+Próba zbudowania komputera, który rozróżnia 10 różnych poziomów napięcia prądu, skończyłaby się katastrofą. Byłoby to zbyt wolne, a zakłócenia elektryczne (szum) ciągle powodowałyby błędy. Odróżnienie "jest prąd" od "nie ma prądu" jest banalnie proste i niezawodne nawet przy miliardach operacji na sekundę.
 
-Każdy z nich potrafi powiedzieć tylko "tak" lub "nie". Ale kiedy połączysz miliardy odpowiedzi tak/nie z prędkością 5 miliardów razy na sekundę... możesz uruchomić Minecrafta.
+Twój procesor ma miliardy takich przełączników. Układ w nowoczesnym smartfonie potrafi mieć ich **kilkanaście miliardów** na powierzchni mniejszej niż Twój paznokieć. 
 
 ---PAGE---
 
@@ -57,13 +61,10 @@ Z 32 bitami możesz liczyć do ponad **4 miliardów**. Tak właśnie komputery p
 
 Teraz, gdy rozumiesz czym jest informacja, możesz pójść w **dowolnym kierunku**:
 
-- **🧠 Hardware** — Jak komputer fizycznie przetwarza te bity? Czym są bramki logiczne? Jak faktycznie działa CPU?
-- **💻 Programowanie** — Jak mówimy komputerowi, co ma robić z tymi liczbami? Co to jest zmienna? Funkcja?
-- **🌐 Internet** — Jak bity podróżują przez cały świat w milisekundach?
-- **📐 Matematyka** — Jakie wzorce i struktury pomagają organizować informację?
-- **🤖 AI** — Jak maszyna może uczyć się z danych?
-- **🔐 Kryptografia** — Jak chronimy informację?
-- **🎵 Audio** — Jak komputer przechwytuje i odtwarza dźwięk?
-- **🚀 Inżynieria** — Jak GPS, rakiety i autonomiczne samochody wykorzystują informację?
+- **🧠 Hardware** — Jak komputer fizycznie przetwarza te bity? Czym są bramki logiczne?
+- **💻 Programowanie** — Jak powiedzieć komputerowi, co ma zrobić z tymi liczbami?
+- **🌐 Internet** — Jak bity podróżują po świecie w milisekundach?
+- **🤖 AI** — Jak maszyna potrafi "uczyć się" z tych liczb?
+- **🔐 Kryptografia** — Jak za pomocą matematyki ukrywamy informacje przed innymi?
 
-**Wybierz gałąź, która Cię ekscytuje. Nie ma "właściwej kolejności" — jest tylko TWOJA ciekawość.**
+**Wybierz ścieżkę, która Cię fascynuje. Na tym drzewku nie ma "złej kolejności" — jest tylko Twoja ciekawość.**

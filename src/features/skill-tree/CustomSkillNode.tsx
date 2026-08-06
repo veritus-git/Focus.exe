@@ -12,6 +12,7 @@ interface CustomSkillNodeProps {
     isLevel0?: boolean;
     trackColor?: string;
     trackIcon?: string;
+    onClick?: (nodeId: string) => void;
     onStartLesson?: (nodeId: string) => void;
   };
 }
@@ -22,7 +23,6 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   // ═══ HIGHLY TARGETED ZUSTAND SELECTORS ═══
   const nodeState = useSkillTreeStore((state) => state.nodes[data.nodeId]) || { status: "locked", progress: 0 };
   const isSelected = useSkillTreeStore((state) => state.selectedNodeId === data.nodeId);
-  const selectNode = useSkillTreeStore((state) => state.selectNode);
   const nodeRef = useRef<HTMLDivElement>(null);
 
   // Escalate parent ReactFlow node z-index when selected
@@ -45,7 +45,10 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   return (
     <div
       ref={nodeRef}
-      onClick={(e) => { e.stopPropagation(); selectNode(data.nodeId); }}
+      onClick={(e) => { 
+        e.stopPropagation(); 
+        if (data.onClick) data.onClick(data.nodeId);
+      }}
       className="flex flex-col items-center cursor-pointer group select-none relative"
     >
       <Handle type="target" position={Position.Top} className="!opacity-0 !w-0 !h-0 !border-none pointer-events-none" />

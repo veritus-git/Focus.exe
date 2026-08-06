@@ -6,20 +6,11 @@ import { getLessonById, lessonHasContent, ALL_LESSONS, getTrackForLesson } from 
 
 interface LessonSidePanelProps {
   nodeId: string;
+  navGroup?: string[];
   onClose: () => void;
   onStartLesson: (nodeId: string) => void;
   onNavigate: (nodeId: string) => void;
   isLessonOpen: boolean;
-}
-
-/**
- * Get direct children of a node (lessons that require this node), sorted left-to-right.
- */
-function getDirectChildren(fromId: string, positions: Record<string, { x: number; y: number }>): string[] {
-  return ALL_LESSONS
-    .filter((l) => l.requires.includes(fromId))
-    .sort((a, b) => (positions[a.id]?.x ?? 0) - (positions[b.id]?.x ?? 0))
-    .map((l) => l.id);
 }
 
 // Positions map (same as SkillTreeWindow)
@@ -51,44 +42,25 @@ const P: Record<string, { x: number; y: number }> = {
   "eng-lidar": { x: 4500, y: 1120 }, "eng-autopilot": { x: 4380, y: 1380 },
 };
 
-export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClose, onStartLesson, onNavigate, isLessonOpen }) => {
+export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, navGroup, onClose, onStartLesson, onNavigate, isLessonOpen }) => {
   const { t } = useTranslation();
-  const nodeState = useSkillTreeStore((s) => s.nodes[nodeId]) || { status: "locked", progress: 0 };
   const allNodes = useSkillTreeStore((s) => s.nodes);
 
   const lesson = getLessonById(nodeId);
+  const status = allNodes[nodeId]?.status || "locked";
+  const isLocked = status === "locked";
+  const isCompleted = status === "completed";
   const track = getTrackForLesson(nodeId);
-  const hasContent = !!(lesson && lessonHasContent(lesson));
-  const isLocked = nodeState.status === "locked";
-  const isCompleted = nodeState.status === "completed";
   const accentColor = track?.color || "#00ffcc";
+  const hasContent = !!(lesson && lessonHasContent(lesson));
 
-  // Find parent node(s) — the lessons this one requires
-  const parentId = useMemo(() => {
-    if (!lesson) return null;
-    return lesson.requires.length > 0 ? lesson.requires[0] : null;
-  }, [lesson]);
-
-  // Unified Navigation Group:
-  // If the current node HAS children, it's the parent of the group: [Node, ...Children]
-  // If the current node HAS NO children, it's a child in a group: [Parent, ...Siblings]
   const { navList, currentIndex } = useMemo(() => {
-    const children = getDirectChildren(nodeId, P);
-    if (children.length > 0) {
-      return { navList: [nodeId, ...children], currentIndex: 0 };
+    if (!navGroup || navGroup.length === 0) {
+      return { navList: [nodeId], currentIndex: 0 };
     }
-
-    if (parentId) {
-      const siblingsOnLevel = getDirectChildren(parentId, P);
-      const group = [parentId, ...siblingsOnLevel];
-      const idx = group.indexOf(nodeId);
-      if (idx >= 0) {
-        return { navList: group, currentIndex: idx };
-      }
-    }
-
-    return { navList: [nodeId], currentIndex: 0 };
-  }, [nodeId, parentId]);
+    const idx = navGroup.indexOf(nodeId);
+    return { navList: navGroup, currentIndex: Math.max(0, idx) };
+  }, [nodeId, navGroup]);
 
   const canGoPrev = currentIndex > 0;
   const canGoNext = currentIndex < navList.length - 1;
