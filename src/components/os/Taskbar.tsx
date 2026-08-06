@@ -69,16 +69,16 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
   };
 
   const getWindowIcon = (id: WindowId) => {
-    if (id === "skillTree") return <GitBranch size={13} />;
+    if (id === "skillTree") return <GitBranch size={16} />;
     return null;
   };
 
   return (
     <>
-      <div className="h-7 bg-slate-950/95 border-t border-white/10 px-3 flex items-center justify-between z-40 select-none shadow-lg shrink-0">
-        {/* Left: Compact Power Pill with timer or unlock icon */}
+      <div className="h-11 bg-slate-950/95 border-t border-white/10 px-4 flex items-center justify-between z-40 select-none shadow-lg">
+        {/* Left: Power Pill with timer or unlock icon */}
         <div className="flex items-center">
-          <div className={`h-5 border rounded-lg overflow-hidden flex items-center shadow-sm ${
+          <div className={`h-8 border rounded-xl overflow-hidden flex items-center shadow-sm ${
             isExitLocked
               ? "bg-rose-950/80 border-rose-500/40"
               : "bg-emerald-950/80 border-emerald-500/40"
@@ -86,20 +86,20 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
             {/* Power Button */}
             <button
               onClick={() => setShowShutdownModal(true)}
-              className={`w-5 h-5 text-white flex items-center justify-center cursor-pointer transition-colors active:scale-95 border-r shrink-0 ${
+              className={`w-8 h-8 text-white flex items-center justify-center cursor-pointer transition-colors active:scale-95 border-r shrink-0 ${
                 isExitLocked
                   ? "bg-rose-600 hover:bg-rose-500 border-rose-500/40"
                   : "bg-emerald-600 hover:bg-emerald-500 border-emerald-500/40"
               }`}
               title={t("taskbar.shutdownTitle")}
             >
-              <Power size={10} />
+              <Power size={14} />
             </button>
 
             {/* Timer or Unlock Icon */}
             <div
               onClick={() => setShowShutdownModal(true)}
-              className={`px-2 h-full flex items-center gap-1 cursor-pointer transition-colors ${
+              className={`px-3 h-full flex items-center gap-1.5 cursor-pointer transition-colors ${
                 isExitLocked
                   ? "bg-rose-900/40 hover:bg-rose-900/70"
                   : "bg-emerald-900/40 hover:bg-emerald-900/70"
@@ -107,20 +107,20 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
             >
               {isExitLocked ? (
                 <>
-                  <span className="text-white font-mono-retro text-[10px] tracking-wider leading-none">
+                  <span className="text-white font-mono-retro text-xs tracking-wider">
                     {formatCountdown(secondsLeft)}
                   </span>
-                  <Lock size={9} className="text-rose-300 opacity-90 shrink-0" />
+                  <Lock size={10} className="text-rose-300 opacity-90 shrink-0" />
                 </>
               ) : (
-                <LockOpen size={11} className="text-emerald-300 shrink-0" />
+                <LockOpen size={14} className="text-emerald-300 shrink-0" />
               )}
             </div>
           </div>
         </div>
 
-        {/* Center: Open windows task list */}
-        <div className="flex-1 flex items-center justify-start gap-1.5 px-3 overflow-x-auto">
+        {/* Center: Open windows task list (ICONS ONLY!) */}
+        <div className="flex-1 flex items-center justify-start gap-2 px-4 overflow-x-auto">
           {openWindows.map((id) => {
             const isActive = activeWindow === id && !minimizedWindows.includes(id);
             const isMinimized = minimizedWindows.includes(id);
@@ -138,7 +138,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
                     focusWindow(id);
                   }
                 }}
-                className={`w-6 h-5 rounded flex items-center justify-center transition-all cursor-pointer border ${
+                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer border ${
                   isActive
                     ? "bg-indigo-600/60 border-indigo-400 text-white shadow-sm"
                     : isMinimized
@@ -153,13 +153,13 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
           })}
         </div>
 
-        {/* Right: Compact Language switcher & Live Clock */}
-        <div className="flex items-center gap-3">
+        {/* Right: Language switcher & Live Clock */}
+        <div className="flex items-center gap-4">
           {/* Language selector */}
-          <div className="flex items-center bg-slate-900 border border-white/10 p-0.5 rounded">
+          <div className="flex items-center bg-slate-900 border border-white/10 p-0.5 rounded-lg">
             <button
               onClick={() => setLanguage("pl")}
-              className={`px-1.5 py-0.2 text-[8px] font-pixel cursor-pointer transition-all ${
+              className={`px-2 py-0.5 text-[9px] font-pixel cursor-pointer transition-all ${
                 language === "pl"
                   ? "bg-white text-slate-900 rounded font-bold"
                   : "text-slate-400 hover:text-white"
@@ -167,10 +167,10 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
             >
               PL
             </button>
-            <span className="text-slate-600 text-[8px] px-0.5">|</span>
+            <span className="text-slate-600 text-[9px] px-0.5">|</span>
             <button
               onClick={() => setLanguage("en")}
-              className={`px-1.5 py-0.2 text-[8px] font-pixel cursor-pointer transition-all ${
+              className={`px-2 py-0.5 text-[9px] font-pixel cursor-pointer transition-all ${
                 language === "en"
                   ? "bg-white text-slate-900 rounded font-bold"
                   : "text-slate-400 hover:text-white"
@@ -181,7 +181,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
           </div>
 
           {/* Readable Live Clock */}
-          <div className="text-slate-200 font-mono-retro text-xs tracking-wider">
+          <div className="text-white font-mono-retro text-lg tracking-widest" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}>
             {timeStr}
           </div>
         </div>

@@ -261,7 +261,7 @@ export const SkillTreeWindow: React.FC = () => {
           willChange: "transform",
         }}
         className={`${
-          isMaximized ? "fixed inset-0 w-screen h-[calc(100vh-36px)] rounded-none"
+          isMaximized ? "fixed inset-0 w-screen h-[calc(100vh-44px)] rounded-none"
             : "w-[85vw] h-[75vh] max-w-[1100px] max-h-[750px] rounded-2xl border border-white/20 shadow-2xl"
         } bg-slate-950 flex flex-col z-30 select-none overflow-hidden window-transition ${
           isMinimized ? "scale-95 opacity-0 pointer-events-none" : "scale-100 opacity-100"

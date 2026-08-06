@@ -13,8 +13,9 @@ export const FakeOSLayout: React.FC = () => {
   const { openWindows } = useOSStore();
   const [secondsLeft, setSecondsLeft] = useState(15 * 60);
 
-  // Boot sequence: start pure black → fade in UI → then mascot drops
+  // Boot sequence: start pure black → fade to reveal dimmed desktop → mascot drops
   const [bootPhase, setBootPhase] = useState<"black" | "fadein" | "ready">("black");
+
   useEffect(() => {
     // Hold black for 300ms, then start 700ms fade-out of black curtain
     const t1 = setTimeout(() => setBootPhase("fadein"), 300);
@@ -23,13 +24,9 @@ export const FakeOSLayout: React.FC = () => {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
-  // Calculate center of screen for desktop icon
-  const iconX = typeof window !== "undefined" ? Math.round(window.innerWidth / 2 - 40) : 400;
-  const iconY = typeof window !== "undefined" ? Math.round(window.innerHeight / 2 - 60) : 300;
-
   return (
-    <div className="w-screen h-screen bg-slate-950 flex flex-col justify-between overflow-hidden relative select-none">
-      {/* Boot curtain — pure black overlay fading out */}
+    <div className="w-screen h-screen bg-pastel-dimmed flex flex-col justify-between overflow-hidden relative select-none">
+      {/* Black boot curtain overlay — pure #000000 fading out */}
       {bootPhase !== "ready" && (
         <div
           className="fixed inset-0 z-[200] bg-black pointer-events-none transition-opacity duration-700 ease-out"
@@ -43,13 +40,13 @@ export const FakeOSLayout: React.FC = () => {
       {/* Intro Animation Sequence — starts after boot curtain fades */}
       {bootPhase === "ready" && <IntroMascot />}
 
-      {/* Desktop Area with SkillTree icon centered on screen */}
+      {/* Desktop Area with SkillTree icon only */}
       <div className="flex-1 relative p-8 z-10">
         <DesktopIcon
           id="skillTree"
           label={t("desktop.skillTree")}
           icon={<GitBranch size={22} className="text-[#ffd700]" />}
-          initialPos={{ x: iconX, y: iconY }}
+          initialPos={{ x: 30, y: 30 }}
         />
       </div>
 
