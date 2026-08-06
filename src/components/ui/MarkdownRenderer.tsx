@@ -66,8 +66,8 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
               {lang}
             </div>
           )}
-          <pre className="px-6 py-5 bg-slate-950 overflow-x-auto text-base leading-relaxed">
-            <code className="text-emerald-300 font-mono-retro text-base">{codeLines.join("\n")}</code>
+          <pre className="px-6 py-6 bg-slate-950 overflow-x-auto text-lg leading-relaxed">
+            <code className="text-emerald-300 font-mono-retro text-lg">{codeLines.join("\n")}</code>
           </pre>
         </div>
       );
@@ -95,7 +95,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
         const body = rows.slice(1);
         elements.push(
           <div key={elements.length} className="my-6 overflow-hidden rounded-2xl border border-white/10">
-            <table className="w-full text-base">
+            <table className="w-full text-lg">
               <thead>
                 <tr className="bg-slate-800">
                   {header.map((cell, ci) => (
@@ -109,7 +109,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
                 {body.map((row, ri) => (
                   <tr key={ri} className="border-b border-white/5 hover:bg-slate-900/50">
                     {row.map((cell, ci) => (
-                      <td key={ci} className="px-5 py-3 text-slate-300 text-sm">
+                      <td key={ci} className="px-5 py-4 text-slate-300 text-base">
                         {renderInline(cell)}
                       </td>
                     ))}
@@ -126,7 +126,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
     // Heading
     if (line.startsWith("# ")) {
       elements.push(
-        <h1 key={elements.length} className="text-4xl font-pixel font-bold text-white mt-12 mb-6 leading-tight">
+        <h1 key={elements.length} className="text-5xl font-pixel font-bold text-white mt-14 mb-8 leading-[1.2]">
           {renderInline(line.slice(2))}
         </h1>
       );
@@ -135,7 +135,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
     }
     if (line.startsWith("## ")) {
       elements.push(
-        <h2 key={elements.length} className="text-3xl font-pixel font-bold text-emerald-400 mt-10 mb-5 leading-snug">
+        <h2 key={elements.length} className="text-4xl font-pixel font-bold text-emerald-400 mt-12 mb-6 leading-snug">
           {renderInline(line.slice(3))}
         </h2>
       );
@@ -144,7 +144,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
     }
     if (line.startsWith("### ")) {
       elements.push(
-        <h3 key={elements.length} className="text-2xl font-pixel font-bold text-white mt-8 mb-4">
+        <h3 key={elements.length} className="text-3xl font-pixel font-bold text-white mt-10 mb-5">
           {renderInline(line.slice(4))}
         </h3>
       );
@@ -171,7 +171,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
       elements.push(
         <blockquote
           key={elements.length}
-          className="my-6 pl-5 border-l-4 border-slate-500 bg-slate-800/30 py-4 pr-5 rounded-r-xl text-xl text-slate-300/90 leading-relaxed italic"
+          className="my-8 pl-6 border-l-4 border-slate-500 bg-slate-800/30 py-5 pr-6 rounded-r-2xl text-2xl text-slate-300/90 leading-relaxed italic"
         >
           {quoteLines.map((ql, qi) => (
             <span key={qi}>
@@ -194,8 +194,8 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
       elements.push(
         <ul key={elements.length} className="my-4 space-y-2.5 pl-2">
           {items.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-3 text-lg text-slate-300 leading-[1.7]">
-              <span className="text-emerald-400 mt-1.5 shrink-0 text-xl">▸</span>
+            <li key={idx} className="flex items-start gap-4 text-xl text-slate-300 leading-[1.8]">
+              <span className="text-emerald-400 mt-2 shrink-0 text-2xl">▸</span>
               <span>{renderInline(item)}</span>
             </li>
           ))}
@@ -214,8 +214,8 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
       elements.push(
         <ol key={elements.length} className="my-4 space-y-2.5 pl-2">
           {items.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-3.5 text-lg text-slate-300 leading-[1.7]">
-              <span className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-[11px] font-bold text-emerald-400 shrink-0 mt-0.5">
+            <li key={idx} className="flex items-start gap-4 text-xl text-slate-300 leading-[1.8]">
+              <span className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-[13px] font-bold text-emerald-400 shrink-0 mt-0.5">
                 {idx + 1}
               </span>
               <span>{renderInline(item)}</span>
@@ -228,7 +228,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
 
     // Regular paragraph
     elements.push(
-      <p key={elements.length} className="text-lg text-slate-300 leading-[1.8] my-4">
+      <p key={elements.length} className="text-xl text-slate-300 leading-[1.9] my-5">
         {renderInline(line)}
       </p>
     );
@@ -266,7 +266,7 @@ function renderInline(text: string): React.ReactNode {
       );
     } else if (match[4]) {
       parts.push(
-        <code key={parts.length} className="px-2 py-1 bg-slate-800 border border-white/10 rounded text-emerald-300 text-sm font-mono-retro">
+        <code key={parts.length} className="px-2 py-1 bg-slate-800 border border-white/10 rounded-md text-emerald-300 text-lg font-mono-retro">
           {match[4]}
         </code>
       );
