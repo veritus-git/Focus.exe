@@ -51,6 +51,8 @@ export const Window: React.FC<WindowProps> = ({
     const startPosY = posRef.current.y;
     const el = windowRef.current;
 
+    if (el) el.classList.add("is-dragging-window");
+
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const newX = Math.max(0, startPosX + moveEvent.clientX - startX);
       const newY = Math.max(0, startPosY + moveEvent.clientY - startY);
@@ -64,6 +66,7 @@ export const Window: React.FC<WindowProps> = ({
     };
 
     const handleMouseUp = () => {
+      if (el) el.classList.remove("is-dragging-window");
       // Sync final position to Zustand ONCE on drag end
       updateWindowPosition(id, { x: posRef.current.x, y: posRef.current.y });
       window.removeEventListener("mousemove", handleMouseMove);

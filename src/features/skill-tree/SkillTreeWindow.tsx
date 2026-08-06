@@ -110,6 +110,9 @@ export const SkillTreeWindow: React.FC = () => {
     const startPosX = windowPosRef.current.x;
     const startPosY = windowPosRef.current.y;
     const el = windowContainerRef.current;
+    
+    // Make entire window "dumb" during drag to skip hit-testing
+    if (el) el.classList.add("is-dragging-window");
 
     const handleMouseMove = (me: MouseEvent) => {
       if (!isDraggingRef.current) return;
@@ -125,6 +128,7 @@ export const SkillTreeWindow: React.FC = () => {
     };
     const handleMouseUp = () => {
       isDraggingRef.current = false;
+      if (el) el.classList.remove("is-dragging-window");
       // Sync to React state ONCE on drag end
       setWindowPos({ x: windowPosRef.current.x, y: windowPosRef.current.y });
       window.removeEventListener("mousemove", handleMouseMove);
@@ -170,7 +174,7 @@ export const SkillTreeWindow: React.FC = () => {
           fEdges.push({
             id: `e-${reqId}-${lesson.id}`, source: reqId, target: lesson.id,
             type: "default",
-            animated: false,
+            animated: done,
             style: { stroke: done ? track.color : "#334155", strokeWidth: done ? 3 : 1.5, opacity: done ? 0.9 : 0.25 },
           });
         }

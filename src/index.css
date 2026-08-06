@@ -141,6 +141,43 @@
   animation: floatingMolecule3 13s ease-in-out infinite 1.6s;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   PERFORMANCE-OPTIMIZED Node Floating Animations
+   ═══════════════════════════════════════════════════════════ */
+@keyframes floatingMolecule1 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  33% { transform: translate3d(2px, -2px, 0); }
+  66% { transform: translate3d(-2px, 1px, 0); }
+}
+
+@keyframes floatingMolecule2 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  33% { transform: translate3d(-2px, 2px, 0); }
+  66% { transform: translate3d(1px, -2px, 0); }
+}
+
+@keyframes floatingMolecule3 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  33% { transform: translate3d(1px, 2px, 0); }
+  66% { transform: translate3d(-2px, -1px, 0); }
+}
+
+.animate-float-node-1 { animation: floatingMolecule1 8s ease-in-out infinite; }
+.animate-float-node-2 { animation: floatingMolecule2 9s ease-in-out infinite 0.5s; }
+.animate-float-node-3 { animation: floatingMolecule3 10s ease-in-out infinite 1s; }
+
+/* ═══════════════════════════════════════════════════════════
+   ReactFlow GPU Acceleration & Drag Optimizations
+   ═══════════════════════════════════════════════════════════ */
+.react-flow__viewport {
+  will-change: transform;
+}
+
+/* User's idea: when a window is being dragged, make everything inside it "dumb" (no hit testing) */
+.is-dragging-window * {
+  pointer-events: none !important;
+}
+
 /* React Flow Dark Controls Override */
 .react-flow__controls {
   background: rgba(15, 17, 30, 0.96) !important;
