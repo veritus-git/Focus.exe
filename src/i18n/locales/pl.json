@@ -8,26 +8,83 @@
   },
   "skillTree": {
     "windowTitle": "SKILLTREE.EXE - SYSTEM NAUKI",
-    "node1Title": "Jak Działa Komputer",
-    "node2Title": "Sztuczna Inteligencja",
-    "node3Title": "Internet i Sieci",
     "startLesson": "Rozpocznij lekcję",
     "unit": "Kurs {{num}} • {{count}} lekcji",
-    "startLessonXP": "OTWÓRZ KURS",
-    "repeatLessonXP": "POWTÓRZ KURS",
-    "lockedMsg": "Ukończ poprzednie kursy, aby odblokować!",
-    "lockedBadge": "ZABLOKOWANE"
+    "startLessonXP": "OTWÓRZ LEKCJĘ",
+    "repeatLessonXP": "POWTÓRZ LEKCJĘ",
+    "lockedMsg": "Ukończ poprzednie lekcje, aby odblokować!",
+    "lockedBadge": "ZABLOKOWANE",
+    "comingSoon": "WKRÓTCE"
+  },
+  "tracks": {
+    "hardware": "Hardware",
+    "programming": "Programowanie",
+    "internet": "Internet i Sieci",
+    "math": "Matematyka",
+    "ai": "Sztuczna Inteligencja",
+    "crypto": "Kryptografia",
+    "audio": "Audio",
+    "engineering": "Inżynieria"
   },
   "courses": {
+    "level0Title": "Czym jest informacja?",
+    "level0Desc": "Fundament wszystkiego: bity, liczby i co naprawdę znaczy 'cyfrowy'.",
+
+    "hwBitTitle": "Jak działa bit?",
+    "hwBitDesc": "Najmniejszy kawałek informacji — 0 i 1.",
+    "hwGatesTitle": "Bramki logiczne (AND, OR, NOT)",
+    "hwGatesDesc": "Jak proste przełączniki tworzą fundamenty obliczeń.",
+    "hwCpuTitle": "Jak CPU wykonuje instrukcje",
+    "hwCpuDesc": "Tranzystory, bramki logiczne, pipeline i miliardy operacji na sekundę.",
+
+    "codeVarTitle": "Co to jest zmienna?",
+    "codeVarDesc": "Jak komputer pamięta rzeczy — koncept nazwanych danych.",
+    "codeFnTitle": "Co to jest funkcja?",
+    "codeFnDesc": "Wielorazowe bloki logiki — klocki Lego programowania.",
+    "codeCompTitle": "Kompilator vs Interpreter",
+    "codeCompDesc": "Dwa sposoby tłumaczenia ludzkiego kodu na instrukcje maszynowe.",
+
+    "netIpTitle": "Co to jest adres IP?",
+    "netIpDesc": "Jak każde urządzenie w internecie ma swój unikalny adres.",
+    "netDnsTitle": "Jak działa DNS?",
+    "netDnsDesc": "Książka telefoniczna internetu — zamiana nazw na liczby.",
+    "urlTitle": "Co dzieje się po wpisaniu adresu strony?",
+    "urlDesc": "DNS, TCP, TLS, HTTP — pełna podróż zapytania webowego.",
+
+    "mathVecTitle": "Po co istnieją wektory?",
+    "mathVecDesc": "Kierunek + wielkość — jak matematyka opisuje ruch i przestrzeń.",
+    "mathSpaceTitle": "Przestrzeń wektorowa",
+    "mathSpaceDesc": "Kosmos zbudowany z liczb — wymiary poza 3D.",
+    "mathMatTitle": "Dlaczego istnieją macierze?",
+    "mathMatDesc": "Siatki liczb, które transformują, obracają i napędzają AI.",
+
+    "aiTextTitle": "Jak AI 'rozumie' tekst?",
+    "aiTextDesc": "Zamienianie słów w liczby oddające znaczenie.",
+    "aiEmbTitle": "Czym są embeddingi?",
+    "aiEmbDesc": "Sekretna geometria znaczenia — słowa jako współrzędne.",
+    "transformerTitle": "Jak działa Transformer?",
+    "transformerDesc": "Attention, tokeny, embeddingi — mózg stojący za ChatGPT.",
+
+    "cryptoKeysTitle": "Klucz publiczny vs prywatny",
+    "cryptoKeysDesc": "System zamka i klucza, który zabezpiecza internet.",
+    "cryptoShaTitle": "Jak działa SHA-256?",
+    "cryptoShaDesc": "Jednokierunkowe odciski palców danych — kręgosłup blockchaina.",
+
+    "audioPcmTitle": "Jak komputer nagrywa dźwięk (PCM)",
+    "audioPcmDesc": "Przechwytywanie wibracji powietrza jako liczby — 44 100 razy na sekundę.",
+    "audioFftTitle": "FFT — rozkładanie dźwięku na częstotliwości",
+    "audioFftDesc": "Rozbijanie piosenki na pojedyncze nuty — matematycznie.",
+
+    "engGpsTitle": "Jak działa GPS?",
+    "engGpsDesc": "Satelity, timing i triangulacja — namierzanie Twojej lokalizacji.",
+    "engImuTitle": "Czujniki IMU",
+    "engImuDesc": "Akcelerometry i żyroskopy — jak telefon wie, gdzie jest góra.",
+
     "howComputerWorks": "Jak Działa Komputer",
     "cpuTitle": "Jak działa procesor (CPU) od środka?",
     "cpuDesc": "Tranzystory, bramki logiczne, pipeline i miliardy operacji na sekundę.",
     "ai": "Sztuczna Inteligencja",
-    "transformerTitle": "Jak działa Transformer?",
-    "transformerDesc": "Attention, tokeny, embeddingi — mózg stojący za ChatGPT.",
-    "internet": "Internet i Sieci",
-    "urlTitle": "Co dzieje się po wpisaniu adresu strony?",
-    "urlDesc": "DNS, TCP, TLS, HTTP — pełna podróż zapytania webowego."
+    "internet": "Internet i Sieci"
   },
   "lessonReader": {
     "pickLesson": "Wybierz lekcję, aby rozpocząć",

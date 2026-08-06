@@ -4,11 +4,10 @@ import { useTranslation } from "react-i18next";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
 import { useOSStore } from "../../store/useOSStore";
 import { MarkdownRenderer, splitIntoPages } from "../../components/ui/MarkdownRenderer";
-import { getLessonById, getLessonMarkdown, COURSES } from "../../content/courseIndex";
-import type { Lesson } from "../../content/courseIndex";
+import { getLessonById, getLessonMarkdown, getTrackForLesson } from "../../content/courseIndex";
 
 interface LessonModalProps {
-  nodeId: string;
+  nodeId: string; // This is now a lesson ID directly
   onClose: () => void;
 }
 
@@ -17,21 +16,16 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
   const { completeNode } = useSkillTreeStore();
   const { language } = useOSStore();
 
-  const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Map nodeId to course
-  const courseIndex = parseInt(nodeId.replace("node_", "")) - 1;
-  const course = COURSES[courseIndex] || COURSES[0];
+  // Direct lesson lookup by ID
+  const lesson = getLessonById(nodeId);
+  const track = getTrackForLesson(nodeId);
 
-  const activeLesson: Lesson | undefined = activeLessonId
-    ? getLessonById(activeLessonId)
-    : undefined;
-
-  // Get pages for active lesson
-  const pages = activeLesson
-    ? splitIntoPages(getLessonMarkdown(activeLesson, language))
+  // Get pages for lesson
+  const pages = lesson
+    ? splitIntoPages(getLessonMarkdown(lesson, language))
     : [];
   const totalPages = pages.length || 1;
   const isLastPage = currentPage >= totalPages - 1;
@@ -41,7 +35,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0;
     }
-  }, [currentPage, activeLessonId]);
+  }, [currentPage]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {
@@ -60,66 +54,11 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
     onClose();
   };
 
-  // ── LESSON PICKER VIEW ──
-  if (!activeLesson) {
-    return (
-      <div className="fixed inset-0 z-[120] bg-black/85 backdrop-blur-md flex items-center justify-center p-6 select-none animate-fade-in">
-        <div className="w-full max-w-[620px] bg-slate-900 border border-white/15 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
-          {/* Header */}
-          <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{course.icon}</span>
-              <div>
-                <h2 className="font-pixel text-base font-bold text-white">{t(course.titleKey)}</h2>
-                <p className="text-[11px] font-pixel text-slate-400 mt-0.5">
-                  {t("lessonReader.pickLesson")}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-2 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-xl text-slate-400 hover:text-white cursor-pointer transition-all"
-            >
-              <X size={16} />
-            </button>
-          </div>
-
-          {/* Lesson Cards */}
-          <div className="p-5 space-y-3 max-h-[60vh] overflow-y-auto">
-            {course.lessons.map((lesson) => (
-              <button
-                key={lesson.id}
-                onClick={() => {
-                  setActiveLessonId(lesson.id);
-                  setCurrentPage(0);
-                }}
-                className="w-full p-4 bg-slate-800/60 hover:bg-slate-800 border border-white/10 hover:border-white/25 rounded-2xl cursor-pointer transition-all flex items-center gap-4 group text-left"
-              >
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"
-                  style={{ backgroundColor: `${course.color}15`, border: `1px solid ${course.color}40` }}
-                >
-                  {lesson.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-pixel text-xs font-bold text-white group-hover:text-emerald-300 transition-colors truncate">
-                    {t(lesson.titleKey)}
-                  </h3>
-                  <p className="text-[10px] font-pixel text-slate-400 mt-0.5 truncate">
-                    {t(lesson.descriptionKey)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1.5 text-slate-500 shrink-0">
-                  <Clock size={12} />
-                  <span className="text-[10px] font-pixel">{lesson.readTimeMin} min</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+  if (!lesson) {
+    return null;
   }
+
+  const accentColor = track?.color || "#00ffcc";
 
   // ── LESSON READER VIEW (PAGED) ──
   return (
@@ -128,10 +67,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
       <div className="h-12 px-5 bg-slate-900 border-b border-white/10 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => {
-              setActiveLessonId(null);
-              setCurrentPage(0);
-            }}
+            onClick={onClose}
             className="p-1.5 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-lg text-slate-400 hover:text-white cursor-pointer transition-all flex items-center gap-1.5"
           >
             <ArrowLeft size={14} />
@@ -139,9 +75,9 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
           </button>
 
           <div className="flex items-center gap-2">
-            <BookOpen size={14} className="text-emerald-400" />
+            <BookOpen size={14} style={{ color: accentColor }} />
             <span className="font-pixel text-xs text-white font-bold truncate max-w-[300px]">
-              {t(activeLesson.titleKey)}
+              {t(lesson.titleKey)}
             </span>
           </div>
         </div>
@@ -157,7 +93,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
           {/* Reading time */}
           <div className="flex items-center gap-1.5 text-slate-500">
             <Clock size={12} />
-            <span className="text-[10px] font-pixel">{activeLesson.readTimeMin} min</span>
+            <span className="text-[10px] font-pixel">{lesson.readTimeMin} min</span>
           </div>
 
           {/* Close */}
@@ -173,8 +109,11 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
       {/* Page Progress Bar */}
       <div className="h-1 bg-slate-900 shrink-0">
         <div
-          className="h-full bg-emerald-500 transition-all duration-300"
-          style={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}
+          className="h-full transition-all duration-300"
+          style={{
+            width: `${((currentPage + 1) / totalPages) * 100}%`,
+            backgroundColor: accentColor,
+          }}
         />
       </div>
 

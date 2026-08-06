@@ -7,11 +7,32 @@ import { CustomSkillNode } from "./CustomSkillNode";
 import { LessonModal } from "./LessonModal";
 import { useOSStore } from "../../store/useOSStore";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
+import { LEVEL_0, TRACKS } from "../../content/courseIndex";
+
+// ═══════════════════════════════════════════════════════════════════
+// Layout constants — positions for the branching skill map
+// ═══════════════════════════════════════════════════════════════════
+
+const COL_SPACING = 260;
+const ROW_SPACING = 160;
+
+// Track positions (columns) spread out from center
+// 8 tracks: arranged in a fan pattern from Level 0
+const TRACK_POSITIONS: Record<string, { col: number }> = {
+  hardware:     { col: -3 },
+  programming:  { col: -2 },
+  internet:     { col: -1 },
+  math:         { col: 0 },
+  ai:           { col: 1 },
+  crypto:       { col: 2 },
+  audio:        { col: 3 },
+  engineering:  { col: 4 },
+};
 
 export const SkillTreeWindow: React.FC = () => {
   const { t } = useTranslation();
   const { closeWindow, toggleMinimizeWindow, focusWindow, minimizedWindows } = useOSStore();
-  const { selectedNodeId } = useSkillTreeStore();
+  const { selectedNodeId, nodes: nodeStates } = useSkillTreeStore();
 
   const isMinimized = minimizedWindows.includes("skillTree");
   const [isMaximized, setIsMaximized] = useState(true);
@@ -27,7 +48,7 @@ export const SkillTreeWindow: React.FC = () => {
   useEffect(() => {
     if (reactFlowInstance.current) {
       const timer = setTimeout(() => {
-        reactFlowInstance.current?.fitView({ padding: 0.5, duration: 250 });
+        reactFlowInstance.current?.fitView({ padding: 0.3, duration: 250 });
       }, 60);
       return () => clearTimeout(timer);
     }
@@ -83,70 +104,84 @@ export const SkillTreeWindow: React.FC = () => {
 
   const nodeTypes = useMemo(() => ({ customSkill: CustomSkillNode }), []);
 
-  const baseNodes: Node[] = useMemo(
-    () => [
-      {
-        id: "node_1",
-        type: "customSkill",
-        position: { x: 450, y: 40 },
-        data: {
-          nodeId: "node_1",
-          titleKey: "skillTree.node1Title",
-          levelNumber: 1,
-          onStartLesson: handleStartLesson,
-        },
-      },
-      {
-        id: "node_2",
-        type: "customSkill",
-        position: { x: 450, y: 220 },
-        data: {
-          nodeId: "node_2",
-          titleKey: "skillTree.node2Title",
-          levelNumber: 2,
-          onStartLesson: handleStartLesson,
-        },
-      },
-      {
-        id: "node_3",
-        type: "customSkill",
-        position: { x: 450, y: 400 },
-        data: {
-          nodeId: "node_3",
-          titleKey: "skillTree.node3Title",
-          levelNumber: 3,
-          onStartLesson: handleStartLesson,
-        },
-      },
-    ],
-    []
-  );
+  // ═══════════════════════════════════════════════════════════════
+  // Build ReactFlow nodes & edges from courseIndex
+  // ═══════════════════════════════════════════════════════════════
 
+  const { flowNodes, flowEdges } = useMemo(() => {
+    const fNodes: Node[] = [];
+    const fEdges: Edge[] = [];
+    const centerX = 500;
+    const topY = 40;
+
+    // ── Level 0 node (centered at top) ──
+    fNodes.push({
+      id: LEVEL_0.id,
+      type: "customSkill",
+      position: { x: centerX + 0.5 * COL_SPACING, y: topY },
+      data: {
+        nodeId: LEVEL_0.id,
+        titleKey: LEVEL_0.titleKey,
+        icon: LEVEL_0.icon,
+        isLevel0: true,
+        onStartLesson: handleStartLesson,
+      },
+    });
+
+    // ── Track nodes ──
+    for (const track of TRACKS) {
+      const pos = TRACK_POSITIONS[track.id] || { col: 0 };
+
+      for (let li = 0; li < track.lessons.length; li++) {
+        const lesson = track.lessons[li];
+        const x = centerX + pos.col * COL_SPACING;
+        const y = topY + (li + 1) * ROW_SPACING;
+
+        fNodes.push({
+          id: lesson.id,
+          type: "customSkill",
+          position: { x, y },
+          data: {
+            nodeId: lesson.id,
+            titleKey: lesson.titleKey,
+            icon: lesson.icon,
+            trackColor: track.color,
+            trackIcon: track.icon,
+            onStartLesson: handleStartLesson,
+          },
+        });
+
+        // Create edges for prerequisites
+        for (const reqId of lesson.requires) {
+          const sourceState = nodeStates[reqId];
+          const isSourceCompleted = sourceState?.status === "completed";
+
+          fEdges.push({
+            id: `e-${reqId}-${lesson.id}`,
+            source: reqId,
+            target: lesson.id,
+            type: "smoothstep",
+            animated: isSourceCompleted,
+            style: {
+              stroke: isSourceCompleted ? track.color : "#475569",
+              strokeWidth: isSourceCompleted ? 3 : 2,
+              opacity: isSourceCompleted ? 1 : 0.4,
+            },
+          });
+        }
+      }
+    }
+
+    return { flowNodes: fNodes, flowEdges: fEdges };
+  }, [nodeStates]);
+
+  // Apply z-index for selected node
   const nodes = useMemo(() => {
-    return baseNodes.map((n) => ({
+    return flowNodes.map((n) => ({
       ...n,
       zIndex: selectedNodeId === n.id ? 1000 : 1,
     }));
-  }, [baseNodes, selectedNodeId]);
-
-  const initialEdges: Edge[] = [
-    {
-      id: "e1-2",
-      source: "node_1",
-      target: "node_2",
-      type: "smoothstep",
-      animated: true,
-      style: { stroke: "#ffd700", strokeWidth: 3 },
-    },
-    {
-      id: "e2-3",
-      source: "node_2",
-      target: "node_3",
-      type: "smoothstep",
-      animated: false,
-      style: { stroke: "#475569", strokeWidth: 2 },
-    },
-  ];
+  }, [flowNodes, selectedNodeId]);
 
   return (
     <>
@@ -214,15 +249,15 @@ export const SkillTreeWindow: React.FC = () => {
         <div className="flex-1 bg-slate-950 relative overflow-hidden flex items-center justify-center">
           <ReactFlow
             nodes={nodes}
-            edges={initialEdges}
+            edges={flowEdges}
             nodeTypes={nodeTypes}
             onInit={(instance) => {
               reactFlowInstance.current = instance;
-              instance.fitView({ padding: 0.35 });
+              instance.fitView({ padding: 0.25 });
             }}
             fitView
-            fitViewOptions={{ padding: 0.35 }}
-            minZoom={0.4}
+            fitViewOptions={{ padding: 0.25 }}
+            minZoom={0.25}
             maxZoom={1.4}
             proOptions={{ hideAttribution: true }}
           >

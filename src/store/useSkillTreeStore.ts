@@ -1,4 +1,11 @@
 import { create } from "zustand";
+import { ALL_LESSONS } from "../content/courseIndex";
+
+// ═══════════════════════════════════════════════════════════════════
+// Skill Tree Store — Dependency-Based Unlocking with Persistence
+// ═══════════════════════════════════════════════════════════════════
+
+const STORAGE_KEY = "focusos-skilltree-progress";
 
 export interface SkillNodeState {
   id: string;
@@ -13,25 +20,98 @@ interface SkillTreeStore {
   completeNode: (id: string) => void;
 }
 
-const INITIAL_NODES: Record<string, SkillNodeState> = {
-  node_1: { id: "node_1", status: "active", progress: 0 },
-  node_2: { id: "node_2", status: "locked", progress: 0 },
-  node_3: { id: "node_3", status: "locked", progress: 0 },
-};
+/**
+ * Build initial node states from the course index.
+ * Level 0 ("what-is-information") starts as "active".
+ * Everything else starts "locked".
+ */
+function buildInitialNodes(): Record<string, SkillNodeState> {
+  const nodes: Record<string, SkillNodeState> = {};
+  for (const lesson of ALL_LESSONS) {
+    nodes[lesson.id] = {
+      id: lesson.id,
+      status: lesson.requires.length === 0 ? "active" : "locked",
+      progress: 0,
+    };
+  }
+  return nodes;
+}
 
-const NODE_ORDER = ["node_1", "node_2", "node_3"];
+/**
+ * Load progress from localStorage, merging with current lesson definitions.
+ * This handles new lessons being added — they'll appear as locked.
+ */
+function loadPersistedNodes(): Record<string, SkillNodeState> {
+  const fresh = buildInitialNodes();
+
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return fresh;
+
+    const saved: Record<string, SkillNodeState> = JSON.parse(raw);
+
+    // Merge: keep saved progress for known lessons, add new ones as fresh
+    for (const id of Object.keys(fresh)) {
+      if (saved[id]) {
+        fresh[id] = saved[id];
+      }
+    }
+
+    return fresh;
+  } catch {
+    return fresh;
+  }
+}
+
+/**
+ * Save node states to localStorage.
+ */
+function persistNodes(nodes: Record<string, SkillNodeState>): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(nodes));
+  } catch {
+    // silently fail if storage is full
+  }
+}
+
+/**
+ * After completing a node, recalculate which nodes should be unlocked.
+ * A node becomes "active" when ALL its prerequisites are "completed".
+ */
+function recalculateUnlocks(nodes: Record<string, SkillNodeState>): Record<string, SkillNodeState> {
+  const updated = { ...nodes };
+
+  for (const lesson of ALL_LESSONS) {
+    const node = updated[lesson.id];
+    if (!node || node.status !== "locked") continue;
+
+    // Check if ALL prerequisites are completed
+    const allPrereqsMet = lesson.requires.every(
+      (reqId) => updated[reqId]?.status === "completed"
+    );
+
+    if (allPrereqsMet) {
+      updated[lesson.id] = { ...node, status: "active" };
+    }
+  }
+
+  return updated;
+}
 
 export const useSkillTreeStore = create<SkillTreeStore>((set) => ({
-  nodes: INITIAL_NODES,
+  nodes: loadPersistedNodes(),
   selectedNodeId: null,
 
-  selectNode: (id) => set({ selectedNodeId: id }),
+  selectNode: (id) =>
+    set((state) => ({
+      selectedNodeId: state.selectedNodeId === id ? null : id,
+    })),
 
   completeNode: (id) =>
     set((state) => {
-      const updatedNodes = { ...state.nodes };
-      
-      // Complete current node
+      let updatedNodes = { ...state.nodes };
+
+      // Mark current node as completed
       if (updatedNodes[id]) {
         updatedNodes[id] = {
           ...updatedNodes[id],
@@ -40,17 +120,11 @@ export const useSkillTreeStore = create<SkillTreeStore>((set) => ({
         };
       }
 
-      // Automatically unlock the next node in sequence
-      const currentIndex = NODE_ORDER.indexOf(id);
-      if (currentIndex !== -1 && currentIndex + 1 < NODE_ORDER.length) {
-        const nextNodeId = NODE_ORDER[currentIndex + 1];
-        if (updatedNodes[nextNodeId] && updatedNodes[nextNodeId].status === "locked") {
-          updatedNodes[nextNodeId] = {
-            ...updatedNodes[nextNodeId],
-            status: "active",
-          };
-        }
-      }
+      // Recalculate unlocks based on dependencies
+      updatedNodes = recalculateUnlocks(updatedNodes);
+
+      // Persist to localStorage
+      persistNodes(updatedNodes);
 
       return {
         nodes: updatedNodes,
