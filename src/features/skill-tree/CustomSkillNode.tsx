@@ -20,13 +20,12 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   const { t } = useTranslation();
   
   // ═══ HIGHLY TARGETED ZUSTAND SELECTORS ═══
-  // Avoids re-rendering all 47 nodes when only one changes
   const nodeState = useSkillTreeStore((state) => state.nodes[data.nodeId]) || { status: "locked", progress: 0 };
   const isSelected = useSkillTreeStore((state) => state.selectedNodeId === data.nodeId);
   const selectNode = useSkillTreeStore((state) => state.selectNode);
   const nodeRef = useRef<HTMLDivElement>(null);
 
-  // Escalate parent ReactFlow node z-index to bring selected node to front
+  // Escalate parent ReactFlow node z-index when selected
   useEffect(() => {
     if (nodeRef.current) {
       const parent = nodeRef.current.closest(".react-flow__node") as HTMLElement;
@@ -40,8 +39,8 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   const isCompleted = nodeState.status === "completed";
 
   const accentColor = data.trackColor || "#00ffcc";
-  const hash = data.nodeId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const floatClass = `animate-float-node-${(hash % 3) + 1}`;
+  const size = data.isLevel0 ? "w-18 h-18" : "w-14 h-14";
+  const title = t(data.titleKey);
 
   return (
     <div
@@ -51,12 +50,10 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
     >
       <Handle type="target" position={Position.Top} className="!opacity-0 !w-0 !h-0 !border-none pointer-events-none" />
 
-      {/* Circle — floats using transform (GPU smooth), blur on zoom is acceptable for the small circle */}
-      <div className={`relative flex items-center justify-center ${floatClass}`}>
+      {/* Circle — no animation, no composite layer, no blur */}
+      <div className="relative flex items-center justify-center">
         <div
-          className={`rounded-full border-3 flex items-center justify-center transition-all duration-200 ${
-            data.isLevel0 ? "w-16 h-16" : "w-14 h-14"
-          } ${
+          className={`rounded-full border-3 flex items-center justify-center transition-all duration-200 ${size} ${
             isLocked ? "bg-slate-950 border-slate-700 text-slate-500 opacity-50"
               : isCompleted ? "bg-[#2d0938] border-[#ffd700] text-white"
               : "bg-[#1f0528] text-white"
@@ -69,13 +66,13 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Label — always outside the float wrapper, never blurred */}
-      <div className={`mt-1.5 text-center max-w-[100px] transition-opacity duration-300 ${isSelected ? "opacity-40" : "opacity-100"}`}>
-        <span 
+      {/* Label — shown below the circle, fades when selected */}
+      <div className={`mt-1.5 text-center max-w-[100px] transition-opacity duration-300 ${isSelected ? "opacity-30" : "opacity-100"}`}>
+        <span
           className={`text-[10px] font-pixel font-bold block leading-tight ${isLocked ? "text-slate-600" : "text-white"}`}
-          style={{ textShadow: isLocked ? "none" : "0 2px 4px rgba(0,0,0,0.8)" }}
+          style={{ textShadow: isLocked ? "none" : "0 2px 6px rgba(0,0,0,0.9)" }}
         >
-          {t(data.titleKey)}
+          {title}
         </span>
       </div>
 
@@ -84,5 +81,4 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   );
 };
 
-// React.memo prevents re-renders of all 47 nodes when only one is selected
 export const CustomSkillNode = memo(CustomSkillNodeInner);

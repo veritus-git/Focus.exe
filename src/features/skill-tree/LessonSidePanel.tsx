@@ -1,6 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Lock, Check, Play, X, Clock, ChevronLeft, ChevronRight, ChevronDown, GitBranch } from "lucide-react";
+import { Lock, Check, Play, X, Clock, ChevronLeft, ChevronRight, GitBranch } from "lucide-react";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
 import { getLessonById, lessonHasContent, ALL_LESSONS, getTrackForLesson, LEVEL_0 } from "../../content/courseIndex";
 
@@ -126,6 +126,29 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
   const handleNext = () => {
     if (canGoNext) onNavigate(siblings[currentIndex + 1]);
   };
+
+  // Keyboard navigation: arrows to traverse, Enter to start lesson
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement).tagName === "INPUT") return;
+
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        handleNext();
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        handlePrev();
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (!isLocked && hasContent) {
+          onStartLesson(nodeId);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [canGoPrev, canGoNext, siblings, currentIndex, isLocked, hasContent, nodeId, onStartLesson]);
 
   // Get prerequisite names for locked lessons
   const prereqNames = useMemo(() => {

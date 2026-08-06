@@ -81,9 +81,15 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
 
   const accentColor = track?.color || "#00ffcc";
 
+  // Auto-focus the modal container so keyboard events work immediately
+  const modalRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    modalRef.current?.focus();
+  }, []);
+
   // ── LESSON READER VIEW (PAGED) ──
   return (
-    <div className="fixed inset-0 z-[120] bg-slate-950 flex flex-col select-none animate-fade-in">
+    <div ref={modalRef} tabIndex={-1} className="fixed inset-0 z-[120] bg-slate-950 flex flex-col select-none animate-fade-in outline-none">
       {/* Top Bar */}
       <div className="h-12 px-5 bg-slate-900 border-b border-white/10 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">

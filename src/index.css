@@ -110,31 +110,9 @@
 
 
 /* ═══════════════════════════════════════════════════════════
-   PERFORMANCE-OPTIMIZED Node Floating Animations
-   - Restored transform for buttery smooth 120fps hardware acceleration.
-   - Text is NOT blurred because the animation is only applied to the circle.
+   Node float animations REMOVED — eliminated to guarantee
+   100% sharp text and icons at any zoom level.
    ═══════════════════════════════════════════════════════════ */
-@keyframes floatingMolecule1 {
-  0%, 100% { transform: translate(0, 0); }
-  33% { transform: translate(3px, -3px); }
-  66% { transform: translate(-3px, 2px); }
-}
-
-@keyframes floatingMolecule2 {
-  0%, 100% { transform: translate(0, 0); }
-  33% { transform: translate(-3px, 3px); }
-  66% { transform: translate(2px, -3px); }
-}
-
-@keyframes floatingMolecule3 {
-  0%, 100% { transform: translate(0, 0); }
-  33% { transform: translate(2px, 3px); }
-  66% { transform: translate(-3px, -2px); }
-}
-
-.animate-float-node-1 { animation: floatingMolecule1 8s ease-in-out infinite; }
-.animate-float-node-2 { animation: floatingMolecule2 9s ease-in-out infinite 0.5s; }
-.animate-float-node-3 { animation: floatingMolecule3 10s ease-in-out infinite 1s; }
 
 /* ═══════════════════════════════════════════════════════════
    ReactFlow GPU Acceleration & Drag Optimizations

@@ -80,26 +80,47 @@ export const SkillTreeWindow: React.FC = () => {
     }
   }, [isMaximized]);
 
-  // Zoom to node when selected (centers in the left 2/3 of the viewport when panel is open)
+  // Zoom to node when selected — delayed to allow the 500ms panel transition to complete
   useEffect(() => {
     if (!reactFlowInstance.current) return;
     
-    const timer = setTimeout(() => {
-      if (selectedNodeId && P[selectedNodeId]) {
-        if (!prevViewRef.current) {
-          const vp = reactFlowInstance.current.getViewport();
-          prevViewRef.current = { x: vp.x, y: vp.y, zoom: vp.zoom };
-        }
-        const pos = P[selectedNodeId];
-        reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.25, duration: 500 });
-      } else if (!selectedNodeId && prevViewRef.current) {
-        reactFlowInstance.current.setViewport(prevViewRef.current, { duration: 400 });
-        prevViewRef.current = null;
+    if (selectedNodeId && P[selectedNodeId]) {
+      if (!prevViewRef.current) {
+        const vp = reactFlowInstance.current.getViewport();
+        prevViewRef.current = { x: vp.x, y: vp.y, zoom: vp.zoom };
       }
-    }, 50);
-    
-    return () => clearTimeout(timer);
+      // Wait 600ms so the ReactFlow container has finished resizing to 65%
+      const timer = setTimeout(() => {
+        const pos = P[selectedNodeId];
+        reactFlowInstance.current?.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.8, duration: 450 });
+      }, 600);
+      return () => clearTimeout(timer);
+    } else if (!selectedNodeId && prevViewRef.current) {
+      // Restore previous view when deselecting — also delayed for container resize
+      const timer = setTimeout(() => {
+        reactFlowInstance.current?.setViewport(prevViewRef.current!, { duration: 400 });
+        prevViewRef.current = null;
+      }, 100);
+      return () => clearTimeout(timer);
+    }
   }, [selectedNodeId]);
+
+  // Keyboard navigation for side panel: ArrowDown/ArrowUp/Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept keys when lesson modal is open or when typing in an input
+      if (activeLessonNodeId) return;
+      if ((e.target as HTMLElement).tagName === "INPUT") return;
+
+      if (e.key === "Escape" && selectedNodeId) {
+        e.preventDefault();
+        selectNode("");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedNodeId, selectNode, activeLessonNodeId]);
 
   const handleTitleMouseDown = (e: React.MouseEvent) => {
     if (isMaximized) return;
