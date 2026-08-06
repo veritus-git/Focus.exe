@@ -88,7 +88,7 @@ export const SkillTreeWindow: React.FC = () => {
           prevViewRef.current = { x: vp.x, y: vp.y, zoom: vp.zoom };
         }
         const pos = P[selectedNodeId];
-        reactFlowInstance.current.setCenter(pos.x + 30, pos.y + 60, { zoom: 1.3, duration: 400 });
+        reactFlowInstance.current.setCenter(pos.x, pos.y + 150, { zoom: 1.25, duration: 500 });
       } else if (!selectedNodeId && prevViewRef.current) {
         reactFlowInstance.current.setViewport(prevViewRef.current, { duration: 400 });
         prevViewRef.current = null;
