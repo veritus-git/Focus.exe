@@ -117,7 +117,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
             >
               {isExitLocked ? (
                 <>
-                  <span className="text-white font-mono-retro text-xs font-bold tracking-wider">
+                  <span className="text-white font-mono-retro text-xs tracking-wider">
                     {formatCountdown(secondsLeft)}
                   </span>
                   <Lock size={10} className="text-rose-300 opacity-90 shrink-0" />
@@ -188,7 +188,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
           </div>
 
           {/* Readable Live Clock */}
-          <div className="text-white font-mono-retro text-lg tracking-widest font-bold" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}>
+          <div className="text-white font-mono-retro text-lg tracking-widest" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}>
             {timeStr}
           </div>
         </div>
