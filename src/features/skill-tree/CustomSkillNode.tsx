@@ -45,8 +45,6 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   const hasContent = !!(lesson && lessonHasContent(lesson));
 
   const accentColor = data.trackColor || "#00ffcc";
-  const hash = data.nodeId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const floatClass = `animate-float-node-${(hash % 3) + 1}`;
 
   // Get prerequisite names for locked lessons
   const getPrereqNames = (): string[] => {
@@ -69,8 +67,8 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
     >
       <Handle type="target" position={Position.Top} className="!opacity-0 !w-0 !h-0 !border-none pointer-events-none" />
 
-      {/* Circle */}
-      <div className={`relative flex items-center justify-center ${floatClass}`}>
+      {/* Circle (Removed float animation to fix Chromium blur) */}
+      <div className="relative flex items-center justify-center">
         <div
           className={`rounded-full border-3 flex items-center justify-center transition-transform duration-200 ${
             data.isLevel0 ? "w-16 h-16" : "w-14 h-14"
@@ -87,9 +85,12 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Label - fades out when node is selected */}
+      {/* Label - fades out when node is selected. Removed drop-shadow to fix Chromium composite blur */}
       <div className={`mt-1.5 text-center max-w-[100px] transition-opacity duration-300 ${isSelected ? "opacity-0" : "opacity-100"}`}>
-        <span className={`text-[10px] font-pixel font-bold block leading-tight drop-shadow ${isLocked ? "text-slate-600" : "text-white"}`}>
+        <span 
+          className={`text-[10px] font-pixel font-bold block leading-tight ${isLocked ? "text-slate-600" : "text-white"}`}
+          style={{ textShadow: isLocked ? "none" : "0 2px 4px rgba(0,0,0,0.8)" }}
+        >
           {t(data.titleKey)}
         </span>
       </div>
