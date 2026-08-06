@@ -32,6 +32,8 @@
   font-family: 'VT323', monospace;
   font-size: 1.25rem;
   letter-spacing: 0.05em;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
 }
 
 /* Wallpaper */
@@ -109,28 +111,30 @@
 
 /* ═══════════════════════════════════════════════════════════
    PERFORMANCE-OPTIMIZED Node Floating Animations
-   - We use 'top' instead of 'transform'. Animating 'transform' forces Chromium
-     to create a texture layer, making nodes blurry on zoom. Animating 'top'
-     keeps them as sharp vectors.
+   - Restored transform for buttery smooth 120fps hardware acceleration.
+   - Text is NOT blurred because the animation is only applied to the circle.
    ═══════════════════════════════════════════════════════════ */
 @keyframes floatingMolecule1 {
-  0%, 100% { top: 0px; }
-  50% { top: -6px; }
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(3px, -3px); }
+  66% { transform: translate(-3px, 2px); }
 }
 
 @keyframes floatingMolecule2 {
-  0%, 100% { top: 0px; }
-  50% { top: 6px; }
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-3px, 3px); }
+  66% { transform: translate(2px, -3px); }
 }
 
 @keyframes floatingMolecule3 {
-  0%, 100% { top: 0px; }
-  50% { top: -4px; }
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(2px, 3px); }
+  66% { transform: translate(-3px, -2px); }
 }
 
-.animate-float-node-1 { animation: floatingMolecule1 3s ease-in-out infinite; }
-.animate-float-node-2 { animation: floatingMolecule2 3.5s ease-in-out infinite 0.5s; }
-.animate-float-node-3 { animation: floatingMolecule3 4s ease-in-out infinite 1s; }
+.animate-float-node-1 { animation: floatingMolecule1 8s ease-in-out infinite; }
+.animate-float-node-2 { animation: floatingMolecule2 9s ease-in-out infinite 0.5s; }
+.animate-float-node-3 { animation: floatingMolecule3 10s ease-in-out infinite 1s; }
 
 /* ═══════════════════════════════════════════════════════════
    ReactFlow GPU Acceleration & Drag Optimizations
@@ -185,17 +189,7 @@
   border-radius: 3px;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Skill Tree card popup animation — CPU only to prevent zoom blur
-   ═══════════════════════════════════════════════════════════ */
-@keyframes card-popup {
-  0% { opacity: 0; margin-top: 15px; }
-  100% { opacity: 1; margin-top: 0px; }
-}
 
-.animate-card-popup {
-  animation: card-popup 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
 
 /* ═══════════════════════════════════════════════════════════
    PERFORMANCE: Window state transitions

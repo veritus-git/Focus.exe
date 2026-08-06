@@ -101,7 +101,7 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
       {isSelected && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute top-[85px] w-[300px] z-[9999] animate-card-popup select-none"
+          className="absolute top-[85px] w-[300px] z-[9999] select-none"
           style={{ left: 'calc(50% - 150px)' }}
         >
           <div className="w-3 h-3 bg-slate-900 border-t border-l border-white/15 rotate-45 mx-auto -mb-1.5 relative z-10" />
