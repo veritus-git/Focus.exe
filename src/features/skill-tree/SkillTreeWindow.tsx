@@ -112,7 +112,10 @@ export const SkillTreeWindow: React.FC = () => {
     const el = windowContainerRef.current;
     
     // Make entire window "dumb" during drag to skip hit-testing
-    if (el) el.classList.add("is-dragging-window");
+    if (el) {
+      el.classList.add("is-dragging-window");
+      el.classList.remove("window-transition"); // CRITICAL: Stop CSS from animating the drag
+    }
 
     const handleMouseMove = (me: MouseEvent) => {
       if (!isDraggingRef.current) return;
@@ -128,7 +131,10 @@ export const SkillTreeWindow: React.FC = () => {
     };
     const handleMouseUp = () => {
       isDraggingRef.current = false;
-      if (el) el.classList.remove("is-dragging-window");
+      if (el) {
+        el.classList.remove("is-dragging-window");
+        el.classList.add("window-transition"); // Restore minimize/maximize animations
+      }
       // Sync to React state ONCE on drag end
       setWindowPos({ x: windowPosRef.current.x, y: windowPosRef.current.y });
       window.removeEventListener("mousemove", handleMouseMove);

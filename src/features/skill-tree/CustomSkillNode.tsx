@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import { Handle, Position } from "@xyflow/react";
 import { Lock, Check, Play, X, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -25,6 +25,17 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   const nodeState = useSkillTreeStore((state) => state.nodes[data.nodeId]) || { status: "locked", progress: 0 };
   const isSelected = useSkillTreeStore((state) => state.selectedNodeId === data.nodeId);
   const selectNode = useSkillTreeStore((state) => state.selectNode);
+  const nodeRef = useRef<HTMLDivElement>(null);
+
+  // Escalate parent ReactFlow node z-index to bring popup to front
+  useEffect(() => {
+    if (nodeRef.current) {
+      const parent = nodeRef.current.closest(".react-flow__node") as HTMLElement;
+      if (parent) {
+        parent.style.zIndex = isSelected ? "1000" : "1";
+      }
+    }
+  }, [isSelected]);
 
   const isLocked = nodeState.status === "locked";
   const isCompleted = nodeState.status === "completed";
@@ -52,6 +63,7 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
 
   return (
     <div
+      ref={nodeRef}
       onClick={(e) => { e.stopPropagation(); selectNode(data.nodeId); }}
       className="flex flex-col items-center cursor-pointer group select-none relative"
     >
@@ -75,8 +87,8 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Label */}
-      <div className="mt-1.5 text-center max-w-[100px]">
+      {/* Label - fades out when node is selected */}
+      <div className={`mt-1.5 text-center max-w-[100px] transition-opacity duration-300 ${isSelected ? "opacity-0" : "opacity-100"}`}>
         <span className={`text-[10px] font-pixel font-bold block leading-tight drop-shadow ${isLocked ? "text-slate-600" : "text-white"}`}>
           {t(data.titleKey)}
         </span>
