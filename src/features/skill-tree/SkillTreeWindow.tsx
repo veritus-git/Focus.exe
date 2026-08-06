@@ -73,18 +73,25 @@ export const SkillTreeWindow: React.FC = () => {
     }
   }, [isMaximized]);
 
-  // Zoom to node when selected
+  // Zoom to node when selected (delayed to allow re-render to finish for smooth animation)
   useEffect(() => {
     if (!reactFlowInstance.current) return;
-    if (selectedNodeId && P[selectedNodeId]) {
-      const vp = reactFlowInstance.current.getViewport();
-      prevViewRef.current = { x: vp.x, y: vp.y, zoom: vp.zoom };
-      const pos = P[selectedNodeId];
-      reactFlowInstance.current.setCenter(pos.x + 30, pos.y + 60, { zoom: 1.3, duration: 400 });
-    } else if (!selectedNodeId && prevViewRef.current) {
-      reactFlowInstance.current.setViewport(prevViewRef.current, { duration: 400 });
-      prevViewRef.current = null;
-    }
+    
+    const timer = setTimeout(() => {
+      if (selectedNodeId && P[selectedNodeId]) {
+        if (!prevViewRef.current) {
+          const vp = reactFlowInstance.current.getViewport();
+          prevViewRef.current = { x: vp.x, y: vp.y, zoom: vp.zoom };
+        }
+        const pos = P[selectedNodeId];
+        reactFlowInstance.current.setCenter(pos.x + 30, pos.y + 60, { zoom: 1.3, duration: 400 });
+      } else if (!selectedNodeId && prevViewRef.current) {
+        reactFlowInstance.current.setViewport(prevViewRef.current, { duration: 400 });
+        prevViewRef.current = null;
+      }
+    }, 50);
+    
+    return () => clearTimeout(timer);
   }, [selectedNodeId]);
 
   const handleTitleMouseDown = (e: React.MouseEvent) => {
