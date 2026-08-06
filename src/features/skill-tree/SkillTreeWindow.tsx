@@ -13,20 +13,24 @@ import { LEVEL_0, TRACKS } from "../../content/courseIndex";
 // Layout constants — positions for the branching skill map
 // ═══════════════════════════════════════════════════════════════════
 
-const COL_SPACING = 260;
-const ROW_SPACING = 160;
+const COL_SPACING = 300;
+const ROW_SPACING = 180;
 
-// Track positions (columns) spread out from center
-// 8 tracks: arranged in a fan pattern from Level 0
+// Track positions — arranged to minimize cross-track edge crossings.
+// Tracks with cross-dependencies are placed adjacent to each other:
+//   HW ↔ CRYPTO (sha256 needs hw-bit)
+//   CODE ↔ AI (AI needs code-variables)
+//   MATH is central (connects to AI, CRYPTO, AUDIO, ENG)
+//   NET ↔ ENG (GPS needs net-ip)
 const TRACK_POSITIONS: Record<string, { col: number }> = {
-  hardware:     { col: -3 },
-  programming:  { col: -2 },
-  internet:     { col: -1 },
-  math:         { col: 0 },
-  ai:           { col: 1 },
-  crypto:       { col: 2 },
-  audio:        { col: 3 },
-  engineering:  { col: 4 },
+  hardware:     { col: -3.5 },
+  crypto:       { col: -2.5 },
+  programming:  { col: -1.5 },
+  ai:           { col: -0.5 },
+  math:         { col: 0.5 },
+  audio:        { col: 1.5 },
+  internet:     { col: 2.5 },
+  engineering:  { col: 3.5 },
 };
 
 export const SkillTreeWindow: React.FC = () => {
@@ -156,11 +160,16 @@ export const SkillTreeWindow: React.FC = () => {
           const sourceState = nodeStates[reqId];
           const isSourceCompleted = sourceState?.status === "completed";
 
+          // Use bezier for cross-track edges (they curve nicely),
+          // smoothstep for same-track (straight vertical lines)
+          const isSameTrack = track.lessons.some((l) => l.id === reqId);
+          const isFromLevel0 = reqId === "what-is-information";
+
           fEdges.push({
             id: `e-${reqId}-${lesson.id}`,
             source: reqId,
             target: lesson.id,
-            type: "smoothstep",
+            type: isSameTrack || isFromLevel0 ? "smoothstep" : "default",
             animated: isSourceCompleted,
             style: {
               stroke: isSourceCompleted ? track.color : "#475569",
