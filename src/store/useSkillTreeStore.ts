@@ -18,6 +18,7 @@ interface SkillTreeStore {
   selectedNodeId: string | null;
   selectNode: (id: string) => void;
   completeNode: (id: string) => void;
+  resetProgress: () => void;
 }
 
 /**
@@ -130,5 +131,12 @@ export const useSkillTreeStore = create<SkillTreeStore>((set) => ({
         nodes: updatedNodes,
         selectedNodeId: id,
       };
+    }),
+
+  resetProgress: () =>
+    set(() => {
+      const freshNodes = buildInitialNodes();
+      persistNodes(freshNodes);
+      return { nodes: freshNodes, selectedNodeId: null };
     }),
 }));

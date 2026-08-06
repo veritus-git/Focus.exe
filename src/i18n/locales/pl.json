@@ -5,7 +5,10 @@
     "startLessonXP": "OTWÓRZ LEKCJĘ", "repeatLessonXP": "POWTÓRZ LEKCJĘ",
     "lockedMsg": "Ukończ poprzednie lekcje, aby odblokować!",
     "lockedBadge": "ZABLOKOWANE", "comingSoon": "WKRÓTCE",
-    "requiresLabel": "Wymaga"
+    "requiresLabel": "Wymaga",
+    "resetProgress": "Zresetuj Postęp",
+    "resetWarning": "To usunie wszystkie ukończone lekcje. Wpisz TAK, aby potwierdzić.",
+    "resetPlaceholder": "Wpisz TAK"
   },
   "tracks": {
     "hardware": "Hardware", "programming": "Programowanie", "internet": "Internet i Sieci",

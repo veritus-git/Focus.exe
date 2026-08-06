@@ -5,7 +5,10 @@
     "startLessonXP": "OPEN LESSON", "repeatLessonXP": "REVIEW LESSON",
     "lockedMsg": "Complete previous lessons to unlock!",
     "lockedBadge": "LOCKED", "comingSoon": "COMING SOON",
-    "requiresLabel": "Requires"
+    "requiresLabel": "Requires",
+    "resetProgress": "Reset Progress",
+    "resetWarning": "This will erase all completed lessons. Type YES to confirm.",
+    "resetPlaceholder": "Type YES"
   },
   "tracks": {
     "hardware": "Hardware", "programming": "Programming", "internet": "Internet & Networks",

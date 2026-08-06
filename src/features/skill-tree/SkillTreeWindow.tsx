@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect, useCallback } from "react"
 import { ReactFlow, Background, Controls, Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useTranslation } from "react-i18next";
-import { GitBranch, Minus, Maximize2, Minimize2, X } from "lucide-react";
+import { GitBranch, Minus, Maximize2, Minimize2, X, Trash2 } from "lucide-react";
 import { CustomSkillNode } from "./CustomSkillNode";
 import { LessonModal } from "./LessonModal";
 import { useOSStore } from "../../store/useOSStore";
@@ -51,13 +51,15 @@ const P: Record<string, { x: number; y: number }> = {
 export const SkillTreeWindow: React.FC = () => {
   const { t } = useTranslation();
   const { closeWindow, toggleMinimizeWindow, focusWindow, minimizedWindows } = useOSStore();
-  const { selectedNodeId, selectNode, nodes: nodeStates } = useSkillTreeStore();
+  const { selectedNodeId, selectNode, nodes: nodeStates, resetProgress } = useSkillTreeStore();
 
   const isMinimized = minimizedWindows.includes("skillTree");
   const [isMaximized, setIsMaximized] = useState(true);
   const [windowPos, setWindowPos] = useState({ x: 60, y: 60 });
   const [activeLessonNodeId, setActiveLessonNodeId] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [resetInput, setResetInput] = useState("");
 
   const reactFlowInstance = useRef<any>(null);
   const isDraggingRef = useRef(false);
@@ -157,10 +159,9 @@ export const SkillTreeWindow: React.FC = () => {
         for (const reqId of lesson.requires) {
           const srcState = nodeStates[reqId];
           const done = srcState?.status === "completed";
-          const isSameTrack = track.lessons.some((l) => l.id === reqId) || reqId === LEVEL_0.id;
           fEdges.push({
             id: `e-${reqId}-${lesson.id}`, source: reqId, target: lesson.id,
-            type: isSameTrack ? "smoothstep" : "default",
+            type: "default",
             animated: done,
             style: { stroke: done ? track.color : "#334155", strokeWidth: done ? 3 : 1.5, opacity: done ? 0.9 : 0.25 },
           });
@@ -217,6 +218,54 @@ export const SkillTreeWindow: React.FC = () => {
             <Background color="#1e293b" gap={40} size={1} />
             <Controls className="!bg-slate-900 !border !border-white/20 !text-white !fill-white" />
           </ReactFlow>
+
+          {/* Reset Button */}
+          <div className="absolute bottom-4 right-4 z-50">
+            {!showResetConfirm ? (
+              <button
+                onClick={() => setShowResetConfirm(true)}
+                className="flex items-center gap-2 px-3 py-2 bg-slate-900/80 hover:bg-rose-950/80 border border-slate-700 hover:border-rose-500/50 rounded-xl text-slate-400 hover:text-rose-400 transition-all backdrop-blur-sm cursor-pointer"
+              >
+                <Trash2 size={14} />
+                <span className="font-pixel text-[10px] uppercase font-bold">{t("skillTree.resetProgress")}</span>
+              </button>
+            ) : (
+              <div className="bg-slate-900 border border-rose-500/50 rounded-xl p-3 shadow-2xl backdrop-blur-md flex flex-col gap-3 w-[220px] animate-fade-in">
+                <p className="text-[10px] font-pixel text-slate-300 leading-snug">
+                  {t("skillTree.resetWarning")}
+                </p>
+                <input
+                  type="text"
+                  placeholder={t("skillTree.resetPlaceholder")}
+                  value={resetInput}
+                  onChange={(e) => setResetInput(e.target.value)}
+                  className="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-rose-500 font-mono-retro"
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => { setShowResetConfirm(false); setResetInput(""); }}
+                    className="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-white font-pixel text-[10px] transition-all cursor-pointer"
+                  >
+                    {t("taskbar.cancel")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      const lower = resetInput.trim().toLowerCase();
+                      if (lower === "yes" || lower === "tak") {
+                        resetProgress();
+                        setShowResetConfirm(false);
+                        setResetInput("");
+                      }
+                    }}
+                    disabled={resetInput.trim().toLowerCase() !== "yes" && resetInput.trim().toLowerCase() !== "tak"}
+                    className="flex-1 py-1.5 bg-rose-600 disabled:bg-slate-800 disabled:text-slate-500 hover:bg-rose-500 rounded-lg text-white font-pixel text-[10px] font-bold transition-all cursor-pointer"
+                  >
+                    RESET
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
