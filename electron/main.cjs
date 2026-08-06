@@ -62,23 +62,28 @@ function createWindow() {
     }
   });
 
-  // Event-driven cursor warp back removed, using XGrabPointer native confinement
+  // Hardware pointer confinement using XFixes Pointer Barriers
   mainWindow.once('ready-to-show', () => {
     if (displays.length > 1) {
       setTimeout(() => {
         try {
-          const handle = mainWindow.getNativeWindowHandle();
-          if (handle && handle.length >= 4) {
-            const windowId = handle.readUInt32LE(0);
-            cursorLockProcess = spawn('python3', [
-              path.join(__dirname, 'native_lock.py'),
-              windowId.toString()
-            ]);
-          }
+          const b = primaryDisplay.bounds;
+          const minX = b.x;
+          const minY = b.y;
+          const maxX = b.x + b.width - 1;
+          const maxY = b.y + b.height - 1;
+          
+          cursorLockProcess = spawn('python3', [
+            path.join(__dirname, 'barrier_lock.py'),
+            minX.toString(),
+            minY.toString(),
+            maxX.toString(),
+            maxY.toString()
+          ]);
         } catch (e) {
-          console.error('[CURSOR_LOCK] Failed to spawn native_lock.py:', e);
+          console.error('[CURSOR_LOCK] Failed to spawn barrier_lock.py:', e);
         }
-      }, 500); // Wait for X11 window map
+      }, 500); // Wait for window to map
     }
   });
 }
