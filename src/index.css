@@ -109,24 +109,23 @@
 
 /* ═══════════════════════════════════════════════════════════
    PERFORMANCE-OPTIMIZED Node Floating Animations
-   - Changed to 2D translate instead of translate3d to prevent Chromium from promoting to a texture layer, which causes blur on React Flow zoom
+   - We use 'top' instead of 'transform'. Animating 'transform' forces Chromium
+     to create a texture layer, making nodes blurry on zoom. Animating 'top'
+     keeps them as sharp vectors.
    ═══════════════════════════════════════════════════════════ */
 @keyframes floatingMolecule1 {
-  0%, 100% { transform: translate(0, 0); }
-  33% { transform: translate(1px, -1px); }
-  66% { transform: translate(-1px, 0.5px); }
+  0%, 100% { top: 0px; }
+  50% { top: -2px; }
 }
 
 @keyframes floatingMolecule2 {
-  0%, 100% { transform: translate(0, 0); }
-  33% { transform: translate(-1px, 1px); }
-  66% { transform: translate(0.5px, -1px); }
+  0%, 100% { top: 0px; }
+  50% { top: 2px; }
 }
 
 @keyframes floatingMolecule3 {
-  0%, 100% { transform: translate(0, 0); }
-  33% { transform: translate(0.5px, 1px); }
-  66% { transform: translate(-1px, -0.5px); }
+  0%, 100% { top: 0px; }
+  50% { top: -1px; }
 }
 
 .animate-float-node-1 { animation: floatingMolecule1 8s ease-in-out infinite; }
@@ -191,12 +190,12 @@
    ═══════════════════════════════════════════════════════════ */
 @keyframes card-popup {
   0% { opacity: 0; transform: translateY(10px) scale(0.95); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 1; transform: none; }
 }
 
 .animate-card-popup {
   animation: card-popup 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  will-change: transform, opacity;
+  /* Removed will-change: transform so the layer merges back and stays sharp on zoom */
 }
 
 /* ═══════════════════════════════════════════════════════════

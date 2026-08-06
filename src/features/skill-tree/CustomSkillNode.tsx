@@ -45,6 +45,8 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   const hasContent = !!(lesson && lessonHasContent(lesson));
 
   const accentColor = data.trackColor || "#00ffcc";
+  const hash = data.nodeId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  const floatClass = `animate-float-node-${(hash % 3) + 1}`;
 
   // Get prerequisite names for locked lessons
   const getPrereqNames = (): string[] => {
@@ -67,8 +69,8 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
     >
       <Handle type="target" position={Position.Top} className="!opacity-0 !w-0 !h-0 !border-none pointer-events-none" />
 
-      {/* Circle (Removed float animation to fix Chromium blur) */}
-      <div className="relative flex items-center justify-center">
+      {/* Circle (Restored float animation using 'top' for Chromium sharpness) */}
+      <div className={`relative flex items-center justify-center ${floatClass}`}>
         <div
           className={`rounded-full border-3 flex items-center justify-center transition-transform duration-200 ${
             data.isLevel0 ? "w-16 h-16" : "w-14 h-14"
