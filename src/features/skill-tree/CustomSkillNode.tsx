@@ -19,9 +19,12 @@ interface CustomSkillNodeProps {
 
 const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   const { t } = useTranslation();
-  const { nodes, selectedNodeId, selectNode } = useSkillTreeStore();
-  const nodeState = nodes[data.nodeId] || { status: "locked", progress: 0 };
-  const isSelected = selectedNodeId === data.nodeId;
+  
+  // ═══ HIGHLY TARGETED ZUSTAND SELECTORS ═══
+  // Avoids re-rendering all 47 nodes when only one changes
+  const nodeState = useSkillTreeStore((state) => state.nodes[data.nodeId]) || { status: "locked", progress: 0 };
+  const isSelected = useSkillTreeStore((state) => state.selectedNodeId === data.nodeId);
+  const selectNode = useSkillTreeStore((state) => state.selectNode);
 
   const isLocked = nodeState.status === "locked";
   const isCompleted = nodeState.status === "completed";
@@ -37,8 +40,10 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   // Get prerequisite names for locked lessons
   const getPrereqNames = (): string[] => {
     if (!lesson) return [];
+    // We fetch the current state directly from the store to avoid subscribing this node to ALL nodes
+    const allNodes = useSkillTreeStore.getState().nodes;
     return lesson.requires
-      .filter((reqId) => nodes[reqId]?.status !== "completed")
+      .filter((reqId) => allNodes[reqId]?.status !== "completed")
       .map((reqId) => {
         const req = ALL_LESSONS.find((l) => l.id === reqId);
         return req ? t(req.titleKey) : reqId;

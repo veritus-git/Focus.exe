@@ -51,7 +51,8 @@ const P: Record<string, { x: number; y: number }> = {
 export const SkillTreeWindow: React.FC = () => {
   const { t } = useTranslation();
   const { closeWindow, toggleMinimizeWindow, focusWindow, minimizedWindows } = useOSStore();
-  const { selectedNodeId, selectNode, nodes: nodeStates, resetProgress } = useSkillTreeStore();
+  const { selectNode, nodes: nodeStates, resetProgress } = useSkillTreeStore();
+  const selectedNodeId = useSkillTreeStore((state) => state.selectedNodeId);
 
   const isMinimized = minimizedWindows.includes("skillTree");
   const [isMaximized, setIsMaximized] = useState(true);
@@ -178,9 +179,7 @@ export const SkillTreeWindow: React.FC = () => {
     return { flowNodes: fNodes, flowEdges: fEdges };
   }, [nodeStates, handleStartLesson]);
 
-  const nodes = useMemo(() => flowNodes.map((n) => ({
-    ...n, zIndex: selectedNodeId === n.id ? 1000 : 1,
-  })), [flowNodes, selectedNodeId]);
+  const nodes = flowNodes;
 
   return (
     <>
