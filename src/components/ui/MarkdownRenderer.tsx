@@ -1,6 +1,7 @@
 import React from "react";
 import { BinaryCounter } from "../interactive/BinaryCounter";
 import { LogicGates } from "../interactive/LogicGates";
+import { LogicGatesSimulator } from "../interactive/LogicGatesSimulator";
 
 export interface LessonPage {
   type: "content" | "insight";
@@ -15,6 +16,7 @@ interface MarkdownRendererProps {
 const INTERACTIVE_COMPONENTS: Record<string, React.FC> = {
   "binary-counter": BinaryCounter,
   "logic-gates": LogicGates,
+  "logic-gates-simulator": LogicGatesSimulator,
 };
 
 /**

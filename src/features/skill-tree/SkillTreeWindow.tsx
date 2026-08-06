@@ -85,7 +85,7 @@ export const SkillTreeWindow: React.FC = () => {
   const centerNode = (pos: { x: number; y: number }, percentageX: number, duration: number) => {
     if (!reactFlowInstance.current) return;
     const vpWidth = window.innerWidth;
-    const vpHeight = window.innerHeight;
+    const vpHeight = window.innerHeight - 44; // Account for taskbar height
     const zoom = 1.5;
     
     const centerX = vpWidth * percentageX;
@@ -201,7 +201,10 @@ export const SkillTreeWindow: React.FC = () => {
   // When a node on the map is clicked, calculate its navigation group (children if any, else siblings)
   const handleNodeClick = useCallback((nodeId: string) => {
     // Helper functions for navigation group
-    const getChildren = (id: string) => ALL_LESSONS.filter((l: any) => l.requires.includes(id)).map((l: any) => l.id);
+    const getChildren = (id: string) => ALL_LESSONS
+      .filter((l: any) => l.requires.includes(id))
+      .sort((a: any, b: any) => (P[a.id]?.x ?? 0) - (P[b.id]?.x ?? 0))
+      .map((l: any) => l.id);
     const getParentNode = (id: string) => {
       const lesson = ALL_LESSONS.find((l: any) => l.id === id);
       return lesson && lesson.requires.length > 0 ? lesson.requires[0] : null;
@@ -343,7 +346,7 @@ export const SkillTreeWindow: React.FC = () => {
             </ReactFlow>
 
             {/* Reset Button */}
-            <div className="absolute bottom-4 right-4 z-50">
+            <div className="absolute bottom-4 left-4 z-50">
               {!showResetConfirm ? (
                 <button
                   onClick={() => setShowResetConfirm(true)}

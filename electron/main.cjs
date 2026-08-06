@@ -75,8 +75,8 @@ function createWindow() {
           const b = primaryDisplay.bounds;
           const minX = b.x;
           const minY = b.y;
-          const maxX = b.x + b.width - 1;
-          const maxY = b.y + b.height - 1;
+          const maxX = b.x + b.width;
+          const maxY = b.y + b.height;
           
           cursorLockProcess = spawn('python3', [
             path.join(__dirname, 'barrier_lock.py'),
