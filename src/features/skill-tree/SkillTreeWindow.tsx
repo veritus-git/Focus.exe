@@ -57,7 +57,7 @@ export const SkillTreeWindow: React.FC = () => {
   const [isMaximized, setIsMaximized] = useState(true);
   const [windowPos, setWindowPos] = useState({ x: 60, y: 60 });
   const [activeLessonNodeId, setActiveLessonNodeId] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
+
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [resetInput, setResetInput] = useState("");
 
@@ -102,7 +102,7 @@ export const SkillTreeWindow: React.FC = () => {
     if (target.closest("button")) return;
     focusWindow("skillTree");
     isDraggingRef.current = true;
-    setIsDragging(true);
+
     dragStartRef.current = { startX: e.clientX, startY: e.clientY, posX: windowPos.x, posY: windowPos.y };
     let rafId: number | null = null;
     const handleMouseMove = (me: MouseEvent) => {
@@ -117,7 +117,7 @@ export const SkillTreeWindow: React.FC = () => {
     };
     const handleMouseUp = () => {
       isDraggingRef.current = false;
-      setIsDragging(false);
+
       if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
@@ -187,9 +187,9 @@ export const SkillTreeWindow: React.FC = () => {
         className={`${
           isMaximized ? "fixed inset-0 w-screen h-[calc(100vh-44px)] rounded-none"
             : "w-[85vw] h-[75vh] max-w-[1100px] max-h-[750px] rounded-2xl border border-white/20 shadow-2xl"
-        } bg-slate-950 flex flex-col z-30 select-none overflow-hidden ${
-          !isDragging ? "transition-all duration-300 ease-in-out" : ""
-        } ${isMinimized ? "scale-95 opacity-0 pointer-events-none translate-y-8" : "scale-100 opacity-100 translate-y-0"}`}
+        } bg-slate-950 flex flex-col z-30 select-none overflow-hidden window-transition ${
+          isMinimized ? "scale-95 opacity-0 pointer-events-none" : "scale-100 opacity-100"
+        }`}
       >
         <div
           onMouseDown={handleTitleMouseDown}

@@ -12,6 +12,12 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+
+  /* GPU-accelerated base layer — reduce repaints */
+  *, *::before, *::after {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
 }
 
 .font-pixel {
@@ -38,11 +44,11 @@
   background: linear-gradient(135deg, #231f38 0%, #3e2b4d 35%, #663d63 70%, #333d59 100%);
 }
 
-/* 8-bit Windows Glass */
+/* 8-bit Windows Glass — OPTIMIZED: removed blur for performance */
 .pixel-window {
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-  background-color: rgba(18, 18, 30, 0.96);
+  background-color: rgba(18, 18, 30, 0.98);
 }
 
 .pixel-window-active {
@@ -50,7 +56,7 @@
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
 }
 
-/* 60 FPS Smooth Bot Drop Animation */
+/* 60 FPS Smooth Bot Drop Animation — GPU composited */
 @keyframes botSmoothDrop {
   0% {
     transform: translateY(-500px) scaleY(1.2);
@@ -104,38 +110,40 @@
   animation: robotBlink 3.5s ease-in-out infinite;
 }
 
-/* Organic 2D Chaotic Floating Molecule Node Animations (Subtle & Gentle) */
+/* ═══════════════════════════════════════════════════════════
+   PERFORMANCE-OPTIMIZED Node Floating Animations
+   - Reduced to 1px movement (barely perceptible but alive)
+   - Extended duration = fewer recompositions per second
+   - No will-change (let browser decide, 47+ nodes would thrash)
+   ═══════════════════════════════════════════════════════════ */
 @keyframes floatingMolecule1 {
-  0%, 100% { transform: translate(0px, 0px); }
-  33% { transform: translate(2px, -2px); }
-  66% { transform: translate(-2px, 1px); }
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  33% { transform: translate3d(1px, -1px, 0); }
+  66% { transform: translate3d(-1px, 0.5px, 0); }
 }
 
 @keyframes floatingMolecule2 {
-  0%, 100% { transform: translate(0px, 0px); }
-  33% { transform: translate(-2px, 2px); }
-  66% { transform: translate(1px, -2px); }
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  33% { transform: translate3d(-1px, 1px, 0); }
+  66% { transform: translate3d(0.5px, -1px, 0); }
 }
 
 @keyframes floatingMolecule3 {
-  0%, 100% { transform: translate(0px, 0px); }
-  33% { transform: translate(1px, 2px); }
-  66% { transform: translate(-2px, -1px); }
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  33% { transform: translate3d(0.5px, 1px, 0); }
+  66% { transform: translate3d(-1px, -0.5px, 0); }
 }
 
 .animate-float-node-1 {
-  animation: floatingMolecule1 8s ease-in-out infinite;
-  will-change: transform;
+  animation: floatingMolecule1 12s ease-in-out infinite;
 }
 
 .animate-float-node-2 {
-  animation: floatingMolecule2 10s ease-in-out infinite 0.8s;
-  will-change: transform;
+  animation: floatingMolecule2 14s ease-in-out infinite 0.8s;
 }
 
 .animate-float-node-3 {
-  animation: floatingMolecule3 9s ease-in-out infinite 1.6s;
-  will-change: transform;
+  animation: floatingMolecule3 13s ease-in-out infinite 1.6s;
 }
 
 /* React Flow Dark Controls Override */
@@ -178,7 +186,9 @@
   border-radius: 3px;
 }
 
-/* Skill Tree card popup animation */
+/* ═══════════════════════════════════════════════════════════
+   Skill Tree card popup animation — GPU-only properties
+   ═══════════════════════════════════════════════════════════ */
 @keyframes card-popup {
   0% { opacity: 0; transform: translateY(10px) scale(0.95); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -186,5 +196,24 @@
 
 .animate-card-popup {
   animation: card-popup 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  will-change: transform, opacity;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   PERFORMANCE: Window state transitions
+   Only animate transform and opacity — NEVER animate all
+   ═══════════════════════════════════════════════════════════ */
+.window-transition {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fade-in utility */
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}

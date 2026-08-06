@@ -12,14 +12,19 @@
   "app": {
     "windows": [
       {
-        "title": "Focus.exe - 8-Bit Fake OS Kiosk",
+        "label": "main",
+        "title": "Focus.exe",
         "width": 1920,
         "height": 1080,
         "center": true,
         "fullscreen": true,
         "alwaysOnTop": true,
         "decorations": false,
-        "resizable": true
+        "resizable": false,
+        "closable": false,
+        "minimizable": false,
+        "skipTaskbar": true,
+        "focus": true
       }
     ],
     "security": {

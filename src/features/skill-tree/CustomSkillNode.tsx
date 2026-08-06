@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
 import { Lock, Check, Play, X, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -17,7 +17,7 @@ interface CustomSkillNodeProps {
   };
 }
 
-export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
+const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   const { t } = useTranslation();
   const { nodes, selectedNodeId, selectNode } = useSkillTreeStore();
   const nodeState = nodes[data.nodeId] || { status: "locked", progress: 0 };
@@ -55,7 +55,7 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
       {/* Circle */}
       <div className={`relative flex items-center justify-center ${floatClass}`}>
         <div
-          className={`rounded-full border-3 flex items-center justify-center transition-all duration-200 ${
+          className={`rounded-full border-3 flex items-center justify-center transition-transform duration-200 ${
             data.isLevel0 ? "w-16 h-16" : "w-14 h-14"
           } ${
             isLocked ? "bg-slate-950 border-slate-700 text-slate-500 opacity-50"
@@ -87,10 +87,10 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
           <div className="w-3 h-3 bg-slate-900 border-t border-l border-white/15 rotate-45 mx-auto -mb-1.5 relative z-10" />
 
           {isActive || isCompleted ? (
-            <div className="bg-slate-900/95 backdrop-blur-sm border border-white/15 rounded-2xl p-5 shadow-2xl text-white flex flex-col gap-4 relative"
+            <div className="bg-slate-900/98 border border-white/15 rounded-2xl p-5 shadow-2xl text-white flex flex-col gap-4 relative"
               style={{ borderColor: accentColor + "40" }}>
               <button onClick={(e) => { e.stopPropagation(); selectNode(""); }}
-                className="absolute top-3 right-3 text-slate-500 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-all">
+                className="absolute top-3 right-3 text-slate-500 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors">
                 <X size={14} />
               </button>
 
@@ -114,7 +114,7 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
 
               {hasContent ? (
                 <button onClick={(e) => { e.stopPropagation(); data.onStartLesson?.(data.nodeId); }}
-                  className="w-full py-3 bg-[#58cc02] hover:bg-[#46a302] border-b-4 border-[#3ca100] text-white font-pixel text-xs font-bold rounded-2xl shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                  className="w-full py-3 bg-[#58cc02] hover:bg-[#46a302] border-b-4 border-[#3ca100] text-white font-pixel text-xs font-bold rounded-2xl shadow-lg active:scale-98 transition-colors flex items-center justify-center gap-2 cursor-pointer">
                   <Play size={14} className="fill-white" />
                   <span>{isCompleted ? t("skillTree.repeatLessonXP") : t("skillTree.startLessonXP")}</span>
                 </button>
@@ -125,9 +125,9 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
               )}
             </div>
           ) : (
-            <div className="bg-slate-900/95 backdrop-blur-sm border border-slate-700/40 rounded-2xl p-5 shadow-2xl text-slate-300 flex flex-col gap-3 relative">
+            <div className="bg-slate-900/98 border border-slate-700/40 rounded-2xl p-5 shadow-2xl text-slate-300 flex flex-col gap-3 relative">
               <button onClick={(e) => { e.stopPropagation(); selectNode(""); }}
-                className="absolute top-3 right-3 text-slate-500 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-all">
+                className="absolute top-3 right-3 text-slate-500 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors">
                 <X size={14} />
               </button>
 
@@ -163,3 +163,6 @@ export const CustomSkillNode: React.FC<CustomSkillNodeProps> = ({ data }) => {
     </div>
   );
 };
+
+// React.memo prevents re-renders of all 47 nodes when only one is selected
+export const CustomSkillNode = memo(CustomSkillNodeInner);
