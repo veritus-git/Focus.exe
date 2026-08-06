@@ -1,123 +1,80 @@
 {
-  "desktop": {
-    "skillTree": "SkillTree.exe",
-    "calculator": "Kalkulator.exe",
-    "notes": "Notatki.exe",
-    "kioskActive": "Tryb Kiosk Aktywny",
-    "lockNotice": "Ukończ lekcję, aby odblokować wyjście!"
-  },
+  "desktop": { "skillTree": "SkillTree.exe", "calculator": "Kalkulator.exe", "notes": "Notatki.exe", "kioskActive": "Tryb Kiosk Aktywny", "lockNotice": "Ukończ lekcję, aby odblokować wyjście!" },
   "skillTree": {
     "windowTitle": "SKILLTREE.EXE - SYSTEM NAUKI",
-    "startLesson": "Rozpocznij lekcję",
-    "unit": "Kurs {{num}} • {{count}} lekcji",
-    "startLessonXP": "OTWÓRZ LEKCJĘ",
-    "repeatLessonXP": "POWTÓRZ LEKCJĘ",
+    "startLessonXP": "OTWÓRZ LEKCJĘ", "repeatLessonXP": "POWTÓRZ LEKCJĘ",
     "lockedMsg": "Ukończ poprzednie lekcje, aby odblokować!",
-    "lockedBadge": "ZABLOKOWANE",
-    "comingSoon": "WKRÓTCE"
+    "lockedBadge": "ZABLOKOWANE", "comingSoon": "WKRÓTCE",
+    "requiresLabel": "Wymaga"
   },
   "tracks": {
-    "hardware": "Hardware",
-    "programming": "Programowanie",
-    "internet": "Internet i Sieci",
-    "math": "Matematyka",
-    "ai": "Sztuczna Inteligencja",
-    "crypto": "Kryptografia",
-    "audio": "Audio",
-    "engineering": "Inżynieria"
+    "hardware": "Hardware", "programming": "Programowanie", "internet": "Internet i Sieci",
+    "math": "Matematyka", "ai": "Sztuczna Inteligencja", "crypto": "Kryptografia",
+    "audio": "Audio", "engineering": "Inżynieria"
   },
   "courses": {
     "level0Title": "Czym jest informacja?",
     "level0Desc": "Fundament wszystkiego: bity, liczby i co naprawdę znaczy 'cyfrowy'.",
-
-    "hwBitTitle": "Jak działa bit?",
-    "hwBitDesc": "Najmniejszy kawałek informacji — 0 i 1.",
-    "hwGatesTitle": "Bramki logiczne (AND, OR, NOT)",
-    "hwGatesDesc": "Jak proste przełączniki tworzą fundamenty obliczeń.",
-    "hwCpuTitle": "Jak CPU wykonuje instrukcje",
-    "hwCpuDesc": "Tranzystory, bramki logiczne, pipeline i miliardy operacji na sekundę.",
-
-    "codeVarTitle": "Co to jest zmienna?",
-    "codeVarDesc": "Jak komputer pamięta rzeczy — koncept nazwanych danych.",
-    "codeFnTitle": "Co to jest funkcja?",
-    "codeFnDesc": "Wielorazowe bloki logiki — klocki Lego programowania.",
-    "codeCompTitle": "Kompilator vs Interpreter",
-    "codeCompDesc": "Dwa sposoby tłumaczenia ludzkiego kodu na instrukcje maszynowe.",
-
-    "netIpTitle": "Co to jest adres IP?",
-    "netIpDesc": "Jak każde urządzenie w internecie ma swój unikalny adres.",
-    "netDnsTitle": "Jak działa DNS?",
-    "netDnsDesc": "Książka telefoniczna internetu — zamiana nazw na liczby.",
-    "urlTitle": "Co dzieje się po wpisaniu adresu strony?",
-    "urlDesc": "DNS, TCP, TLS, HTTP — pełna podróż zapytania webowego.",
-
-    "mathVecTitle": "Po co istnieją wektory?",
-    "mathVecDesc": "Kierunek + wielkość — jak matematyka opisuje ruch i przestrzeń.",
-    "mathSpaceTitle": "Przestrzeń wektorowa",
-    "mathSpaceDesc": "Kosmos zbudowany z liczb — wymiary poza 3D.",
-    "mathMatTitle": "Dlaczego istnieją macierze?",
-    "mathMatDesc": "Siatki liczb, które transformują, obracają i napędzają AI.",
-
-    "aiTextTitle": "Jak AI 'rozumie' tekst?",
-    "aiTextDesc": "Zamienianie słów w liczby oddające znaczenie.",
-    "aiEmbTitle": "Czym są embeddingi?",
-    "aiEmbDesc": "Sekretna geometria znaczenia — słowa jako współrzędne.",
-    "transformerTitle": "Jak działa Transformer?",
-    "transformerDesc": "Attention, tokeny, embeddingi — mózg stojący za ChatGPT.",
-
-    "cryptoKeysTitle": "Klucz publiczny vs prywatny",
-    "cryptoKeysDesc": "System zamka i klucza, który zabezpiecza internet.",
-    "cryptoShaTitle": "Jak działa SHA-256?",
-    "cryptoShaDesc": "Jednokierunkowe odciski palców danych — kręgosłup blockchaina.",
-
-    "audioPcmTitle": "Jak komputer nagrywa dźwięk (PCM)",
-    "audioPcmDesc": "Przechwytywanie wibracji powietrza jako liczby — 44 100 razy na sekundę.",
-    "audioFftTitle": "FFT — rozkładanie dźwięku na częstotliwości",
-    "audioFftDesc": "Rozbijanie piosenki na pojedyncze nuty — matematycznie.",
-
-    "engGpsTitle": "Jak działa GPS?",
-    "engGpsDesc": "Satelity, timing i triangulacja — namierzanie Twojej lokalizacji.",
-    "engImuTitle": "Czujniki IMU",
-    "engImuDesc": "Akcelerometry i żyroskopy — jak telefon wie, gdzie jest góra.",
-
-    "howComputerWorks": "Jak Działa Komputer",
-    "cpuTitle": "Jak działa procesor (CPU) od środka?",
-    "cpuDesc": "Tranzystory, bramki logiczne, pipeline i miliardy operacji na sekundę.",
-    "ai": "Sztuczna Inteligencja",
-    "internet": "Internet i Sieci"
+    "hwBitTitle": "Jak działa bit?", "hwBitDesc": "Najmniejszy kawałek informacji — 0 i 1.",
+    "hwGatesTitle": "Bramki logiczne", "hwGatesDesc": "AND, OR, NOT — jak przełączniki tworzą fundamenty obliczeń.",
+    "hwCpuTitle": "Jak CPU wykonuje instrukcje", "hwCpuDesc": "Tranzystory, pipeline i miliardy operacji na sekundę.",
+    "hwPipeTitle": "Pipeline procesora", "hwPipeDesc": "Jak procesory nakładają instrukcje, żeby iść szybciej.",
+    "hwCacheTitle": "Cache (L1, L2, L3)", "hwCacheDesc": "Maleńka, ultraszybka pamięć, która napędza CPU.",
+    "hwRamTitle": "Jak działa RAM?", "hwRamDesc": "Pamięć ulotna — szybka, tymczasowa, niezbędna.",
+    "hwSsdTitle": "Jak działa SSD?", "hwSsdDesc": "Pamięć flash, wear leveling i dlaczego jest szybszy od HDD.",
+    "hwThreadTitle": "Wielowątkowość", "hwThreadDesc": "Jak procesory żonglują wieloma zadaniami naraz.",
+    "codeVarTitle": "Co to jest zmienna?", "codeVarDesc": "Jak komputer pamięta rzeczy — nazwane dane.",
+    "codeFnTitle": "Co to jest funkcja?", "codeFnDesc": "Wielorazowe bloki logiki — klocki Lego kodu.",
+    "codeCompTitle": "Kompilator vs Interpreter", "codeCompDesc": "Dwa sposoby tłumaczenia kodu na instrukcje maszynowe.",
+    "codeStackTitle": "Call Stack", "codeStackDesc": "Jak program pamięta gdzie jest.",
+    "codeHeapTitle": "Stack vs Heap", "codeHeapDesc": "Dwa rodzaje pamięci — i dlaczego to ważne.",
+    "codePtrTitle": "Wskaźniki", "codePtrDesc": "Po co istnieją, na co wskazują i dlaczego programiści C się ich boją.",
+    "netIpTitle": "Co to jest adres IP?", "netIpDesc": "Unikalny adres każdego urządzenia w internecie.",
+    "netDnsTitle": "Jak działa DNS?", "netDnsDesc": "Książka telefoniczna internetu.",
+    "netTcpTitle": "TCP — jak komputery rozmawiają", "netTcpDesc": "Niezawodne dostarczanie danych przez sieć.",
+    "urlTitle": "Co dzieje się po wpisaniu adresu?", "urlDesc": "DNS, TCP, TLS, HTTP — pełna podróż.",
+    "netHttpTitle": "HTTP — język sieci", "netHttpDesc": "GET, POST, nagłówki i kody statusu.",
+    "netHttpsTitle": "HTTPS i TLS", "netHttpsDesc": "Szyfrowane rozmowy między przeglądarką a serwerem.",
+    "mathVecTitle": "Po co istnieją wektory?", "mathVecDesc": "Kierunek + wielkość — matematyka ruchu i przestrzeni.",
+    "mathDerivTitle": "Co to jest pochodna?", "mathDerivDesc": "Tempo zmian — bez nudnych wzorów.",
+    "mathSpaceTitle": "Przestrzeń wektorowa", "mathSpaceDesc": "Wymiary poza 3D — kosmos zbudowany z liczb.",
+    "mathProbTitle": "Rachunek prawdopodobieństwa", "mathProbDesc": "Dlaczego losowość ma znaczenie w informatyce i AI.",
+    "mathMatTitle": "Dlaczego istnieją macierze?", "mathMatDesc": "Siatki liczb, które transformują, obracają i napędzają AI.",
+    "mathDiffTitle": "Równania różniczkowe", "mathDiffDesc": "Co fizycznie opisują — rakiety, bakterie, wahadła.",
+    "mathGradTitle": "Gradient Descent", "mathGradDesc": "Jak AI się uczy — schodzenie ze wzgórza w przestrzeni matematycznej.",
+    "aiTextTitle": "Jak AI 'rozumie' tekst", "aiTextDesc": "Zamienianie słów w liczby oddające znaczenie.",
+    "aiTokenTitle": "Tokenizacja", "aiTokenDesc": "Jak AI dzieli tekst na strawne kawałki.",
+    "aiEmbTitle": "Embeddingi", "aiEmbDesc": "Sekretna geometria znaczenia — słowa jako współrzędne.",
+    "aiAttnTitle": "Jak działa Attention", "aiAttnDesc": "Mechanizm, który pozwala AI skupić się na tym co ważne.",
+    "transformerTitle": "Jak działa Transformer?", "transformerDesc": "Architektura stojąca za ChatGPT.",
+    "aiGptTitle": "Jak działa ChatGPT", "aiGptDesc": "Od danych treningowych do spójnych konwersacji.",
+    "aiCtxTitle": "Context Window", "aiCtxDesc": "Dlaczego AI nie pamięta wszystkiego — i jak jest ograniczone.",
+    "cryptoShaTitle": "Jak działa SHA-256", "cryptoShaDesc": "Jednokierunkowe odciski palców — kręgosłup blockchaina.",
+    "cryptoKeysTitle": "Klucz publiczny vs prywatny", "cryptoKeysDesc": "System zamka i klucza zabezpieczający internet.",
+    "cryptoAesTitle": "Jak działa szyfrowanie AES", "cryptoAesDesc": "Algorytm chroniący Twoje hasła i pliki.",
+    "cryptoSigTitle": "Podpisy cyfrowe", "cryptoSigDesc": "Jak matematycznie udowodnić autentyczność wiadomości.",
+    "audioPcmTitle": "Jak komputer nagrywa dźwięk", "audioPcmDesc": "Przechwytywanie wibracji powietrza — 44 100 razy/sek.",
+    "audioFftTitle": "FFT — częstotliwości dźwięku", "audioFftDesc": "Rozbijanie piosenki na nuty — matematycznie.",
+    "audioSpecTitle": "Spektrogramy", "audioSpecDesc": "Wizualizacja dźwięku jako mapa ciepła częstotliwości.",
+    "audioVadTitle": "Voice Activity Detection", "audioVadDesc": "Jak AI wie, kiedy ktoś mówi.",
+    "engGpsTitle": "Jak działa GPS?", "engGpsDesc": "Satelity, timing i triangulacja.",
+    "engImuTitle": "Czujniki IMU", "engImuDesc": "Akcelerometry i żyroskopy — jak telefon wie gdzie jest góra.",
+    "engLidarTitle": "Jak działa LIDAR", "engLidarDesc": "Widzenie świata w 3D za pomocą impulsów laserowych.",
+    "engAutoTitle": "Autopilot rakiety", "engAutoDesc": "Kontrolery PID i jak SpaceX ląduje boosterami."
   },
   "lessonReader": {
-    "pickLesson": "Wybierz lekcję, aby rozpocząć",
-    "back": "Wróć",
-    "complete": "Lekcja ukończona!",
-    "completeDesc": "Przeczytałeś całą lekcję. Oznacz jako ukończoną, aby odblokować kolejny kurs.",
-    "prev": "WSTECZ",
-    "next": "DALEJ",
-    "markComplete": "OZNACZ JAKO UKOŃCZONE"
+    "pickLesson": "Wybierz lekcję, aby rozpocząć", "back": "Wróć",
+    "complete": "Lekcja ukończona!", "completeDesc": "Oznacz jako ukończoną, aby odblokować kolejne lekcje.",
+    "prev": "WSTECZ", "next": "DALEJ", "markComplete": "OZNACZ JAKO UKOŃCZONE"
   },
-  "calculator": {
-    "title": "KALKULATOR.EXE"
-  },
-  "notes": {
-    "title": "NOTATKI.EXE",
-    "placeholder": "Pisz swoje notatki tutaj...",
-    "charCount": "{{count}} znaków",
-    "saved": "Zapisano!",
-    "saveTooltip": "Zapisz"
-  },
+  "calculator": { "title": "KALKULATOR.EXE" },
+  "notes": { "title": "NOTATKI.EXE", "placeholder": "Pisz swoje notatki tutaj...", "charCount": "{{count}} znaków", "saved": "Zapisano!", "saveTooltip": "Zapisz" },
   "taskbar": {
     "shutdownTitle": "Wyłączanie FocusOS",
     "exitForbidden": "Zabronione! Musisz się uczyć jeszcze {{mins}} min.",
     "exitAllowed": "Wymagany czas nauki minął. Możesz bezpiecznie wyjść z systemu.",
-    "cancel": "ANULUJ",
-    "exitApp": "WYJDŹ Z APLIKACJI",
-    "minimize": "Minimalizuj",
-    "maximize": "Maksymalizuj",
-    "restore": "Przywróć Okno",
-    "close": "Zamknij Okno"
+    "cancel": "ANULUJ", "exitApp": "WYJDŹ Z APLIKACJI",
+    "minimize": "Minimalizuj", "maximize": "Maksymalizuj", "restore": "Przywróć Okno", "close": "Zamknij Okno"
   },
-  "mascot": {
-    "intro1": "Dość tego doomscrollingu, czas na naukę!",
-    "intro2": "Ukończ przynajmniej jedną sekcję w ciągu 15 minut, aby odblokować wyjście z systemu! Powodzenia"
-  }
+  "mascot": { "intro1": "Dość tego doomscrollingu, czas na naukę!", "intro2": "Ukończ przynajmniej jedną sekcję w ciągu 15 minut, aby odblokować wyjście z systemu! Powodzenia" }
 }

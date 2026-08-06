@@ -1,123 +1,80 @@
 {
-  "desktop": {
-    "skillTree": "SkillTree.exe",
-    "calculator": "Calculator.exe",
-    "notes": "Notes.exe",
-    "kioskActive": "Kiosk Mode Active",
-    "lockNotice": "Complete a lesson to unlock exit!"
-  },
+  "desktop": { "skillTree": "SkillTree.exe", "calculator": "Calculator.exe", "notes": "Notes.exe", "kioskActive": "Kiosk Mode Active", "lockNotice": "Complete a lesson to unlock exit!" },
   "skillTree": {
     "windowTitle": "SKILLTREE.EXE - LEARNING SYSTEM",
-    "startLesson": "Start lesson",
-    "unit": "Course {{num}} • {{count}} lessons",
-    "startLessonXP": "OPEN LESSON",
-    "repeatLessonXP": "REVIEW LESSON",
+    "startLessonXP": "OPEN LESSON", "repeatLessonXP": "REVIEW LESSON",
     "lockedMsg": "Complete previous lessons to unlock!",
-    "lockedBadge": "LOCKED",
-    "comingSoon": "COMING SOON"
+    "lockedBadge": "LOCKED", "comingSoon": "COMING SOON",
+    "requiresLabel": "Requires"
   },
   "tracks": {
-    "hardware": "Hardware",
-    "programming": "Programming",
-    "internet": "Internet & Networks",
-    "math": "Mathematics",
-    "ai": "Artificial Intelligence",
-    "crypto": "Cryptography",
-    "audio": "Audio",
-    "engineering": "Engineering"
+    "hardware": "Hardware", "programming": "Programming", "internet": "Internet & Networks",
+    "math": "Mathematics", "ai": "Artificial Intelligence", "crypto": "Cryptography",
+    "audio": "Audio", "engineering": "Engineering"
   },
   "courses": {
     "level0Title": "What is Information?",
     "level0Desc": "The foundation of everything: bits, numbers, and what digital really means.",
-
-    "hwBitTitle": "How does a bit work?",
-    "hwBitDesc": "The smallest piece of information — 0 and 1.",
-    "hwGatesTitle": "Logic Gates (AND, OR, NOT)",
-    "hwGatesDesc": "How simple switches create the building blocks of computation.",
-    "hwCpuTitle": "How CPU executes instructions",
-    "hwCpuDesc": "Transistors, logic gates, pipelines, and billions of operations per second.",
-
-    "codeVarTitle": "What is a variable?",
-    "codeVarDesc": "How computers remember things — the concept of named data.",
-    "codeFnTitle": "What is a function?",
-    "codeFnDesc": "Reusable blocks of logic — the Lego bricks of programming.",
-    "codeCompTitle": "Compiler vs Interpreter",
-    "codeCompDesc": "Two ways to translate human code into machine instructions.",
-
-    "netIpTitle": "What is an IP address?",
-    "netIpDesc": "How every device on the internet has its own unique address.",
-    "netDnsTitle": "How does DNS work?",
-    "netDnsDesc": "The phonebook of the internet — turning names into numbers.",
-    "urlTitle": "What happens after typing a URL?",
-    "urlDesc": "DNS, TCP, TLS, HTTP — the full journey of a web request.",
-
-    "mathVecTitle": "Why do vectors exist?",
-    "mathVecDesc": "Direction + magnitude — how math describes movement and space.",
-    "mathSpaceTitle": "Vector Space",
-    "mathSpaceDesc": "The cosmos built on numbers — dimensions beyond 3D.",
-    "mathMatTitle": "Why do matrices exist?",
-    "mathMatDesc": "Grids of numbers that transform, rotate, and power AI.",
-
-    "aiTextTitle": "How does AI 'understand' text?",
-    "aiTextDesc": "Turning words into numbers that capture meaning.",
-    "aiEmbTitle": "What are embeddings?",
-    "aiEmbDesc": "The secret geometry of meaning — words as coordinates.",
-    "transformerTitle": "How does a Transformer work?",
-    "transformerDesc": "Attention, tokens, embeddings — the brain behind ChatGPT.",
-
-    "cryptoKeysTitle": "Public vs Private Key",
-    "cryptoKeysDesc": "The lock-and-key system that secures the internet.",
-    "cryptoShaTitle": "How does SHA-256 work?",
-    "cryptoShaDesc": "One-way fingerprints for data — the backbone of blockchain.",
-
-    "audioPcmTitle": "How computers record sound (PCM)",
-    "audioPcmDesc": "Capturing air vibrations as numbers — 44,100 times per second.",
-    "audioFftTitle": "FFT — Decomposing sound into frequencies",
-    "audioFftDesc": "Breaking a song into its individual notes — mathematically.",
-
-    "engGpsTitle": "How does GPS work?",
-    "engGpsDesc": "Satellites, timing, and triangulation — pinpointing your location.",
-    "engImuTitle": "IMU Sensors",
-    "engImuDesc": "Accelerometers and gyroscopes — how phones know which way is up.",
-
-    "howComputerWorks": "How Computers Work",
-    "cpuTitle": "How does a CPU work from the inside?",
-    "cpuDesc": "Transistors, logic gates, pipelines, and billions of operations per second.",
-    "ai": "Artificial Intelligence",
-    "internet": "Internet & Networking"
+    "hwBitTitle": "How does a bit work?", "hwBitDesc": "The smallest piece of information — 0 and 1.",
+    "hwGatesTitle": "Logic Gates", "hwGatesDesc": "AND, OR, NOT — how switches create the building blocks of computation.",
+    "hwCpuTitle": "How CPU executes instructions", "hwCpuDesc": "Transistors, pipelines, and billions of operations per second.",
+    "hwPipeTitle": "CPU Pipeline", "hwPipeDesc": "How processors overlap instructions to go faster.",
+    "hwCacheTitle": "Cache (L1, L2, L3)", "hwCacheDesc": "The tiny, ultra-fast memory that makes your CPU fly.",
+    "hwRamTitle": "How does RAM work?", "hwRamDesc": "Volatile memory — fast, temporary, essential.",
+    "hwSsdTitle": "How does an SSD work?", "hwSsdDesc": "Flash memory, wear leveling, and why it's faster than HDD.",
+    "hwThreadTitle": "Multithreading", "hwThreadDesc": "How processors juggle many tasks at once.",
+    "codeVarTitle": "What is a variable?", "codeVarDesc": "How computers remember things — named data.",
+    "codeFnTitle": "What is a function?", "codeFnDesc": "Reusable blocks of logic — the Lego bricks of code.",
+    "codeCompTitle": "Compiler vs Interpreter", "codeCompDesc": "Two ways to translate human code to machine instructions.",
+    "codeStackTitle": "The Call Stack", "codeStackDesc": "How your program remembers where it is.",
+    "codeHeapTitle": "Stack vs Heap", "codeHeapDesc": "Two types of memory — and why it matters.",
+    "codePtrTitle": "Pointers", "codePtrDesc": "Why they exist, what they point to, and why C devs fear them.",
+    "netIpTitle": "What is an IP address?", "netIpDesc": "Every device's unique address on the internet.",
+    "netDnsTitle": "How does DNS work?", "netDnsDesc": "The phonebook of the internet.",
+    "netTcpTitle": "TCP — how computers talk", "netTcpDesc": "Reliable delivery of data across the network.",
+    "urlTitle": "What happens after typing a URL?", "urlDesc": "DNS, TCP, TLS, HTTP — the full journey.",
+    "netHttpTitle": "HTTP — the language of the web", "netHttpDesc": "GET, POST, headers, and status codes.",
+    "netHttpsTitle": "HTTPS & TLS", "netHttpsDesc": "Encrypted conversations between browser and server.",
+    "mathVecTitle": "Why do vectors exist?", "mathVecDesc": "Direction + magnitude — math for movement and space.",
+    "mathDerivTitle": "What is a derivative?", "mathDerivDesc": "The rate of change — without the boring formulas.",
+    "mathSpaceTitle": "Vector Space", "mathSpaceDesc": "Dimensions beyond 3D — the cosmos built on numbers.",
+    "mathProbTitle": "Probability", "mathProbDesc": "Why randomness matters in CS and AI.",
+    "mathMatTitle": "Why do matrices exist?", "mathMatDesc": "Grids of numbers that transform, rotate, and power AI.",
+    "mathDiffTitle": "Differential Equations", "mathDiffDesc": "What they physically describe — rockets, bacteria, pendulums.",
+    "mathGradTitle": "Gradient Descent", "mathGradDesc": "How AI learns — walking downhill in math space.",
+    "aiTextTitle": "How AI 'understands' text", "aiTextDesc": "Turning words into numbers that capture meaning.",
+    "aiTokenTitle": "Tokenization", "aiTokenDesc": "How AI breaks text into digestible pieces.",
+    "aiEmbTitle": "Embeddings", "aiEmbDesc": "The secret geometry of meaning — words as coordinates.",
+    "aiAttnTitle": "How Attention works", "aiAttnDesc": "The mechanism that lets AI focus on what matters.",
+    "transformerTitle": "How does a Transformer work?", "transformerDesc": "The architecture behind ChatGPT.",
+    "aiGptTitle": "How ChatGPT works", "aiGptDesc": "From training data to coherent conversations.",
+    "aiCtxTitle": "Context Window", "aiCtxDesc": "Why AI can't remember everything — and how it's limited.",
+    "cryptoShaTitle": "How SHA-256 works", "cryptoShaDesc": "One-way fingerprints — the backbone of blockchain.",
+    "cryptoKeysTitle": "Public vs Private Key", "cryptoKeysDesc": "The lock-and-key system securing the internet.",
+    "cryptoAesTitle": "How AES encryption works", "cryptoAesDesc": "The algorithm protecting your passwords and files.",
+    "cryptoSigTitle": "Digital Signatures", "cryptoSigDesc": "How to prove a message is authentic — mathematically.",
+    "audioPcmTitle": "How computers record sound", "audioPcmDesc": "Capturing air vibrations as numbers — 44,100 times/sec.",
+    "audioFftTitle": "FFT — Sound frequencies", "audioFftDesc": "Breaking a song into individual notes — mathematically.",
+    "audioSpecTitle": "Spectrograms", "audioSpecDesc": "Visualizing sound as a heat map of frequencies.",
+    "audioVadTitle": "Voice Activity Detection", "audioVadDesc": "How AI knows when someone is speaking.",
+    "engGpsTitle": "How GPS works", "engGpsDesc": "Satellites, timing, and triangulation.",
+    "engImuTitle": "IMU Sensors", "engImuDesc": "Accelerometers and gyroscopes — how phones know which way is up.",
+    "engLidarTitle": "How LIDAR works", "engLidarDesc": "Seeing the world in 3D with laser pulses.",
+    "engAutoTitle": "Rocket Autopilot", "engAutoDesc": "PID controllers and how SpaceX lands boosters."
   },
   "lessonReader": {
-    "pickLesson": "Choose a lesson to begin",
-    "back": "Back",
-    "complete": "Lesson Complete!",
-    "completeDesc": "You've read through the entire lesson. Mark it as complete to unlock the next course.",
-    "prev": "PREVIOUS",
-    "next": "NEXT",
-    "markComplete": "MARK AS COMPLETE"
+    "pickLesson": "Choose a lesson to begin", "back": "Back",
+    "complete": "Lesson Complete!", "completeDesc": "Mark it as complete to unlock the next lessons.",
+    "prev": "PREVIOUS", "next": "NEXT", "markComplete": "MARK AS COMPLETE"
   },
-  "calculator": {
-    "title": "CALCULATOR.EXE"
-  },
-  "notes": {
-    "title": "NOTES.EXE",
-    "placeholder": "Write your study notes here...",
-    "charCount": "{{count}} characters",
-    "saved": "Saved!",
-    "saveTooltip": "Save"
-  },
+  "calculator": { "title": "CALCULATOR.EXE" },
+  "notes": { "title": "NOTES.EXE", "placeholder": "Write your study notes here...", "charCount": "{{count}} characters", "saved": "Saved!", "saveTooltip": "Save" },
   "taskbar": {
     "shutdownTitle": "FocusOS Shutdown",
     "exitForbidden": "Forbidden! You must study for another {{mins}} min.",
     "exitAllowed": "Required study time elapsed. You can safely exit system.",
-    "cancel": "CANCEL",
-    "exitApp": "EXIT APP",
-    "minimize": "Minimize",
-    "maximize": "Maximize",
-    "restore": "Restore Window",
-    "close": "Close Window"
+    "cancel": "CANCEL", "exitApp": "EXIT APP",
+    "minimize": "Minimize", "maximize": "Maximize", "restore": "Restore Window", "close": "Close Window"
   },
-  "mascot": {
-    "intro1": "Enough doomscrolling bum, time to study!",
-    "intro2": "Complete at least one section within 15 minutes to unlock system exit! Good luck"
-  }
+  "mascot": { "intro1": "Enough doomscrolling bum, time to study!", "intro2": "Complete at least one section within 15 minutes to unlock system exit! Good luck" }
 }
