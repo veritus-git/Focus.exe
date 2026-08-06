@@ -17,6 +17,13 @@
 .font-pixel {
   font-family: 'Chakra Petch', sans-serif;
   font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+.font-pixel-text {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
 

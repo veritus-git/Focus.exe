@@ -99,7 +99,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
               <thead>
                 <tr className="bg-slate-800">
                   {header.map((cell, ci) => (
-                    <th key={ci} className="px-5 py-3 text-left font-pixel text-sm text-white font-bold border-b border-white/10">
+                    <th key={ci} className="px-5 py-3 text-left font-pixel-text text-sm text-white font-bold border-b border-white/10">
                       {renderInline(cell)}
                     </th>
                   ))}
@@ -125,7 +125,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
 
     if (line.startsWith("# ")) {
       elements.push(
-        <h1 key={elements.length} className="text-4xl font-pixel font-bold text-white mt-12 mb-6 leading-tight">
+        <h1 key={elements.length} className="text-4xl font-pixel-text font-bold text-white mt-12 mb-6 leading-tight">
           {renderInline(line.slice(2))}
         </h1>
       );
@@ -134,7 +134,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
     }
     if (line.startsWith("## ")) {
       elements.push(
-        <h2 key={elements.length} className="text-3xl font-pixel font-bold text-emerald-400 mt-10 mb-5 leading-snug">
+        <h2 key={elements.length} className="text-3xl font-pixel-text font-bold text-emerald-400 mt-10 mb-5 leading-snug">
           {renderInline(line.slice(3))}
         </h2>
       );
@@ -143,7 +143,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
     }
     if (line.startsWith("### ")) {
       elements.push(
-        <h3 key={elements.length} className="text-2xl font-pixel font-bold text-white mt-8 mb-4">
+        <h3 key={elements.length} className="text-2xl font-pixel-text font-bold text-white mt-8 mb-4">
           {renderInline(line.slice(4))}
         </h3>
       );
