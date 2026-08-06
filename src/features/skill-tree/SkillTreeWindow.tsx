@@ -96,10 +96,9 @@ export const SkillTreeWindow: React.FC = () => {
         // Panel already open (navigating between nodes) — just re-center instantly
         reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 350 });
       } else {
-        // First selection: Step 1 — zoom to node in full-width viewport
+        // First selection: zoom to node, then open panel
         reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 300 });
-        // Step 2 — after zoom lands, open panel (triggers re-center via panelOpen effect)
-        const timer = setTimeout(() => setPanelOpen(true), 300);
+        const timer = setTimeout(() => setPanelOpen(true), 320);
         return () => clearTimeout(timer);
       }
     } else if (!selectedNodeId) {
@@ -114,14 +113,14 @@ export const SkillTreeWindow: React.FC = () => {
     }
   }, [selectedNodeId]);
 
-  // When panel opens/closes, re-center to account for the viewport width change
+  // When panel opens, simultaneously re-center the node while the container shrinks
   useEffect(() => {
     if (panelOpen && selectedNodeId && P[selectedNodeId] && reactFlowInstance.current) {
-      // Small delay so the CSS transition starts, then re-center as viewport shrinks
+      // Trigger setCenter exactly as the CSS transition begins
       const timer = setTimeout(() => {
         const pos = P[selectedNodeId];
         reactFlowInstance.current?.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 500 });
-      }, 50);
+      }, 0);
       return () => clearTimeout(timer);
     }
   }, [panelOpen]);
@@ -253,7 +252,7 @@ export const SkillTreeWindow: React.FC = () => {
           willChange: "transform",
         }}
         className={`${
-          isMaximized ? "fixed inset-0 w-screen h-[calc(100vh-44px)] rounded-none"
+          isMaximized ? "fixed inset-0 w-screen h-[calc(100vh-36px)] rounded-none"
             : "w-[85vw] h-[75vh] max-w-[1100px] max-h-[750px] rounded-2xl border border-white/20 shadow-2xl"
         } bg-slate-950 flex flex-col z-30 select-none overflow-hidden window-transition ${
           isMinimized ? "scale-95 opacity-0 pointer-events-none" : "scale-100 opacity-100"
@@ -355,6 +354,7 @@ export const SkillTreeWindow: React.FC = () => {
                 onClose={() => selectNode("")}
                 onStartLesson={handleStartLesson}
                 onNavigate={handleNavigate}
+                isLessonOpen={!!activeLessonNodeId}
               />
             )}
           </div>

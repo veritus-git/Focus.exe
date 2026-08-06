@@ -6,6 +6,9 @@
     "lockedMsg": "Ukończ poprzednie lekcje, aby odblokować!",
     "lockedBadge": "ZABLOKOWANE", "comingSoon": "WKRÓTCE",
     "requiresLabel": "Wymaga",
+    "completedBadge": "UKOŃCZONE",
+    "activeBadge": "AKTYWNA",
+    "unlocksLabel": "Odblokowuje",
     "resetProgress": "Zresetuj Postęp",
     "resetWarning": "To usunie wszystkie ukończone lekcje. Wpisz TAK, aby potwierdzić.",
     "resetPlaceholder": "Wpisz TAK"

@@ -10,6 +10,8 @@ import transformerEn from "./lessons/en/how-transformer-works.md?raw";
 import transformerPl from "./lessons/pl/how-transformer-works.md?raw";
 import urlEn from "./lessons/en/what-happens-after-typing-url.md?raw";
 import urlPl from "./lessons/pl/what-happens-after-typing-url.md?raw";
+import bitEn from "./lessons/en/how-bit-works.md?raw";
+import bitPl from "./lessons/pl/how-bit-works.md?raw";
 
 export interface Lesson {
   id: string;
@@ -41,7 +43,7 @@ export const TRACKS: Track[] = [
   {
     id: "hardware", titleKey: "tracks.hardware", icon: "🧠", color: "#00ffcc",
     lessons: [
-      { id: "hw-how-bit-works", titleKey: "courses.hwBitTitle", descriptionKey: "courses.hwBitDesc", icon: "💡", markdownPl: S, markdownEn: S, readTimeMin: 5, requires: ["what-is-information"] },
+      { id: "hw-how-bit-works", titleKey: "courses.hwBitTitle", descriptionKey: "courses.hwBitDesc", icon: "💡", markdownPl: bitPl, markdownEn: bitEn, readTimeMin: 5, requires: ["what-is-information"] },
       { id: "hw-logic-gates", titleKey: "courses.hwGatesTitle", descriptionKey: "courses.hwGatesDesc", icon: "⚡", markdownPl: S, markdownEn: S, readTimeMin: 7, requires: ["hw-how-bit-works"] },
       { id: "hw-cpu-instructions", titleKey: "courses.hwCpuTitle", descriptionKey: "courses.hwCpuDesc", icon: "🔧", markdownPl: cpuPl, markdownEn: cpuEn, readTimeMin: 8, requires: ["hw-logic-gates"] },
       { id: "hw-pipeline", titleKey: "courses.hwPipeTitle", descriptionKey: "courses.hwPipeDesc", icon: "🔄", markdownPl: S, markdownEn: S, readTimeMin: 7, requires: ["hw-cpu-instructions"] },

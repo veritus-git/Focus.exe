@@ -6,6 +6,9 @@
     "lockedMsg": "Complete previous lessons to unlock!",
     "lockedBadge": "LOCKED", "comingSoon": "COMING SOON",
     "requiresLabel": "Requires",
+    "completedBadge": "COMPLETED",
+    "activeBadge": "ACTIVE",
+    "unlocksLabel": "Unlocks",
     "resetProgress": "Reset Progress",
     "resetWarning": "This will erase all completed lessons. Type YES to confirm.",
     "resetPlaceholder": "Type YES"

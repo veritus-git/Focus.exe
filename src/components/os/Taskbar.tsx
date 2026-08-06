@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Power, GitBranch, Calculator, FileText, Lock, LockOpen, LogOut } from "lucide-react";
+import { Power, GitBranch, Lock, LockOpen, LogOut } from "lucide-react";
 import { WindowId, useOSStore } from "../../store/useOSStore";
 
 interface TaskbarProps {
@@ -78,17 +78,15 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
 
   const getWindowIcon = (id: WindowId) => {
     if (id === "skillTree") return <GitBranch size={16} />;
-    if (id === "calculator") return <Calculator size={16} />;
-    if (id === "notes") return <FileText size={16} />;
     return null;
   };
 
   return (
     <>
-      <div className="h-11 bg-slate-950/95 border-t border-white/10 px-4 flex items-center justify-between z-40 select-none shadow-lg">
+      <div className="h-9 bg-slate-950/95 border-t border-white/10 px-4 flex items-center justify-between z-40 select-none shadow-lg">
         {/* Left: Power Pill with timer or unlock icon */}
         <div className="flex items-center">
-          <div className={`h-8 border rounded-xl overflow-hidden flex items-center shadow-sm ${
+          <div className={`h-7 border rounded-xl overflow-hidden flex items-center shadow-sm ${
             isExitLocked
               ? "bg-rose-950/80 border-rose-500/40"
               : "bg-emerald-950/80 border-emerald-500/40"
@@ -96,14 +94,14 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
             {/* Power Button */}
             <button
               onClick={() => setShowShutdownModal(true)}
-              className={`w-8 h-8 text-white flex items-center justify-center cursor-pointer transition-colors active:scale-95 border-r shrink-0 ${
+              className={`w-7 h-7 text-white flex items-center justify-center cursor-pointer transition-colors active:scale-95 border-r shrink-0 ${
                 isExitLocked
                   ? "bg-rose-600 hover:bg-rose-500 border-rose-500/40"
                   : "bg-emerald-600 hover:bg-emerald-500 border-emerald-500/40"
               }`}
               title={t("taskbar.shutdownTitle")}
             >
-              <Power size={14} />
+              <Power size={12} />
             </button>
 
             {/* Timer or Unlock Icon */}

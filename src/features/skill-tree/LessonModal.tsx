@@ -37,26 +37,22 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
     }
   }, [currentPage]);
 
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight" || e.key === "Enter") {
-        if (currentPage < totalPages - 1) {
-          setCurrentPage((p) => p + 1);
-        } else {
-          completeNode(nodeId);
-          onClose();
-        }
-      } else if (e.key === "ArrowLeft") {
-        if (currentPage > 0) {
-          setCurrentPage((p) => p - 1);
-        }
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowRight" || e.key === "Enter") {
+      e.preventDefault();
+      if (currentPage < totalPages - 1) {
+        setCurrentPage((p) => p + 1);
+      } else {
+        completeNode(nodeId);
+        onClose();
       }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentPage, totalPages, nodeId, completeNode, onClose]);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      if (currentPage > 0) {
+        setCurrentPage((p) => p - 1);
+      }
+    }
+  };
 
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {
@@ -89,7 +85,12 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
 
   // ── LESSON READER VIEW (PAGED) ──
   return (
-    <div ref={modalRef} tabIndex={-1} className="fixed inset-0 z-[120] bg-slate-950 flex flex-col select-none animate-fade-in outline-none">
+    <div 
+      ref={modalRef} 
+      tabIndex={-1} 
+      onKeyDown={handleKeyDown}
+      className="fixed inset-0 z-[120] bg-slate-950 flex flex-col select-none animate-enter-lesson outline-none"
+    >
       {/* Top Bar */}
       <div className="h-12 px-5 bg-slate-900 border-b border-white/10 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">

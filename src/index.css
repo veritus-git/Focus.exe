@@ -158,6 +158,20 @@
   height: 6px;
 }
 
+@keyframes enterLessonClip {
+  0% {
+    clip-path: circle(0% at 32.5vw 50vh);
+    opacity: 0;
+  }
+  100% {
+    clip-path: circle(150% at 32.5vw 50vh);
+    opacity: 1;
+  }
+}
+.animate-enter-lesson {
+  animation: enterLessonClip 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
 ::-webkit-scrollbar-track {
   background: rgba(18, 18, 30, 0.6);
 }

@@ -2,13 +2,14 @@ import React, { useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Lock, Check, Play, X, Clock, ChevronLeft, ChevronRight, GitBranch } from "lucide-react";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
-import { getLessonById, lessonHasContent, ALL_LESSONS, getTrackForLesson, LEVEL_0 } from "../../content/courseIndex";
+import { getLessonById, lessonHasContent, ALL_LESSONS, getTrackForLesson } from "../../content/courseIndex";
 
 interface LessonSidePanelProps {
   nodeId: string;
   onClose: () => void;
   onStartLesson: (nodeId: string) => void;
   onNavigate: (nodeId: string) => void;
+  isLessonOpen: boolean;
 }
 
 /**
@@ -50,7 +51,7 @@ const P: Record<string, { x: number; y: number }> = {
   "eng-lidar": { x: 4500, y: 1120 }, "eng-autopilot": { x: 4380, y: 1380 },
 };
 
-export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClose, onStartLesson, onNavigate }) => {
+export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClose, onStartLesson, onNavigate, isLessonOpen }) => {
   const { t } = useTranslation();
   const nodeState = useSkillTreeStore((s) => s.nodes[nodeId]) || { status: "locked", progress: 0 };
   const allNodes = useSkillTreeStore((s) => s.nodes);
@@ -68,22 +69,19 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
     return lesson.requires.length > 0 ? lesson.requires[0] : null;
   }, [lesson]);
 
-  // Build sibling navigation: direct children of the parent, sorted by x position
+  // Build navigation: current node + its direct children
   const { siblings, currentIndex } = useMemo(() => {
-    if (nodeId === LEVEL_0.id) {
-      // Level 0: navigate through its direct children (track starters)
-      const children = getDirectChildren(nodeId, P);
+    const children = getDirectChildren(nodeId, P);
+    if (children.length > 0) {
       return { siblings: [nodeId, ...children], currentIndex: 0 };
     }
-
+    // For leaf nodes, show siblings (other children of parent)
     if (parentId) {
-      // Get siblings = all direct children of the same parent
       const siblingIds = getDirectChildren(parentId, P);
       const all = [parentId, ...siblingIds];
       const idx = all.indexOf(nodeId);
       return { siblings: all, currentIndex: idx >= 0 ? idx : 0 };
     }
-
     return { siblings: [nodeId], currentIndex: 0 };
   }, [nodeId, parentId]);
 
@@ -99,6 +97,8 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
 
   // Keyboard navigation: arrows to traverse, Enter to start lesson
   useEffect(() => {
+    if (isLessonOpen) return; // Don't intercept keys when lesson modal is open
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement).tagName === "INPUT") return;
 
@@ -118,7 +118,7 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [canGoPrev, canGoNext, siblings, currentIndex, isLocked, hasContent, nodeId, onStartLesson]);
+  }, [canGoPrev, canGoNext, siblings, currentIndex, isLocked, hasContent, nodeId, onStartLesson, isLessonOpen]);
 
   // Get prerequisite names for locked lessons
   const prereqNames = useMemo(() => {
@@ -168,7 +168,7 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
           {isCompleted ? (
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-950/60 border border-amber-500/30">
               <Check size={12} className="text-amber-400" />
-              <span className="text-[9px] font-pixel text-amber-400 uppercase tracking-wider font-bold">Ukończone</span>
+              <span className="text-[9px] font-pixel text-amber-400 uppercase tracking-wider font-bold">{t("skillTree.completedBadge")}</span>
             </div>
           ) : isLocked ? (
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800/80 border border-slate-600/30">
@@ -178,7 +178,7 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
           ) : (
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border" style={{ backgroundColor: accentColor + "15", borderColor: accentColor + "40" }}>
               <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: accentColor }} />
-              <span className="text-[9px] font-pixel uppercase tracking-wider font-bold" style={{ color: accentColor }}>Aktywna</span>
+              <span className="text-[9px] font-pixel uppercase tracking-wider font-bold" style={{ color: accentColor }}>{t("skillTree.activeBadge")}</span>
             </div>
           )}
           <div className="flex items-center gap-1 text-slate-500 ml-auto">
@@ -218,7 +218,7 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
           <div className="space-y-2 p-3 rounded-xl bg-slate-900/60 border border-white/5">
             <div className="flex items-center gap-1.5">
               <GitBranch size={12} className="text-slate-500" />
-              <span className="text-[10px] font-pixel text-slate-500 uppercase tracking-wider">Odblokowuje:</span>
+              <span className="text-[10px] font-pixel text-slate-500 uppercase tracking-wider">{t("skillTree.unlocksLabel")}:</span>
             </div>
             {unlocksNodes.map((node) => {
               const nState = allNodes[node.id];

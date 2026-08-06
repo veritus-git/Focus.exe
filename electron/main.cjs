@@ -1,10 +1,13 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const { exec } = require('child_process');
 const path = require('path');
 const isDev = process.env.NODE_ENV !== 'production';
 
 // Fix for Linux global blur (XWayland fractional scaling issues)
 app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
 app.commandLine.appendSwitch('enable-features', 'WaylandWindowDecorations');
+
+let cursorConfineInterval = null;
 
 function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
@@ -20,6 +23,7 @@ function createWindow() {
     autoHideMenuBar: true,
     alwaysOnTop: true,
     frame: false,
+    backgroundColor: '#000000',
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       nodeIntegration: false,
@@ -56,6 +60,26 @@ function createWindow() {
       });
     }
   });
+
+  // Cursor confinement to primary display (Linux/X11 via xdotool)
+  if (displays.length > 1) {
+    const bounds = primaryDisplay.bounds;
+    cursorConfineInterval = setInterval(() => {
+      const point = screen.getCursorScreenPoint();
+      let needsWarp = false;
+      let newX = point.x;
+      let newY = point.y;
+
+      if (point.x < bounds.x) { newX = bounds.x; needsWarp = true; }
+      if (point.x >= bounds.x + bounds.width) { newX = bounds.x + bounds.width - 1; needsWarp = true; }
+      if (point.y < bounds.y) { newY = bounds.y; needsWarp = true; }
+      if (point.y >= bounds.y + bounds.height) { newY = bounds.y + bounds.height - 1; needsWarp = true; }
+
+      if (needsWarp) {
+        exec(`xdotool mousemove ${newX} ${newY}`);
+      }
+    }, 30);
+  }
 }
 
 app.whenReady().then(() => {
@@ -67,9 +91,11 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', function () {
+  if (cursorConfineInterval) clearInterval(cursorConfineInterval);
   if (process.platform !== 'darwin') app.quit();
 });
 
 ipcMain.on('exit-app', () => {
+  if (cursorConfineInterval) clearInterval(cursorConfineInterval);
   app.quit();
 });
