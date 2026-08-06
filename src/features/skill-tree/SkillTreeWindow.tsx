@@ -236,8 +236,6 @@ export const SkillTreeWindow: React.FC = () => {
             proOptions={{ hideAttribution: true }}
             nodesDraggable={false}
             nodesConnectable={false}
-            elementsSelectable={false}
-            elevateNodesOnSelect={false}
           >
             <Background color="#1e293b" gap={40} size={1} />
             <Controls className="!bg-slate-900 !border !border-white/20 !text-white !fill-white" />

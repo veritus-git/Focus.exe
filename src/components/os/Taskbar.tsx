@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Power, GitBranch, Calculator, FileText, Lock, LockOpen, LogOut } from "lucide-react";
-import { invoke } from "@tauri-apps/api/core";
 import { WindowId, useOSStore } from "../../store/useOSStore";
 
 interface TaskbarProps {
@@ -57,9 +56,13 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
     if (secondsLeft > 0) return;
 
     try {
-      await invoke("exit_app");
+      if (window.electronAPI) {
+        window.electronAPI.exitApp();
+      } else {
+        window.close();
+      }
     } catch (err) {
-      console.log("[EXIT] Outside Tauri environment, closing window:", err);
+      console.log("[EXIT] Failed to close window:", err);
       window.close();
     }
   };

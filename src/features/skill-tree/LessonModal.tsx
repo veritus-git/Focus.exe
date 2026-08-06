@@ -37,6 +37,27 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
     }
   }, [currentPage]);
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight" || e.key === "Enter") {
+        if (currentPage < totalPages - 1) {
+          setCurrentPage((p) => p + 1);
+        } else {
+          completeNode(nodeId);
+          onClose();
+        }
+      } else if (e.key === "ArrowLeft") {
+        if (currentPage > 0) {
+          setCurrentPage((p) => p - 1);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentPage, totalPages, nodeId, completeNode, onClose]);
+
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {
       setCurrentPage((p) => p + 1);

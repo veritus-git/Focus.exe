@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { invoke } from "@tauri-apps/api/core";
+
 
 /**
  * KioskGuard — Invisible system-level keyboard lockdown.
@@ -17,9 +17,13 @@ import { invoke } from "@tauri-apps/api/core";
 export const DevBackdoor: React.FC = () => {
   const handleExit = async () => {
     try {
-      await invoke("exit_app");
+      if (window.electronAPI) {
+        window.electronAPI.exitApp();
+      } else {
+        window.close();
+      }
     } catch (err) {
-      console.log("[DEV BACKDOOR] Outside Tauri environment, closing window:", err);
+      console.log("[DEV BACKDOOR] Failed to close window:", err);
       window.close();
     }
   };

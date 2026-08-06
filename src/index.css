@@ -105,61 +105,28 @@
   animation: robotBlink 3.5s ease-in-out infinite;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   PERFORMANCE-OPTIMIZED Node Floating Animations
-   - Reduced to 1px movement (barely perceptible but alive)
-   - Extended duration = fewer recompositions per second
-   - No will-change (let browser decide, 47+ nodes would thrash)
-   ═══════════════════════════════════════════════════════════ */
-@keyframes floatingMolecule1 {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  33% { transform: translate3d(1px, -1px, 0); }
-  66% { transform: translate3d(-1px, 0.5px, 0); }
-}
 
-@keyframes floatingMolecule2 {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  33% { transform: translate3d(-1px, 1px, 0); }
-  66% { transform: translate3d(0.5px, -1px, 0); }
-}
-
-@keyframes floatingMolecule3 {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  33% { transform: translate3d(0.5px, 1px, 0); }
-  66% { transform: translate3d(-1px, -0.5px, 0); }
-}
-
-.animate-float-node-1 {
-  animation: floatingMolecule1 12s ease-in-out infinite;
-}
-
-.animate-float-node-2 {
-  animation: floatingMolecule2 14s ease-in-out infinite 0.8s;
-}
-
-.animate-float-node-3 {
-  animation: floatingMolecule3 13s ease-in-out infinite 1.6s;
-}
 
 /* ═══════════════════════════════════════════════════════════
    PERFORMANCE-OPTIMIZED Node Floating Animations
+   - Changed to 2D translate instead of translate3d to prevent Chromium from promoting to a texture layer, which causes blur on React Flow zoom
    ═══════════════════════════════════════════════════════════ */
 @keyframes floatingMolecule1 {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  33% { transform: translate3d(2px, -2px, 0); }
-  66% { transform: translate3d(-2px, 1px, 0); }
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(1px, -1px); }
+  66% { transform: translate(-1px, 0.5px); }
 }
 
 @keyframes floatingMolecule2 {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  33% { transform: translate3d(-2px, 2px, 0); }
-  66% { transform: translate3d(1px, -2px, 0); }
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-1px, 1px); }
+  66% { transform: translate(0.5px, -1px); }
 }
 
 @keyframes floatingMolecule3 {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  33% { transform: translate3d(1px, 2px, 0); }
-  66% { transform: translate3d(-2px, -1px, 0); }
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(0.5px, 1px); }
+  66% { transform: translate(-1px, -0.5px); }
 }
 
 .animate-float-node-1 { animation: floatingMolecule1 8s ease-in-out infinite; }
@@ -169,8 +136,9 @@
 /* ═══════════════════════════════════════════════════════════
    ReactFlow GPU Acceleration & Drag Optimizations
    ═══════════════════════════════════════════════════════════ */
+/* Removed will-change: transform because Chromium rasterizes it at a fixed resolution, causing it to look like a blurry jpeg on zoom */
 .react-flow__viewport {
-  will-change: transform;
+  /* will-change: transform; */
 }
 
 /* User's idea: when a window is being dragged, make everything inside it "dumb" (no hit testing) */

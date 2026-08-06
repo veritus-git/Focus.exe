@@ -5,14 +5,8 @@ import "./index.css";
 
 // Activate cursor confinement from frontend (backup to Rust-side grab)
 async function activateKioskMode() {
-  try {
-    const { getCurrentWebviewWindow } = await import("@tauri-apps/api/webviewWindow");
-    const appWindow = getCurrentWebviewWindow();
-    await appWindow.setCursorGrab(true);
-    console.log("[FOCUS OS] Cursor grab activated from frontend");
-  } catch {
-    console.log("[FOCUS OS] Running outside Tauri, skipping cursor grab");
-  }
+  // Electron handles kiosk mode and window constraints natively via main.js
+  console.log("[FOCUS OS] Kiosk mode is managed by Electron main process");
 }
 
 // ═══════════════════════════════════════════════════════════
