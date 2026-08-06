@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const path = require('path');
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -7,11 +7,10 @@ const isDev = process.env.NODE_ENV !== 'production';
 app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
 app.commandLine.appendSwitch('enable-features', 'WaylandWindowDecorations');
 
-let cursorConfineInterval = null;
+let cursorLockProcess = null;
 
 function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
-  const { width, height } = primaryDisplay.workAreaSize;
 
   const mainWindow = new BrowserWindow({
     x: primaryDisplay.bounds.x,
@@ -56,29 +55,30 @@ function createWindow() {
         }
       });
       overlay.loadFile(path.join(__dirname, 'overlay.html')).catch(() => {
-        overlay.loadURL('data:text/html,<body style="background:black;"></body>');
+        overlay.loadURL('data:text/html,<body style="background:black;margin:0;padding:0;overflow:hidden;"></body>');
       });
     }
   });
 
-  // Cursor confinement to primary display (Linux/X11 via xdotool)
+  // Cursor confinement to primary display via python3 libX11 ctypes
   if (displays.length > 1) {
-    const bounds = primaryDisplay.bounds;
-    cursorConfineInterval = setInterval(() => {
-      const point = screen.getCursorScreenPoint();
-      let needsWarp = false;
-      let newX = point.x;
-      let newY = point.y;
+    const b = primaryDisplay.bounds;
+    const minX = b.x;
+    const minY = b.y;
+    const maxX = b.x + b.width - 1;
+    const maxY = b.y + b.height - 1;
 
-      if (point.x < bounds.x) { newX = bounds.x; needsWarp = true; }
-      if (point.x >= bounds.x + bounds.width) { newX = bounds.x + bounds.width - 1; needsWarp = true; }
-      if (point.y < bounds.y) { newY = bounds.y; needsWarp = true; }
-      if (point.y >= bounds.y + bounds.height) { newY = bounds.y + bounds.height - 1; needsWarp = true; }
-
-      if (needsWarp) {
-        exec(`xdotool mousemove ${newX} ${newY}`);
-      }
-    }, 30);
+    try {
+      cursorLockProcess = spawn('python3', [
+        path.join(__dirname, 'cursor_lock.py'),
+        minX.toString(),
+        minY.toString(),
+        maxX.toString(),
+        maxY.toString()
+      ]);
+    } catch (e) {
+      console.error('[CURSOR_LOCK] Failed to spawn python cursor lock:', e);
+    }
   }
 }
 
@@ -91,11 +91,11 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', function () {
-  if (cursorConfineInterval) clearInterval(cursorConfineInterval);
+  if (cursorLockProcess) cursorLockProcess.kill();
   if (process.platform !== 'darwin') app.quit();
 });
 
 ipcMain.on('exit-app', () => {
-  if (cursorConfineInterval) clearInterval(cursorConfineInterval);
+  if (cursorLockProcess) cursorLockProcess.kill();
   app.quit();
 });

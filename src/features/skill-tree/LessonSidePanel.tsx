@@ -2,7 +2,7 @@ import React, { useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Lock, Check, Play, X, Clock, ChevronLeft, ChevronRight, GitBranch } from "lucide-react";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
-import { getLessonById, lessonHasContent, ALL_LESSONS, getTrackForLesson } from "../../content/courseIndex";
+import { getLessonById, lessonHasContent, ALL_LESSONS, getTrackForLesson, LEVEL_0 } from "../../content/courseIndex";
 
 interface LessonSidePanelProps {
   nodeId: string;
@@ -69,30 +69,43 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
     return lesson.requires.length > 0 ? lesson.requires[0] : null;
   }, [lesson]);
 
-  // Build navigation: current node + its direct children
-  const { siblings, currentIndex } = useMemo(() => {
-    const children = getDirectChildren(nodeId, P);
-    if (children.length > 0) {
-      return { siblings: [nodeId, ...children], currentIndex: 0 };
+  // Hierarchical navigation list:
+  // If current is Level 0 -> [Level 0, ...directChildrenOfLevel0]
+  // Else if current has a parent P -> directChildrenOfP (all siblings on same level)
+  // Else -> [nodeId]
+  const { navList, currentIndex } = useMemo(() => {
+    if (nodeId === LEVEL_0.id) {
+      const children = getDirectChildren(LEVEL_0.id, P);
+      return { navList: [LEVEL_0.id, ...children], currentIndex: 0 };
     }
-    // For leaf nodes, show siblings (other children of parent)
+
     if (parentId) {
-      const siblingIds = getDirectChildren(parentId, P);
-      const all = [parentId, ...siblingIds];
-      const idx = all.indexOf(nodeId);
-      return { siblings: all, currentIndex: idx >= 0 ? idx : 0 };
+      const siblingsOnLevel = getDirectChildren(parentId, P);
+      const idx = siblingsOnLevel.indexOf(nodeId);
+      if (idx >= 0) {
+        return { navList: siblingsOnLevel, currentIndex: idx };
+      }
+      return { navList: [parentId, ...siblingsOnLevel], currentIndex: 0 };
     }
-    return { siblings: [nodeId], currentIndex: 0 };
+
+    return { navList: [nodeId], currentIndex: 0 };
   }, [nodeId, parentId]);
 
-  const canGoPrev = currentIndex > 0;
-  const canGoNext = currentIndex < siblings.length - 1;
+  const canGoPrev = currentIndex > 0 || parentId !== null;
+  const canGoNext = currentIndex < navList.length - 1;
 
   const handlePrev = () => {
-    if (canGoPrev) onNavigate(siblings[currentIndex - 1]);
+    if (currentIndex > 0) {
+      onNavigate(navList[currentIndex - 1]);
+    } else if (parentId) {
+      onNavigate(parentId);
+    }
   };
+
   const handleNext = () => {
-    if (canGoNext) onNavigate(siblings[currentIndex + 1]);
+    if (currentIndex < navList.length - 1) {
+      onNavigate(navList[currentIndex + 1]);
+    }
   };
 
   // Keyboard navigation: arrows to traverse, Enter to start lesson
@@ -118,7 +131,7 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [canGoPrev, canGoNext, siblings, currentIndex, isLocked, hasContent, nodeId, onStartLesson, isLessonOpen]);
+  }, [canGoPrev, canGoNext, navList, currentIndex, isLocked, hasContent, nodeId, onStartLesson, isLessonOpen]);
 
   // Get prerequisite names for locked lessons
   const prereqNames = useMemo(() => {
@@ -279,7 +292,7 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
           </button>
 
           <span className="text-[9px] text-slate-600 font-pixel tabular-nums shrink-0">
-            {currentIndex + 1}/{siblings.length}
+            {currentIndex + 1}/{navList.length}
           </span>
 
           <button

@@ -81,7 +81,7 @@ export const SkillTreeWindow: React.FC = () => {
     }
   }, [isMaximized]);
 
-  // Two-step zoom+panel animation
+  // Two-step zoom+panel animation & camera re-centering
   useEffect(() => {
     if (!reactFlowInstance.current) return;
     
@@ -93,12 +93,12 @@ export const SkillTreeWindow: React.FC = () => {
       const pos = P[selectedNodeId];
 
       if (panelOpen) {
-        // Panel already open (navigating between nodes) — just re-center instantly
-        reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 350 });
+        // Panel already open — re-center to selected node
+        reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 400 });
       } else {
         // First selection: zoom to node, then open panel
-        reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 300 });
-        const timer = setTimeout(() => setPanelOpen(true), 320);
+        reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 250 });
+        const timer = setTimeout(() => setPanelOpen(true), 260);
         return () => clearTimeout(timer);
       }
     } else if (!selectedNodeId) {
@@ -113,14 +113,13 @@ export const SkillTreeWindow: React.FC = () => {
     }
   }, [selectedNodeId]);
 
-  // When panel opens, simultaneously re-center the node while the container shrinks
+  // Re-center node in 65% area when panel opens
   useEffect(() => {
     if (panelOpen && selectedNodeId && P[selectedNodeId] && reactFlowInstance.current) {
-      // Trigger setCenter exactly as the CSS transition begins
       const timer = setTimeout(() => {
         const pos = P[selectedNodeId];
-        reactFlowInstance.current?.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 500 });
-      }, 0);
+        reactFlowInstance.current?.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 400 });
+      }, 50);
       return () => clearTimeout(timer);
     }
   }, [panelOpen]);
@@ -225,12 +224,22 @@ export const SkillTreeWindow: React.FC = () => {
 
         for (const reqId of lesson.requires) {
           const srcState = nodeStates[reqId];
-          const done = srcState?.status === "completed";
+          const targetState = nodeStates[lesson.id];
+          const srcDone = srcState?.status === "completed";
+          const bothDone = srcDone && targetState?.status === "completed";
+
           fEdges.push({
-            id: `e-${reqId}-${lesson.id}`, source: reqId, target: lesson.id,
+            id: `e-${reqId}-${lesson.id}`,
+            source: reqId,
+            target: lesson.id,
             type: "default",
-            animated: done,
-            style: { stroke: done ? track.color : "#334155", strokeWidth: done ? 3 : 1.5, opacity: done ? 0.9 : 0.25 },
+            animated: srcDone && !bothDone,
+            style: {
+              stroke: bothDone ? "#ffd700" : srcDone ? track.color : "#334155",
+              strokeWidth: bothDone ? 3.5 : srcDone ? 2.5 : 1.5,
+              opacity: bothDone ? 1 : srcDone ? 0.9 : 0.25,
+              strokeDasharray: bothDone ? "none" : undefined,
+            },
           });
         }
       }
@@ -282,9 +291,13 @@ export const SkillTreeWindow: React.FC = () => {
           >
             <ReactFlow
               nodes={nodes} edges={flowEdges} nodeTypes={nodeTypes}
-              onInit={(inst) => { reactFlowInstance.current = inst; inst.fitView({ padding: 0.15 }); }}
+              onInit={(inst) => {
+                reactFlowInstance.current = inst;
+                const l0pos = P[LEVEL_0.id] || { x: 2500, y: 50 };
+                inst.setCenter(l0pos.x + 32, l0pos.y + 32, { zoom: 1.0 });
+              }}
               onPaneClick={handlePaneClick}
-              fitView fitViewOptions={{ padding: 0.15 }}
+              defaultViewport={{ x: 0, y: 0, zoom: 1.0 }}
               minZoom={0.15} maxZoom={1.6}
               proOptions={{ hideAttribution: true }}
               nodesDraggable={false}
