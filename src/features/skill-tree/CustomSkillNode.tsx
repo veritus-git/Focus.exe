@@ -34,8 +34,6 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
   const hasContent = !!(lesson && lessonHasContent(lesson));
 
   const accentColor = data.trackColor || "#00ffcc";
-  const hash = data.nodeId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const floatClass = `animate-float-node-${(hash % 3) + 1}`;
 
   // Get prerequisite names for locked lessons
   const getPrereqNames = (): string[] => {
@@ -58,7 +56,7 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
       <Handle type="target" position={Position.Top} className="!opacity-0 !w-0 !h-0 !border-none pointer-events-none" />
 
       {/* Circle */}
-      <div className={`relative flex items-center justify-center ${floatClass}`}>
+      <div className={`relative flex items-center justify-center`}>
         <div
           className={`rounded-full border-3 flex items-center justify-center transition-transform duration-200 ${
             data.isLevel0 ? "w-16 h-16" : "w-14 h-14"
@@ -67,7 +65,7 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
               : isCompleted ? "bg-[#2d0938] border-[#ffd700] text-white"
               : "bg-[#1f0528] text-white"
           } ${isSelected ? "scale-125 ring-4 ring-white/50" : "group-hover:scale-110"}`}
-          style={!isLocked ? { borderColor: isCompleted ? "#ffd700" : accentColor, boxShadow: `0 0 20px ${isCompleted ? "rgba(255,215,0,0.4)" : accentColor + "60"}` } : undefined}
+          style={!isLocked ? { borderColor: isCompleted ? "#ffd700" : accentColor } : undefined}
         >
           {isLocked ? <Lock size={16} className="text-slate-600" />
             : isCompleted ? <Check size={20} className="text-[#ffd700]" />

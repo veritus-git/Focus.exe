@@ -13,11 +13,6 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* GPU-accelerated base layer — reduce repaints */
-  *, *::before, *::after {
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  }
 }
 
 .font-pixel {

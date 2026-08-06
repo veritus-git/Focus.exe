@@ -170,7 +170,7 @@ export const SkillTreeWindow: React.FC = () => {
           fEdges.push({
             id: `e-${reqId}-${lesson.id}`, source: reqId, target: lesson.id,
             type: "default",
-            animated: done,
+            animated: false,
             style: { stroke: done ? track.color : "#334155", strokeWidth: done ? 3 : 1.5, opacity: done ? 0.9 : 0.25 },
           });
         }
