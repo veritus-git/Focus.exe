@@ -70,8 +70,8 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
             <div className="flex items-center gap-3">
               <span className="text-2xl">{course.icon}</span>
               <div>
-                <h2 className="font-pixel-text text-base font-bold text-white">{t(course.titleKey)}</h2>
-                <p className="text-[11px] font-pixel-text text-slate-400 mt-0.5">
+                <h2 className="font-pixel text-base font-bold text-white">{t(course.titleKey)}</h2>
+                <p className="text-[11px] font-pixel text-slate-400 mt-0.5">
                   {t("lessonReader.pickLesson")}
                 </p>
               </div>
@@ -102,16 +102,16 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
                   {lesson.icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-pixel-text text-xs font-bold text-white group-hover:text-emerald-300 transition-colors truncate">
+                  <h3 className="font-pixel text-xs font-bold text-white group-hover:text-emerald-300 transition-colors truncate">
                     {t(lesson.titleKey)}
                   </h3>
-                  <p className="text-[10px] font-pixel-text text-slate-400 mt-0.5 truncate">
+                  <p className="text-[10px] font-pixel text-slate-400 mt-0.5 truncate">
                     {t(lesson.descriptionKey)}
                   </p>
                 </div>
                 <div className="flex items-center gap-1.5 text-slate-500 shrink-0">
                   <Clock size={12} />
-                  <span className="text-[10px] font-pixel-text">{lesson.readTimeMin} min</span>
+                  <span className="text-[10px] font-pixel">{lesson.readTimeMin} min</span>
                 </div>
               </button>
             ))}
@@ -135,12 +135,12 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
             className="p-1.5 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-lg text-slate-400 hover:text-white cursor-pointer transition-all flex items-center gap-1.5"
           >
             <ArrowLeft size={14} />
-            <span className="text-[10px] font-pixel-text hidden sm:inline">{t("lessonReader.back")}</span>
+            <span className="text-[10px] font-pixel hidden sm:inline">{t("lessonReader.back")}</span>
           </button>
 
           <div className="flex items-center gap-2">
             <BookOpen size={14} className="text-emerald-400" />
-            <span className="font-pixel-text text-xs text-white font-bold truncate max-w-[300px]">
+            <span className="font-pixel text-xs text-white font-bold truncate max-w-[300px]">
               {t(activeLesson.titleKey)}
             </span>
           </div>
@@ -149,7 +149,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
         <div className="flex items-center gap-4">
           {/* Page indicator */}
           <div className="flex items-center gap-1.5 text-slate-400">
-            <span className="text-[10px] font-pixel-text">
+            <span className="text-[10px] font-pixel">
               {currentPage + 1} / {totalPages}
             </span>
           </div>
@@ -157,7 +157,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
           {/* Reading time */}
           <div className="flex items-center gap-1.5 text-slate-500">
             <Clock size={12} />
-            <span className="text-[10px] font-pixel-text">{activeLesson.readTimeMin} min</span>
+            <span className="text-[10px] font-pixel">{activeLesson.readTimeMin} min</span>
           </div>
 
           {/* Close */}
@@ -187,7 +187,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
           {pages[currentPage]?.type === "insight" ? (
             <div className="flex-1 flex flex-col items-center justify-center animate-fade-in text-center max-w-3xl mx-auto px-4">
               <span className="text-5xl mb-6">💡</span>
-              <h3 className="font-pixel-text text-lg text-amber-400 font-bold uppercase tracking-widest mb-8">
+              <h3 className="font-pixel text-lg text-amber-400 font-bold uppercase tracking-widest mb-8">
                 Key Insight
               </h3>
               <p className="text-2xl text-amber-100 leading-[1.6] font-medium">
@@ -206,7 +206,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 0}
-          className={`px-5 py-2.5 rounded-xl font-pixel-text text-xs font-bold flex items-center gap-2 transition-all ${
+          className={`px-5 py-2.5 rounded-xl font-pixel text-xs font-bold flex items-center gap-2 transition-all ${
             currentPage === 0
               ? "bg-slate-800/50 text-slate-600 cursor-not-allowed"
               : "bg-slate-800 hover:bg-slate-700 text-white cursor-pointer border border-white/10 active:scale-95"
@@ -237,7 +237,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
         {isLastPage ? (
           <button
             onClick={handleComplete}
-            className="px-5 py-2.5 bg-[#58cc02] hover:bg-[#46a302] border-b-3 border-[#3ca100] text-white font-pixel-text text-xs font-bold rounded-xl shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2"
+            className="px-5 py-2.5 bg-[#58cc02] hover:bg-[#46a302] border-b-3 border-[#3ca100] text-white font-pixel text-xs font-bold rounded-xl shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2"
           >
             <CheckCircle2 size={14} />
             <span>{t("lessonReader.markComplete")}</span>
@@ -245,7 +245,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
         ) : (
           <button
             onClick={handleNextPage}
-            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-pixel-text text-xs font-bold rounded-xl shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2 border border-emerald-400/30"
+            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-pixel text-xs font-bold rounded-xl shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2 border border-emerald-400/30"
           >
             <span>{t("lessonReader.next")}</span>
             <ArrowRight size={14} />
