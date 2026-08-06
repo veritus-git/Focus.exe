@@ -2,7 +2,7 @@ import React, { useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Lock, Check, Play, X, Clock, ChevronLeft, ChevronRight, GitBranch } from "lucide-react";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
-import { getLessonById, lessonHasContent, ALL_LESSONS, getTrackForLesson, LEVEL_0 } from "../../content/courseIndex";
+import { getLessonById, lessonHasContent, ALL_LESSONS, getTrackForLesson } from "../../content/courseIndex";
 
 interface LessonSidePanelProps {
   nodeId: string;
@@ -69,43 +69,36 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
     return lesson.requires.length > 0 ? lesson.requires[0] : null;
   }, [lesson]);
 
-  // Hierarchical navigation list:
-  // If current is Level 0 -> [Level 0, ...directChildrenOfLevel0]
-  // Else if current has a parent P -> directChildrenOfP (all siblings on same level)
-  // Else -> [nodeId]
+  // Unified Navigation Group:
+  // If the current node HAS children, it's the parent of the group: [Node, ...Children]
+  // If the current node HAS NO children, it's a child in a group: [Parent, ...Siblings]
   const { navList, currentIndex } = useMemo(() => {
-    if (nodeId === LEVEL_0.id) {
-      const children = getDirectChildren(LEVEL_0.id, P);
-      return { navList: [LEVEL_0.id, ...children], currentIndex: 0 };
+    const children = getDirectChildren(nodeId, P);
+    if (children.length > 0) {
+      return { navList: [nodeId, ...children], currentIndex: 0 };
     }
 
     if (parentId) {
       const siblingsOnLevel = getDirectChildren(parentId, P);
-      const idx = siblingsOnLevel.indexOf(nodeId);
+      const group = [parentId, ...siblingsOnLevel];
+      const idx = group.indexOf(nodeId);
       if (idx >= 0) {
-        return { navList: siblingsOnLevel, currentIndex: idx };
+        return { navList: group, currentIndex: idx };
       }
-      return { navList: [parentId, ...siblingsOnLevel], currentIndex: 0 };
     }
 
     return { navList: [nodeId], currentIndex: 0 };
   }, [nodeId, parentId]);
 
-  const canGoPrev = currentIndex > 0 || parentId !== null;
+  const canGoPrev = currentIndex > 0;
   const canGoNext = currentIndex < navList.length - 1;
 
   const handlePrev = () => {
-    if (currentIndex > 0) {
-      onNavigate(navList[currentIndex - 1]);
-    } else if (parentId) {
-      onNavigate(parentId);
-    }
+    if (canGoPrev) onNavigate(navList[currentIndex - 1]);
   };
 
   const handleNext = () => {
-    if (currentIndex < navList.length - 1) {
-      onNavigate(navList[currentIndex + 1]);
-    }
+    if (canGoNext) onNavigate(navList[currentIndex + 1]);
   };
 
   // Keyboard navigation: arrows to traverse, Enter to start lesson

@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const path = require('path');
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -7,7 +7,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
 app.commandLine.appendSwitch('enable-features', 'WaylandWindowDecorations');
 
-let lastWarpTime = 0;
+let cursorLockProcess = null;
 
 function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
@@ -62,25 +62,24 @@ function createWindow() {
     }
   });
 
-  // Event-driven cursor warp back to primary display
-  ipcMain.on('warp-back-primary', () => {
-    const now = Date.now();
-    if (now - lastWarpTime < 50) return; // Debounce
-    lastWarpTime = now;
-
-    const bounds = primaryDisplay.bounds;
-    const point = screen.getCursorScreenPoint();
-
-    let targetX = point.x;
-    let targetY = point.y;
-
-    if (point.x < bounds.x) targetX = bounds.x + 20;
-    if (point.x >= bounds.x + bounds.width) targetX = bounds.x + bounds.width - 20;
-    if (point.y < bounds.y) targetY = bounds.y + 20;
-    if (point.y >= bounds.y + bounds.height) targetY = bounds.y + bounds.height - 20;
-
-    const cmd = `python3 -c "import ctypes; x11 = ctypes.cdll.LoadLibrary('libX11.so.6'); d = x11.XOpenDisplay(None); root = x11.XDefaultRootWindow(d); x11.XWarpPointer(d, 0, root, 0, 0, 0, 0, ${targetX}, ${targetY}); x11.XFlush(d)"`;
-    exec(cmd);
+  // Event-driven cursor warp back removed, using XGrabPointer native confinement
+  mainWindow.once('ready-to-show', () => {
+    if (displays.length > 1) {
+      setTimeout(() => {
+        try {
+          const handle = mainWindow.getNativeWindowHandle();
+          if (handle && handle.length >= 4) {
+            const windowId = handle.readUInt32LE(0);
+            cursorLockProcess = spawn('python3', [
+              path.join(__dirname, 'native_lock.py'),
+              windowId.toString()
+            ]);
+          }
+        } catch (e) {
+          console.error('[CURSOR_LOCK] Failed to spawn native_lock.py:', e);
+        }
+      }, 500); // Wait for X11 window map
+    }
   });
 }
 
@@ -93,9 +92,11 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', function () {
+  if (cursorLockProcess) cursorLockProcess.kill();
   if (process.platform !== 'darwin') app.quit();
 });
 
 ipcMain.on('exit-app', () => {
+  if (cursorLockProcess) cursorLockProcess.kill();
   app.quit();
 });

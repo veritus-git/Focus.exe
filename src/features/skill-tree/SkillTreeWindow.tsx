@@ -81,7 +81,24 @@ export const SkillTreeWindow: React.FC = () => {
     }
   }, [isMaximized]);
 
-  // Two-step zoom+panel animation & camera re-centering
+  // Calculate viewport offset for the 65% left-aligned area
+  const centerNodeInLeftArea = (pos: { x: number; y: number }, duration: number) => {
+    if (!reactFlowInstance.current) return;
+    const vpWidth = window.innerWidth; // Because app is fullscreen
+    const vpHeight = window.innerHeight;
+    const zoom = 1.5;
+    
+    // We want the node to be at the center of the left 65% area
+    const centerX = vpWidth * 0.325;
+    const centerY = vpHeight * 0.5;
+    
+    const targetX = centerX - (pos.x + 32) * zoom;
+    const targetY = centerY - (pos.y + 32) * zoom;
+    
+    reactFlowInstance.current.setViewport({ x: targetX, y: targetY, zoom }, { duration });
+  };
+
+  // Zoom+panel animation
   useEffect(() => {
     if (!reactFlowInstance.current) return;
     
@@ -93,12 +110,12 @@ export const SkillTreeWindow: React.FC = () => {
       const pos = P[selectedNodeId];
 
       if (panelOpen) {
-        // Panel already open — re-center to selected node
-        reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 400 });
+        // Panel already open — pan to new selected node
+        centerNodeInLeftArea(pos, 400);
       } else {
         // First selection: zoom to node, then open panel
-        reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 250 });
-        const timer = setTimeout(() => setPanelOpen(true), 260);
+        centerNodeInLeftArea(pos, 300);
+        const timer = setTimeout(() => setPanelOpen(true), 320);
         return () => clearTimeout(timer);
       }
     } else if (!selectedNodeId) {
@@ -111,18 +128,7 @@ export const SkillTreeWindow: React.FC = () => {
         return () => clearTimeout(timer);
       }
     }
-  }, [selectedNodeId]);
-
-  // Re-center node in 65% area when panel opens
-  useEffect(() => {
-    if (panelOpen && selectedNodeId && P[selectedNodeId] && reactFlowInstance.current) {
-      const timer = setTimeout(() => {
-        const pos = P[selectedNodeId];
-        reactFlowInstance.current?.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 400 });
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [panelOpen]);
+  }, [selectedNodeId, panelOpen]);
 
   // Keyboard navigation for side panel: ArrowDown/ArrowUp/Escape
   useEffect(() => {
@@ -284,17 +290,16 @@ export const SkillTreeWindow: React.FC = () => {
 
         {/* Main content area — split between map and side panel */}
         <div className="flex-1 flex overflow-hidden relative">
-          {/* React Flow map area — shrinks when panel is open */}
+          {/* React Flow map area — always 100% width, viewport camera moves instead */}
           <div
-            className="h-full bg-slate-950 relative overflow-hidden transition-all duration-500 ease-out"
-            style={{ width: panelOpen ? "65%" : "100%" }}
+            className="h-full bg-slate-950 relative overflow-hidden"
+            style={{ width: "100%" }}
           >
             <ReactFlow
               nodes={nodes} edges={flowEdges} nodeTypes={nodeTypes}
               onInit={(inst) => {
                 reactFlowInstance.current = inst;
-                const l0pos = P[LEVEL_0.id] || { x: 2500, y: 50 };
-                inst.setCenter(l0pos.x + 32, l0pos.y + 32, { zoom: 1.0 });
+                inst.fitView({ padding: 0.15, duration: 0 });
               }}
               onPaneClick={handlePaneClick}
               defaultViewport={{ x: 0, y: 0, zoom: 1.0 }}
