@@ -123,10 +123,9 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
       continue;
     }
 
-    // Heading
     if (line.startsWith("# ")) {
       elements.push(
-        <h1 key={elements.length} className="text-5xl font-pixel font-bold text-white mt-14 mb-8 leading-[1.2]">
+        <h1 key={elements.length} className="text-4xl font-pixel font-bold text-white mt-12 mb-6 leading-tight">
           {renderInline(line.slice(2))}
         </h1>
       );
@@ -135,7 +134,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
     }
     if (line.startsWith("## ")) {
       elements.push(
-        <h2 key={elements.length} className="text-4xl font-pixel font-bold text-emerald-400 mt-12 mb-6 leading-snug">
+        <h2 key={elements.length} className="text-3xl font-pixel font-bold text-emerald-400 mt-10 mb-5 leading-snug">
           {renderInline(line.slice(3))}
         </h2>
       );
@@ -144,7 +143,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
     }
     if (line.startsWith("### ")) {
       elements.push(
-        <h3 key={elements.length} className="text-3xl font-pixel font-bold text-white mt-10 mb-5">
+        <h3 key={elements.length} className="text-2xl font-pixel font-bold text-white mt-8 mb-4">
           {renderInline(line.slice(4))}
         </h3>
       );
@@ -171,7 +170,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
       elements.push(
         <blockquote
           key={elements.length}
-          className="my-8 pl-6 border-l-4 border-slate-500 bg-slate-800/30 py-5 pr-6 rounded-r-2xl text-2xl text-slate-300/90 leading-relaxed italic"
+          className="my-6 pl-6 border-l-4 border-slate-500 bg-slate-800/30 py-5 pr-6 rounded-r-2xl text-xl text-slate-300/90 leading-[1.8] italic"
         >
           {quoteLines.map((ql, qi) => (
             <span key={qi}>
@@ -195,7 +194,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
         <ul key={elements.length} className="my-4 space-y-2.5 pl-2">
           {items.map((item, idx) => (
             <li key={idx} className="flex items-start gap-4 text-xl text-slate-300 leading-[1.8]">
-              <span className="text-emerald-400 mt-2 shrink-0 text-2xl">▸</span>
+              <span className="text-emerald-400 mt-1.5 shrink-0 text-xl">▸</span>
               <span>{renderInline(item)}</span>
             </li>
           ))}
