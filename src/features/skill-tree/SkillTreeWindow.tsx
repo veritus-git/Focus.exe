@@ -257,7 +257,7 @@ export const SkillTreeWindow: React.FC = () => {
         const pos = P[lesson.id] || { x: 2500, y: 500 };
         fNodes.push({
           id: lesson.id, type: "customSkill", position: pos,
-          data: { nodeId: lesson.id, titleKey: lesson.titleKey, icon: lesson.icon, trackColor: track.color, trackIcon: track.icon, onStartLesson: handleStartLesson },
+          data: { nodeId: lesson.id, titleKey: lesson.titleKey, icon: lesson.icon, trackColor: track.color, trackIcon: track.icon, onClick: handleNodeClick, onStartLesson: handleStartLesson },
         });
 
         for (const reqId of lesson.requires) {
