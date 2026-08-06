@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./i18n/i18n";
@@ -16,10 +15,13 @@ async function activateKioskMode() {
   }
 }
 
+// ═══════════════════════════════════════════════════════════
+// NO React.StrictMode — it DOUBLES every render in dev mode
+// which destroys drag performance (60fps → 30fps).
+// This is a kiosk app, not a library — we don't need double-checking.
+// ═══════════════════════════════════════════════════════════
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <App />
 );
 
 // Activate kiosk mode after mount

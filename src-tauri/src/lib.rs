@@ -103,13 +103,14 @@ pub fn run() {
                     let _ = window.set_cursor_grab(true);
                 }
 
-                // Refocus the main window when it loses focus (anti-alt-tab)
+                // Refocus + re-fullscreen when window loses focus (anti-alt-tab)
                 let window_clone = window.clone();
                 window.on_window_event(move |event| {
                     if let tauri::WindowEvent::Focused(false) = event {
                         println!("[FOCUS OS] Window lost focus — reclaiming...");
-                        let _ = window_clone.set_focus();
+                        let _ = window_clone.set_fullscreen(true);
                         let _ = window_clone.set_always_on_top(true);
+                        let _ = window_clone.set_focus();
                     }
                 });
             }

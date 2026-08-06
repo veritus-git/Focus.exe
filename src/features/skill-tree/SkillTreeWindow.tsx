@@ -56,6 +56,8 @@ export const SkillTreeWindow: React.FC = () => {
   const isMinimized = minimizedWindows.includes("skillTree");
   const [isMaximized, setIsMaximized] = useState(true);
   const [windowPos, setWindowPos] = useState({ x: 60, y: 60 });
+  const windowContainerRef = useRef<HTMLDivElement>(null);
+  const windowPosRef = useRef({ x: 60, y: 60 });
   const [activeLessonNodeId, setActiveLessonNodeId] = useState<string | null>(null);
 
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -63,7 +65,6 @@ export const SkillTreeWindow: React.FC = () => {
 
   const reactFlowInstance = useRef<any>(null);
   const isDraggingRef = useRef(false);
-  const dragStartRef = useRef({ startX: 0, startY: 0, posX: 60, posY: 60 });
   const prevViewRef = useRef<{ x: number; y: number; zoom: number } | null>(null);
 
   useEffect(() => {
@@ -103,22 +104,28 @@ export const SkillTreeWindow: React.FC = () => {
     focusWindow("skillTree");
     isDraggingRef.current = true;
 
-    dragStartRef.current = { startX: e.clientX, startY: e.clientY, posX: windowPos.x, posY: windowPos.y };
-    let rafId: number | null = null;
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startPosX = windowPosRef.current.x;
+    const startPosY = windowPosRef.current.y;
+    const el = windowContainerRef.current;
+
     const handleMouseMove = (me: MouseEvent) => {
       if (!isDraggingRef.current) return;
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        setWindowPos({
-          x: Math.max(10, dragStartRef.current.posX + me.clientX - dragStartRef.current.startX),
-          y: Math.max(10, dragStartRef.current.posY + me.clientY - dragStartRef.current.startY),
-        });
-      });
+      const newX = Math.max(10, startPosX + me.clientX - startX);
+      const newY = Math.max(10, startPosY + me.clientY - startY);
+      windowPosRef.current.x = newX;
+      windowPosRef.current.y = newY;
+
+      // ═══ DIRECT DOM — ZERO REACT RENDERS ═══
+      if (el) {
+        el.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
+      }
     };
     const handleMouseUp = () => {
       isDraggingRef.current = false;
-
-      if (rafId) cancelAnimationFrame(rafId);
+      // Sync to React state ONCE on drag end
+      setWindowPos({ x: windowPosRef.current.x, y: windowPosRef.current.y });
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
@@ -178,6 +185,7 @@ export const SkillTreeWindow: React.FC = () => {
   return (
     <>
       <div
+        ref={windowContainerRef}
         onMouseDown={() => focusWindow("skillTree")}
         style={{
           position: "fixed", top: 0, left: 0,

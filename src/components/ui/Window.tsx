@@ -34,36 +34,38 @@ export const Window: React.FC<WindowProps> = ({
   const storedPos = windowPositions[id] || { x: 10, y: 10 };
   const position = isFullScreen ? { x: 10, y: 10 } : storedPos;
 
-  const dragStartRef = useRef<{ startX: number; startY: number; posX: number; posY: number }>({
-    startX: 0,
-    startY: 0,
-    posX: position.x,
-    posY: position.y,
-  });
+  const windowRef = useRef<HTMLDivElement>(null);
+  const posRef = useRef({ x: position.x, y: position.y });
+
+  // Sync ref with store on mount/update (non-drag)
+  posRef.current = { x: position.x, y: position.y };
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (isFullScreen) return; // Fullscreen windows fixed in place
+    if (isFullScreen) return;
     e.stopPropagation();
     focusWindow(id);
 
-    dragStartRef.current = {
-      startX: e.clientX,
-      startY: e.clientY,
-      posX: position.x,
-      posY: position.y,
-    };
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startPosX = posRef.current.x;
+    const startPosY = posRef.current.y;
+    const el = windowRef.current;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      const deltaX = moveEvent.clientX - dragStartRef.current.startX;
-      const deltaY = moveEvent.clientY - dragStartRef.current.startY;
+      const newX = Math.max(0, startPosX + moveEvent.clientX - startX);
+      const newY = Math.max(0, startPosY + moveEvent.clientY - startY);
+      posRef.current.x = newX;
+      posRef.current.y = newY;
 
-      const newX = Math.max(0, dragStartRef.current.posX + deltaX);
-      const newY = Math.max(0, dragStartRef.current.posY + deltaY);
-
-      updateWindowPosition(id, { x: newX, y: newY });
+      // ═══ DIRECT DOM — ZERO REACT RENDERS ═══
+      if (el) {
+        el.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
+      }
     };
 
     const handleMouseUp = () => {
+      // Sync final position to Zustand ONCE on drag end
+      updateWindowPosition(id, { x: posRef.current.x, y: posRef.current.y });
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
@@ -78,12 +80,14 @@ export const Window: React.FC<WindowProps> = ({
 
   return (
     <div
+      ref={windowRef}
       onClick={() => focusWindow(id)}
       style={{
         transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
         zIndex: isActive ? 40 : 20,
+        willChange: "transform",
       }}
-      className={`fixed top-0 left-0 ${windowSizeClass} pixel-window flex flex-col transition-shadow duration-100 ${
+      className={`fixed top-0 left-0 ${windowSizeClass} pixel-window flex flex-col ${
         isActive ? "pixel-window-active" : "opacity-95"
       }`}
     >
