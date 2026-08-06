@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { GitBranch, Minus, Maximize2, Minimize2, X, Trash2 } from "lucide-react";
 import { CustomSkillNode } from "./CustomSkillNode";
 import { LessonModal } from "./LessonModal";
+import { LessonSidePanel } from "./LessonSidePanel";
 import { useOSStore } from "../../store/useOSStore";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
 import { LEVEL_0, TRACKS } from "../../content/courseIndex";
@@ -79,7 +80,7 @@ export const SkillTreeWindow: React.FC = () => {
     }
   }, [isMaximized]);
 
-  // Zoom to node when selected (delayed to allow re-render to finish for smooth animation)
+  // Zoom to node when selected (centers in the left 2/3 of the viewport when panel is open)
   useEffect(() => {
     if (!reactFlowInstance.current) return;
     
@@ -90,8 +91,7 @@ export const SkillTreeWindow: React.FC = () => {
           prevViewRef.current = { x: vp.x, y: vp.y, zoom: vp.zoom };
         }
         const pos = P[selectedNodeId];
-        // X + 32 centers the node horizontally (compensating for the node's 64px width)
-        reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 150, { zoom: 1.25, duration: 500 });
+        reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.25, duration: 500 });
       } else if (!selectedNodeId && prevViewRef.current) {
         reactFlowInstance.current.setViewport(prevViewRef.current, { duration: 400 });
         prevViewRef.current = null;
@@ -151,9 +151,14 @@ export const SkillTreeWindow: React.FC = () => {
     setActiveLessonNodeId(nodeId);
   }, []);
 
-  // Click on empty canvas = deselect node
+  // Click on empty canvas = deselect node (close side panel)
   const handlePaneClick = useCallback(() => {
     selectNode("");
+  }, [selectNode]);
+
+  // Navigate to a different node via side panel arrows
+  const handleNavigate = useCallback((nodeId: string) => {
+    selectNode(nodeId);
   }, [selectNode]);
 
   const nodeTypes = useMemo(() => ({ customSkill: CustomSkillNode }), []);
@@ -193,6 +198,7 @@ export const SkillTreeWindow: React.FC = () => {
   }, [nodeStates, handleStartLesson]);
 
   const nodes = flowNodes;
+  const isPanelOpen = !!selectedNodeId;
 
   return (
     <>
@@ -213,7 +219,7 @@ export const SkillTreeWindow: React.FC = () => {
       >
         <div
           onMouseDown={handleTitleMouseDown}
-          className={`h-9 px-4 bg-slate-900 border-b border-white/10 flex items-center justify-between ${!isMaximized ? "cursor-grab active:cursor-grabbing" : ""}`}
+          className={`h-9 px-4 bg-slate-900 border-b border-white/10 flex items-center justify-between shrink-0 ${!isMaximized ? "cursor-grab active:cursor-grabbing" : ""}`}
         >
           <div className="flex items-center gap-2 text-white font-pixel text-xs tracking-wide">
             <GitBranch size={14} className="text-[#ffd700]" />
@@ -226,66 +232,88 @@ export const SkillTreeWindow: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex-1 bg-slate-950 relative overflow-hidden">
-          <ReactFlow
-            nodes={nodes} edges={flowEdges} nodeTypes={nodeTypes}
-            onInit={(inst) => { reactFlowInstance.current = inst; inst.fitView({ padding: 0.15 }); }}
-            onPaneClick={handlePaneClick}
-            fitView fitViewOptions={{ padding: 0.15 }}
-            minZoom={0.15} maxZoom={1.6}
-            proOptions={{ hideAttribution: true }}
-            nodesDraggable={false}
-            nodesConnectable={false}
+        {/* Main content area — split between map and side panel */}
+        <div className="flex-1 flex overflow-hidden relative">
+          {/* React Flow map area — shrinks when panel is open */}
+          <div
+            className="h-full bg-slate-950 relative overflow-hidden transition-all duration-500 ease-out"
+            style={{ width: isPanelOpen ? "65%" : "100%" }}
           >
-            <Background color="#1e293b" gap={40} size={1} />
-            <Controls className="!bg-slate-900 !border !border-white/20 !text-white !fill-white" />
-          </ReactFlow>
+            <ReactFlow
+              nodes={nodes} edges={flowEdges} nodeTypes={nodeTypes}
+              onInit={(inst) => { reactFlowInstance.current = inst; inst.fitView({ padding: 0.15 }); }}
+              onPaneClick={handlePaneClick}
+              fitView fitViewOptions={{ padding: 0.15 }}
+              minZoom={0.15} maxZoom={1.6}
+              proOptions={{ hideAttribution: true }}
+              nodesDraggable={false}
+              nodesConnectable={false}
+            >
+              <Background color="#1e293b" gap={40} size={1} />
+              <Controls className="!bg-slate-900 !border !border-white/20 !text-white !fill-white" />
+            </ReactFlow>
 
-          {/* Reset Button */}
-          <div className="absolute bottom-4 right-4 z-50">
-            {!showResetConfirm ? (
-              <button
-                onClick={() => setShowResetConfirm(true)}
-                className="flex items-center gap-2 px-3 py-2 bg-slate-900/80 hover:bg-rose-950/80 border border-slate-700 hover:border-rose-500/50 rounded-xl text-slate-400 hover:text-rose-400 transition-all backdrop-blur-sm cursor-pointer"
-              >
-                <Trash2 size={14} />
-                <span className="font-pixel text-[10px] uppercase font-bold">{t("skillTree.resetProgress")}</span>
-              </button>
-            ) : (
-              <div className="bg-slate-900 border border-rose-500/50 rounded-xl p-3 shadow-2xl backdrop-blur-md flex flex-col gap-3 w-[220px] animate-fade-in">
-                <p className="text-[10px] font-pixel text-slate-300 leading-snug">
-                  {t("skillTree.resetWarning")}
-                </p>
-                <input
-                  type="text"
-                  placeholder={t("skillTree.resetPlaceholder")}
-                  value={resetInput}
-                  onChange={(e) => setResetInput(e.target.value)}
-                  className="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-rose-500 font-mono-retro"
-                />
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => { setShowResetConfirm(false); setResetInput(""); }}
-                    className="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-white font-pixel text-[10px] transition-all cursor-pointer"
-                  >
-                    {t("taskbar.cancel")}
-                  </button>
-                  <button
-                    onClick={() => {
-                      const lower = resetInput.trim().toLowerCase();
-                      if (lower === "yes" || lower === "tak") {
-                        resetProgress();
-                        setShowResetConfirm(false);
-                        setResetInput("");
-                      }
-                    }}
-                    disabled={resetInput.trim().toLowerCase() !== "yes" && resetInput.trim().toLowerCase() !== "tak"}
-                    className="flex-1 py-1.5 bg-rose-600 disabled:bg-slate-800 disabled:text-slate-500 hover:bg-rose-500 rounded-lg text-white font-pixel text-[10px] font-bold transition-all cursor-pointer"
-                  >
-                    RESET
-                  </button>
+            {/* Reset Button */}
+            <div className="absolute bottom-4 right-4 z-50">
+              {!showResetConfirm ? (
+                <button
+                  onClick={() => setShowResetConfirm(true)}
+                  className="flex items-center gap-2 px-3 py-2 bg-slate-900/80 hover:bg-rose-950/80 border border-slate-700 hover:border-rose-500/50 rounded-xl text-slate-400 hover:text-rose-400 transition-all cursor-pointer"
+                >
+                  <Trash2 size={14} />
+                  <span className="font-pixel text-[10px] uppercase font-bold">{t("skillTree.resetProgress")}</span>
+                </button>
+              ) : (
+                <div className="bg-slate-900 border border-rose-500/50 rounded-xl p-3 shadow-2xl flex flex-col gap-3 w-[220px] animate-fade-in">
+                  <p className="text-[10px] font-pixel text-slate-300 leading-snug">
+                    {t("skillTree.resetWarning")}
+                  </p>
+                  <input
+                    type="text"
+                    placeholder={t("skillTree.resetPlaceholder")}
+                    value={resetInput}
+                    onChange={(e) => setResetInput(e.target.value)}
+                    className="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-rose-500 font-mono-retro"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => { setShowResetConfirm(false); setResetInput(""); }}
+                      className="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-white font-pixel text-[10px] transition-all cursor-pointer"
+                    >
+                      {t("taskbar.cancel")}
+                    </button>
+                    <button
+                      onClick={() => {
+                        const lower = resetInput.trim().toLowerCase();
+                        if (lower === "yes" || lower === "tak") {
+                          resetProgress();
+                          setShowResetConfirm(false);
+                          setResetInput("");
+                        }
+                      }}
+                      disabled={resetInput.trim().toLowerCase() !== "yes" && resetInput.trim().toLowerCase() !== "tak"}
+                      className="flex-1 py-1.5 bg-rose-600 disabled:bg-slate-800 disabled:text-slate-500 hover:bg-rose-500 rounded-lg text-white font-pixel text-[10px] font-bold transition-all cursor-pointer"
+                    >
+                      RESET
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
+            </div>
+          </div>
+
+          {/* Side panel — slides in from right, OUTSIDE React Flow viewport = always sharp */}
+          <div
+            className="h-full overflow-hidden transition-all duration-500 ease-out"
+            style={{ width: isPanelOpen ? "35%" : "0%" }}
+          >
+            {selectedNodeId && (
+              <LessonSidePanel
+                nodeId={selectedNodeId}
+                onClose={() => selectNode("")}
+                onStartLesson={handleStartLesson}
+                onNavigate={handleNavigate}
+              />
             )}
           </div>
         </div>

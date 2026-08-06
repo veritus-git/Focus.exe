@@ -190,6 +190,17 @@
 }
 
 
+/* ═══════════════════════════════════════════════════════════
+   Lesson Side Panel — crisp UI rendered outside React Flow
+   ═══════════════════════════════════════════════════════════ */
+.lesson-side-panel {
+  animation: sidePanelSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes sidePanelSlide {
+  0% { opacity: 0; clip-path: inset(0 0 0 100%); }
+  100% { opacity: 1; clip-path: inset(0 0 0 0%); }
+}
 
 /* ═══════════════════════════════════════════════════════════
    PERFORMANCE: Window state transitions
