@@ -12,44 +12,16 @@ interface LessonSidePanelProps {
 }
 
 /**
- * Build a depth-first navigation order from a given node.
- * Children = all lessons that directly require this node.
- * Sorted left-to-right by their x-position on the map.
+ * Get direct children of a node (lessons that require this node), sorted left-to-right.
  */
-function getNavigableNodes(fromId: string, positions: Record<string, { x: number; y: number }>): string[] {
-  // Find direct children: lessons whose `requires` includes `fromId`
-  const children = ALL_LESSONS
+function getDirectChildren(fromId: string, positions: Record<string, { x: number; y: number }>): string[] {
+  return ALL_LESSONS
     .filter((l) => l.requires.includes(fromId))
-    .sort((a, b) => {
-      const ax = positions[a.id]?.x ?? 0;
-      const bx = positions[b.id]?.x ?? 0;
-      return ax - bx;
-    });
-
-  const result: string[] = [];
-
-  function dfs(nodeId: string) {
-    result.push(nodeId);
-    const kids = ALL_LESSONS
-      .filter((l) => l.requires.includes(nodeId))
-      .sort((a, b) => {
-        const ax = positions[a.id]?.x ?? 0;
-        const bx = positions[b.id]?.x ?? 0;
-        return ax - bx;
-      });
-    for (const kid of kids) {
-      dfs(kid.id);
-    }
-  }
-
-  for (const child of children) {
-    dfs(child.id);
-  }
-
-  return result;
+    .sort((a, b) => (positions[a.id]?.x ?? 0) - (positions[b.id]?.x ?? 0))
+    .map((l) => l.id);
 }
 
-// Positions map (imported here to avoid circular deps — same as SkillTreeWindow)
+// Positions map (same as SkillTreeWindow)
 const P: Record<string, { x: number; y: number }> = {
   "what-is-information": { x: 2500, y: 50 },
   "hw-how-bit-works": { x: 300, y: 400 }, "hw-logic-gates": { x: 150, y: 680 },
@@ -93,23 +65,21 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, onClos
   // Find parent node(s) — the lessons this one requires
   const parentId = useMemo(() => {
     if (!lesson) return null;
-    // Use the first requirement as "parent" for navigation context
     return lesson.requires.length > 0 ? lesson.requires[0] : null;
   }, [lesson]);
 
-  // Build sibling navigation: all nodes reachable from the same parent, in DFS order
+  // Build sibling navigation: direct children of the parent, sorted by x position
   const { siblings, currentIndex } = useMemo(() => {
-    // If this is level 0, get its children as navigable
     if (nodeId === LEVEL_0.id) {
-      const navNodes = getNavigableNodes(nodeId, P);
-      return { siblings: [nodeId, ...navNodes], currentIndex: 0 };
+      // Level 0: navigate through its direct children (track starters)
+      const children = getDirectChildren(nodeId, P);
+      return { siblings: [nodeId, ...children], currentIndex: 0 };
     }
 
-    // Find common parent and get DFS traversal
     if (parentId) {
-      const navNodes = getNavigableNodes(parentId, P);
-      // Include the parent itself at the start
-      const all = [parentId, ...navNodes];
+      // Get siblings = all direct children of the same parent
+      const siblingIds = getDirectChildren(parentId, P);
+      const all = [parentId, ...siblingIds];
       const idx = all.indexOf(nodeId);
       return { siblings: all, currentIndex: idx >= 0 ? idx : 0 };
     }

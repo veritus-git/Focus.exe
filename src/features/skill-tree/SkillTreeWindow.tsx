@@ -63,6 +63,7 @@ export const SkillTreeWindow: React.FC = () => {
   const windowContainerRef = useRef<HTMLDivElement>(null);
   const windowPosRef = useRef({ x: 60, y: 60 });
   const [activeLessonNodeId, setActiveLessonNodeId] = useState<string | null>(null);
+  const [panelOpen, setPanelOpen] = useState(false);
 
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [resetInput, setResetInput] = useState("");
@@ -80,7 +81,7 @@ export const SkillTreeWindow: React.FC = () => {
     }
   }, [isMaximized]);
 
-  // Zoom to node when selected — delayed to allow the 500ms panel transition to complete
+  // Two-step zoom+panel animation
   useEffect(() => {
     if (!reactFlowInstance.current) return;
     
@@ -89,21 +90,41 @@ export const SkillTreeWindow: React.FC = () => {
         const vp = reactFlowInstance.current.getViewport();
         prevViewRef.current = { x: vp.x, y: vp.y, zoom: vp.zoom };
       }
-      // Wait 600ms so the ReactFlow container has finished resizing to 65%
-      const timer = setTimeout(() => {
-        const pos = P[selectedNodeId];
-        reactFlowInstance.current?.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.8, duration: 450 });
-      }, 600);
-      return () => clearTimeout(timer);
-    } else if (!selectedNodeId && prevViewRef.current) {
-      // Restore previous view when deselecting — also delayed for container resize
-      const timer = setTimeout(() => {
-        reactFlowInstance.current?.setViewport(prevViewRef.current!, { duration: 400 });
-        prevViewRef.current = null;
-      }, 100);
-      return () => clearTimeout(timer);
+      const pos = P[selectedNodeId];
+
+      if (panelOpen) {
+        // Panel already open (navigating between nodes) — just re-center instantly
+        reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 350 });
+      } else {
+        // First selection: Step 1 — zoom to node in full-width viewport
+        reactFlowInstance.current.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 300 });
+        // Step 2 — after zoom lands, open panel (triggers re-center via panelOpen effect)
+        const timer = setTimeout(() => setPanelOpen(true), 300);
+        return () => clearTimeout(timer);
+      }
+    } else if (!selectedNodeId) {
+      setPanelOpen(false);
+      if (prevViewRef.current) {
+        const timer = setTimeout(() => {
+          reactFlowInstance.current?.setViewport(prevViewRef.current!, { duration: 400 });
+          prevViewRef.current = null;
+        }, 100);
+        return () => clearTimeout(timer);
+      }
     }
   }, [selectedNodeId]);
+
+  // When panel opens/closes, re-center to account for the viewport width change
+  useEffect(() => {
+    if (panelOpen && selectedNodeId && P[selectedNodeId] && reactFlowInstance.current) {
+      // Small delay so the CSS transition starts, then re-center as viewport shrinks
+      const timer = setTimeout(() => {
+        const pos = P[selectedNodeId];
+        reactFlowInstance.current?.setCenter(pos.x + 32, pos.y + 32, { zoom: 1.5, duration: 500 });
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [panelOpen]);
 
   // Keyboard navigation for side panel: ArrowDown/ArrowUp/Escape
   useEffect(() => {
@@ -219,7 +240,7 @@ export const SkillTreeWindow: React.FC = () => {
   }, [nodeStates, handleStartLesson]);
 
   const nodes = flowNodes;
-  const isPanelOpen = !!selectedNodeId;
+  // panelOpen is managed as separate state for two-step animation
 
   return (
     <>
@@ -258,7 +279,7 @@ export const SkillTreeWindow: React.FC = () => {
           {/* React Flow map area — shrinks when panel is open */}
           <div
             className="h-full bg-slate-950 relative overflow-hidden transition-all duration-500 ease-out"
-            style={{ width: isPanelOpen ? "65%" : "100%" }}
+            style={{ width: panelOpen ? "65%" : "100%" }}
           >
             <ReactFlow
               nodes={nodes} edges={flowEdges} nodeTypes={nodeTypes}
@@ -326,7 +347,7 @@ export const SkillTreeWindow: React.FC = () => {
           {/* Side panel — slides in from right, OUTSIDE React Flow viewport = always sharp */}
           <div
             className="h-full overflow-hidden transition-all duration-500 ease-out"
-            style={{ width: isPanelOpen ? "35%" : "0%" }}
+            style={{ width: panelOpen ? "35%" : "0%" }}
           >
             {selectedNodeId && (
               <LessonSidePanel

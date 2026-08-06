@@ -66,8 +66,8 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Label — shown below the circle, fades when selected */}
-      <div className={`mt-1.5 text-center max-w-[100px] transition-opacity duration-300 ${isSelected ? "opacity-30" : "opacity-100"}`}>
+      {/* Label — always visible, white when available, gray when locked */}
+      <div className="mt-3 text-center max-w-[100px]">
         <span
           className={`text-[10px] font-pixel font-bold block leading-tight ${isLocked ? "text-slate-600" : "text-white"}`}
           style={{ textShadow: isLocked ? "none" : "0 2px 6px rgba(0,0,0,0.9)" }}
