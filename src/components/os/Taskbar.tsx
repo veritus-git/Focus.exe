@@ -85,7 +85,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
 
   return (
     <>
-      <div className="h-11 bg-slate-950/90 backdrop-blur-md border-t border-white/10 px-4 flex items-center justify-between z-40 select-none shadow-lg">
+      <div className="h-11 bg-slate-950/95 border-t border-white/10 px-4 flex items-center justify-between z-40 select-none shadow-lg">
         {/* Left: Power Pill with timer or unlock icon */}
         <div className="flex items-center">
           <div className={`h-8 border rounded-xl overflow-hidden flex items-center shadow-sm ${
@@ -188,7 +188,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
           </div>
 
           {/* Readable Live Clock */}
-          <div className="text-white font-mono-retro text-lg tracking-widest drop-shadow-sm font-bold">
+          <div className="text-white font-mono-retro text-lg tracking-widest font-bold" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}>
             {timeStr}
           </div>
         </div>
@@ -196,7 +196,7 @@ export const Taskbar: React.FC<TaskbarProps> = ({ secondsLeft, setSecondsLeft })
 
       {/* Shutdown System UI Modal (100% Translated!) */}
       {showShutdownModal && (
-        <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-md flex items-center justify-center select-none p-4">
+        <div className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center select-none p-4">
           <div className="pixel-window w-[440px] p-6 rounded-2xl bg-slate-900 border border-white/20 text-white flex flex-col items-center gap-4 text-center shadow-2xl">
             <div className="w-12 h-12 bg-rose-950/60 border border-rose-500/40 rounded-full flex items-center justify-center text-rose-400">
               <Power size={24} />

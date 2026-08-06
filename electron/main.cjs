@@ -2,6 +2,10 @@ const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
 const isDev = process.env.NODE_ENV !== 'production';
 
+// Fix for Linux global blur (XWayland fractional scaling issues)
+app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
+app.commandLine.appendSwitch('enable-features', 'WaylandWindowDecorations');
+
 function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
