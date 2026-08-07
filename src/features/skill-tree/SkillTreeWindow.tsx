@@ -345,7 +345,6 @@ export const SkillTreeWindow: React.FC = () => {
               minZoom={0.15} maxZoom={1.6}
               proOptions={{ hideAttribution: true }}
               nodesFocusable={false}
-              elementsSelectable={false}
               edgesFocusable={false}
               nodesConnectable={false}
               nodesDraggable={false}
