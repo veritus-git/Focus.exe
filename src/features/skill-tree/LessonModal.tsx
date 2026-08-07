@@ -37,26 +37,23 @@ export const LessonModal: React.FC<LessonModalProps> = ({ nodeId, onClose }) => 
     }
   }, [currentPage]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowRight" || e.key === "Enter") {
-      e.preventDefault();
-      if (currentPage < totalPages - 1) {
-        setCurrentPage((p) => p + 1);
-      } else {
-        completeNode(nodeId);
-        onClose();
-      }
-    } else if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      if (currentPage > 0) {
-        setCurrentPage((p) => p - 1);
-      }
-    }
-  };
+
 
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {
       setCurrentPage((p) => p + 1);
+    } else {
+      handleComplete();
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === "ArrowRight") {
+      e.preventDefault();
+      handleNextPage();
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      handlePrevPage();
     }
   };
 

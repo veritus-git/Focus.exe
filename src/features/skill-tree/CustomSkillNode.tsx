@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useRef } from "react";
 import { Handle, Position } from "@xyflow/react";
-import { Lock, Check } from "lucide-react";
+import { Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
 
@@ -64,7 +64,6 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
           style={!isLocked ? { borderColor: isCompleted ? "#ffd700" : accentColor, boxShadow: `0 0 15px ${isCompleted ? "rgba(255,215,0,0.4)" : accentColor + "60"}` } : undefined}
         >
           {isLocked ? <Lock size={16} className="text-slate-600" />
-            : isCompleted ? <Check size={20} className="text-[#ffd700]" />
             : <span className="text-lg">{data.icon}</span>}
         </div>
       </div>
@@ -72,8 +71,8 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
       {/* Label — always visible, white when available, gray when locked */}
       <div className="mt-3 text-center max-w-[100px]">
         <span
-          className={`text-[10px] font-pixel font-bold block leading-tight ${isLocked ? "text-slate-600" : "text-white"}`}
-          style={{ textShadow: isLocked ? "none" : "0 2px 6px rgba(0,0,0,0.9)" }}
+          className={`text-[10px] font-pixel font-bold block leading-tight ${isLocked ? "text-slate-600" : isCompleted ? "text-[#ffd700]" : "text-white"}`}
+          style={{ textShadow: isLocked ? "none" : isCompleted ? "0 0 10px rgba(255,215,0,0.5)" : "0 2px 6px rgba(0,0,0,0.9)" }}
         >
           {title}
         </span>

@@ -56,6 +56,8 @@ export const SkillTreeWindow: React.FC = () => {
   const nodeStates = useSkillTreeStore((state) => state.nodes);
   const resetProgress = useSkillTreeStore((state) => state.resetProgress);
   const selectedNodeId = useSkillTreeStore((state) => state.selectedNodeId);
+  const justCompletedNodeId = useSkillTreeStore((state) => state.justCompletedNodeId);
+  const clearJustCompleted = useSkillTreeStore((state) => state.clearJustCompleted);
 
   const isMinimized = minimizedWindows.includes("skillTree");
   const [isMaximized, setIsMaximized] = useState(true);
@@ -92,7 +94,7 @@ export const SkillTreeWindow: React.FC = () => {
     const centerY = vpHeight * 0.5;
     
     const targetX = centerX - (pos.x + 32) * zoom;
-    const targetY = centerY - (pos.y + 32) * zoom;
+    const targetY = centerY - (pos.y + 64) * zoom;
     
     reactFlowInstance.current.setViewport({ x: targetX, y: targetY, zoom }, { duration });
   };
@@ -100,38 +102,42 @@ export const SkillTreeWindow: React.FC = () => {
   // Zoom+panel animation
   useEffect(() => {
     if (!reactFlowInstance.current) return;
-    
-    if (selectedNodeId && P[selectedNodeId]) {
-      if (!prevViewRef.current) {
-        const vp = reactFlowInstance.current.getViewport();
-        prevViewRef.current = { x: vp.x, y: vp.y, zoom: vp.zoom };
-      }
-      const pos = P[selectedNodeId];
-
-      if (panelOpen) {
-        // Panel already open — pan directly to left area
-        centerNode(pos, 0.325, 400);
-      } else {
-        // First selection: zoom to dead center of screen
-        centerNode(pos, 0.5, 300);
-        // Then open panel and simultaneously shift to left area
-        const timer = setTimeout(() => {
+    if (selectedNodeId) {
+      // Zoom in
+      const pos = P[selectedNodeId] || { x: 2500, y: 50 };
+      if (!panelOpen) {
+        centerNode(pos, 0.5, 400); // 1. zoom to center
+        const t = setTimeout(() => {
           setPanelOpen(true);
-          centerNode(pos, 0.325, 500); // 500ms matches the panel transition duration
-        }, 300);
-        return () => clearTimeout(timer);
+          centerNode(pos, 0.325, 400); // 2. open panel & shift
+        }, 400);
+        return () => clearTimeout(t);
+      } else {
+        centerNode(pos, 0.325, 400); // already open, just shift
       }
-    } else if (!selectedNodeId) {
+    } else {
       setPanelOpen(false);
-      if (prevViewRef.current) {
-        const timer = setTimeout(() => {
-          reactFlowInstance.current?.setViewport(prevViewRef.current!, { duration: 400 });
-          prevViewRef.current = null;
-        }, 100);
-        return () => clearTimeout(timer);
+      // Wait, if we just completed a lesson, don't center anything, we will fitView!
+      if (!justCompletedNodeId && reactFlowInstance.current) {
+        if (prevViewRef.current) {
+            reactFlowInstance.current?.setViewport(prevViewRef.current!, { duration: 400 });
+            prevViewRef.current = null;
+        }
       }
     }
   }, [selectedNodeId, panelOpen]);
+
+  // Handle Lesson Completion Zoom Out
+  useEffect(() => {
+    if (justCompletedNodeId && reactFlowInstance.current) {
+      setTimeout(() => {
+        reactFlowInstance.current?.fitView({ duration: 1500, padding: 0.15 });
+        setTimeout(() => {
+          clearJustCompleted();
+        }, 1500);
+      }, 300);
+    }
+  }, [justCompletedNodeId, clearJustCompleted]);
 
   // Keyboard navigation for side panel: ArrowDown/ArrowUp/Escape
   useEffect(() => {
@@ -338,15 +344,18 @@ export const SkillTreeWindow: React.FC = () => {
               defaultViewport={{ x: 0, y: 0, zoom: 1.0 }}
               minZoom={0.15} maxZoom={1.6}
               proOptions={{ hideAttribution: true }}
-              nodesDraggable={false}
+              nodesFocusable={false}
+              elementsSelectable={false}
+              edgesFocusable={false}
               nodesConnectable={false}
+              nodesDraggable={false}
             >
               <Background color="#1e293b" gap={40} size={1} />
               <Controls className="!bg-slate-900 !border !border-white/20 !text-white !fill-white" />
             </ReactFlow>
 
             {/* Reset Button */}
-            <div className="absolute bottom-4 left-4 z-50">
+            <div className={`absolute bottom-4 z-50 transition-all duration-500 ${panelOpen ? 'right-[calc(35vw+1rem)]' : 'right-4'}`}>
               {!showResetConfirm ? (
                 <button
                   onClick={() => setShowResetConfirm(true)}

@@ -16,8 +16,10 @@ export interface SkillNodeState {
 interface SkillTreeStore {
   nodes: Record<string, SkillNodeState>;
   selectedNodeId: string | null;
+  justCompletedNodeId: string | null;
   selectNode: (id: string) => void;
   completeNode: (id: string) => void;
+  clearJustCompleted: () => void;
   resetProgress: () => void;
 }
 
@@ -102,17 +104,19 @@ function recalculateUnlocks(nodes: Record<string, SkillNodeState>): Record<strin
 export const useSkillTreeStore = create<SkillTreeStore>((set) => ({
   nodes: loadPersistedNodes(),
   selectedNodeId: null,
+  justCompletedNodeId: null,
 
   selectNode: (id) =>
     set((state) => ({
       selectedNodeId: state.selectedNodeId === id ? null : id,
     })),
 
+  clearJustCompleted: () => set({ justCompletedNodeId: null }),
+
   completeNode: (id) =>
     set((state) => {
       let updatedNodes = { ...state.nodes };
 
-      // Mark current node as completed
       if (updatedNodes[id]) {
         updatedNodes[id] = {
           ...updatedNodes[id],
@@ -121,15 +125,13 @@ export const useSkillTreeStore = create<SkillTreeStore>((set) => ({
         };
       }
 
-      // Recalculate unlocks based on dependencies
       updatedNodes = recalculateUnlocks(updatedNodes);
-
-      // Persist to localStorage
       persistNodes(updatedNodes);
 
       return {
         nodes: updatedNodes,
-        selectedNodeId: id,
+        selectedNodeId: null, // close panel on completion
+        justCompletedNodeId: id,
       };
     }),
 
@@ -137,6 +139,6 @@ export const useSkillTreeStore = create<SkillTreeStore>((set) => ({
     set(() => {
       const freshNodes = buildInitialNodes();
       persistNodes(freshNodes);
-      return { nodes: freshNodes, selectedNodeId: null };
+      return { nodes: freshNodes, selectedNodeId: null, justCompletedNodeId: null };
     }),
 }));
