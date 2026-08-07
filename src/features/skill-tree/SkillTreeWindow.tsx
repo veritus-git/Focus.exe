@@ -40,31 +40,18 @@ export const SkillTreeWindow: React.FC = () => {
   const isDraggingRef = useRef(false);
   const prevViewRef = useRef<{ x: number; y: number; zoom: number } | null>(null);
 
-  const maxC = Object.values(P).reduce((max, pos) => Math.max(max, Math.abs(pos.x), Math.abs(pos.y)), 0) + 400;
-  const symmetricBounds = useMemo(() => ({ x: -maxC, y: -maxC, width: maxC * 2, height: maxC * 2 }), [maxC]);
+  const initialNodeIds = useMemo(() => {
+    return [LEVEL_0.id, ...ALL_LESSONS.filter(l => l.requires.includes(LEVEL_0.id)).map(l => l.id)];
+  }, []);
 
   const isInitialMount = useRef(true);
   const wasJustCompleted = useRef(false);
 
-  useEffect(() => {
-    if (reactFlowInstance.current) {
-      if (isInitialMount.current) {
-        isInitialMount.current = false;
-        return;
-      }
-      const timer = setTimeout(() => {
-        if (!selectedNodeId && !justCompletedNodeId) {
-          reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 250 });
-        }
-      }, 60);
-      return () => clearTimeout(timer);
-    }
-  }, [isMaximized, symmetricBounds]);
-
-  const centerNodesBoundingBox = (nodeIds: string[], percentageX: number, duration: number) => {
+  // Helper moved up so useEffects can use it
+  const centerNodesBoundingBox = useCallback((nodeIds: string[], percentageX: number, duration: number) => {
     if (!reactFlowInstance.current || nodeIds.length === 0) return;
     const vpWidth = window.innerWidth;
-    const vpHeight = window.innerHeight - 44; // Account for taskbar height
+    const vpHeight = window.innerHeight - 44; 
     
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     nodeIds.forEach(id => {
@@ -97,7 +84,22 @@ export const SkillTreeWindow: React.FC = () => {
     const targetY = centerY - boxCenterY * zoom;
 
     reactFlowInstance.current.setViewport({ x: targetX, y: targetY, zoom }, { duration });
-  };
+  }, []);
+
+  useEffect(() => {
+    if (reactFlowInstance.current) {
+      if (isInitialMount.current) {
+        isInitialMount.current = false;
+        return;
+      }
+      const timer = setTimeout(() => {
+        if (!selectedNodeId && !justCompletedNodeId) {
+          centerNodesBoundingBox(initialNodeIds, 0.5, 250);
+        }
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [isMaximized, initialNodeIds, centerNodesBoundingBox]);
 
   const centerSingleNode = (pos: { x: number; y: number }, percentageX: number, duration: number) => {
     if (!reactFlowInstance.current) return;
@@ -147,7 +149,7 @@ export const SkillTreeWindow: React.FC = () => {
         if (prevViewRef.current) {
           reactFlowInstance.current.setViewport(prevViewRef.current, { duration: 400 });
         } else {
-          reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 400 });
+          centerNodesBoundingBox(initialNodeIds, 0.5, 400);
         }
       }
       if (justCompletedNodeId) {
@@ -192,7 +194,7 @@ export const SkillTreeWindow: React.FC = () => {
         }, 3000);
       }, 300);
     }
-  }, [justCompletedNodeId, newlyUnlockedIds, finalizeUnlocks, clearJustCompleted, symmetricBounds]);
+  }, [justCompletedNodeId, newlyUnlockedIds, finalizeUnlocks, clearJustCompleted, initialNodeIds, centerNodesBoundingBox]);
 
   // Keyboard navigation for side panel: ArrowDown/ArrowUp/Escape
   useEffect(() => {
@@ -403,7 +405,7 @@ export const SkillTreeWindow: React.FC = () => {
               onInit={(inst) => {
                 reactFlowInstance.current = inst;
                 window.requestAnimationFrame(() => {
-                  inst.fitBounds(symmetricBounds, { duration: 0 });
+                  centerNodesBoundingBox(initialNodeIds, 0.5, 0);
                 });
               }}
               onPaneClick={handlePaneClick}
