@@ -169,15 +169,9 @@ export const SkillTreeWindow: React.FC = () => {
       };
 
       if (!panelOpen) {
-        zoomAction(0.5, 400); // 1. zoom to center
-        const t = setTimeout(() => {
-          setPanelOpen(true);
-          zoomAction(0.325, 400); // 2. open panel & shift
-        }, 400);
-        return () => clearTimeout(t);
-      } else {
-        zoomAction(0.325, 400); // already open, just shift
+        setPanelOpen(true);
       }
+      zoomAction(0.325, 400);
     } else {
       setPanelOpen(false);
       // Only zoom out if we didn't just complete a lesson

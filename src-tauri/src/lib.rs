@@ -3,8 +3,9 @@ use tauri::{Manager, WebviewUrl, WebviewWindowBuilder};
 
 /// Dev Backdoor command to instantly terminate the kiosk process from Rust backend
 #[tauri::command]
-fn exit_app() {
+fn exit_app(window: tauri::Window) {
     println!("[DEV BACKDOOR] Terminating Focus.exe process...");
+    let _ = window.set_cursor_grab(false);
     process::exit(0);
 }
 
@@ -115,6 +116,7 @@ pub fn run() {
                         }
                         tauri::WindowEvent::CloseRequested { .. } => {
                             println!("[FOCUS OS] Main window closing, terminating app...");
+                            let _ = window_clone.set_cursor_grab(false);
                             process::exit(0);
                         }
                         _ => {}
