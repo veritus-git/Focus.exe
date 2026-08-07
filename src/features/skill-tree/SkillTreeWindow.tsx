@@ -4,50 +4,16 @@ import "@xyflow/react/dist/style.css";
 import { useTranslation } from "react-i18next";
 import { GitBranch, Minus, Maximize2, Minimize2, X, Trash2 } from "lucide-react";
 import { CustomSkillNode } from "./CustomSkillNode";
+import { AnimatedUnlockEdge } from "./AnimatedUnlockEdge";
 import { LessonModal } from "./LessonModal";
 import { LessonSidePanel } from "./LessonSidePanel";
 import { useOSStore } from "../../store/useOSStore";
 import { useSkillTreeStore } from "../../store/useSkillTreeStore";
-import { LEVEL_0, TRACKS, ALL_LESSONS } from "../../content/courseIndex";
+import { LEVEL_0, TRACKS, ALL_LESSONS, P } from "../../content/courseIndex";
 
 // ═══════════════════════════════════════════════════════════════════
-// Mind-map positions — organic layout, not a grid
+// Mind-map positions are now dynamically generated in courseIndex.ts
 // ═══════════════════════════════════════════════════════════════════
-const P: Record<string, { x: number; y: number }> = {
-  "what-is-information": { x: 2500, y: 50 },
-  // HW (far left)
-  "hw-how-bit-works": { x: 300, y: 400 }, "hw-logic-gates": { x: 150, y: 680 },
-  "hw-cpu-instructions": { x: 350, y: 950 }, "hw-pipeline": { x: 120, y: 1230 },
-  "hw-cache": { x: 420, y: 1230 }, "hw-ram": { x: 280, y: 1480 },
-  "hw-ssd": { x: 500, y: 1700 }, "hw-multithreading": { x: 80, y: 1480 },
-  // CRYPTO (near HW)
-  "crypto-sha256": { x: 720, y: 580 }, "crypto-keys": { x: 880, y: 830 },
-  "crypto-aes": { x: 760, y: 1100 }, "crypto-digital-signature": { x: 940, y: 1340 },
-  // CODE (left-center)
-  "code-variables": { x: 1300, y: 400 }, "code-functions": { x: 1180, y: 680 },
-  "code-compiler-vs-interpreter": { x: 1380, y: 950 }, "code-callstack": { x: 1100, y: 950 },
-  "code-stack-heap": { x: 1220, y: 1230 }, "code-pointers": { x: 1080, y: 1480 },
-  // AI (between CODE and MATH)
-  "ai-how-understands-text": { x: 1900, y: 580 }, "ai-tokenization": { x: 1720, y: 850 },
-  "ai-embeddings": { x: 2060, y: 850 }, "ai-attention": { x: 1900, y: 1120 },
-  "ai-transformer": { x: 1960, y: 1380 }, "ai-chatgpt": { x: 1800, y: 1630 },
-  "ai-context-window": { x: 2120, y: 1630 },
-  // MATH (center hub)
-  "math-vectors": { x: 2600, y: 400 }, "math-derivatives": { x: 2440, y: 680 },
-  "math-vector-space": { x: 2760, y: 680 }, "math-probability": { x: 2350, y: 950 },
-  "math-matrices": { x: 2880, y: 950 }, "math-diff-eq": { x: 2500, y: 1230 },
-  "math-gradient-descent": { x: 2720, y: 1480 },
-  // AUDIO (right of math)
-  "audio-pcm": { x: 3300, y: 400 }, "audio-fft": { x: 3180, y: 680 },
-  "audio-spectrogram": { x: 3340, y: 950 }, "audio-vad": { x: 3220, y: 1230 },
-  // NET (right)
-  "net-ip-address": { x: 3800, y: 400 }, "net-dns": { x: 3680, y: 680 },
-  "net-tcp": { x: 3960, y: 680 }, "net-what-happens-url": { x: 3820, y: 950 },
-  "net-http": { x: 3780, y: 1230 }, "net-https": { x: 3960, y: 1480 },
-  // ENG (far right)
-  "eng-gps": { x: 4400, y: 580 }, "eng-imu": { x: 4280, y: 850 },
-  "eng-lidar": { x: 4500, y: 1120 }, "eng-autopilot": { x: 4380, y: 1380 },
-};
 
 export const SkillTreeWindow: React.FC = () => {
   const { t } = useTranslation();
@@ -149,16 +115,17 @@ export const SkillTreeWindow: React.FC = () => {
           padding: 0.25 
         });
 
-        // After the zoom animation finishes, trigger the visual unlock animation
+        // The edge animation starts AFTER the camera stops (1500ms delay in CSS)
+        // It takes 1500ms to complete.
+        // So we finalize unlocks (lighting up the nodes) at 1500 + 1500 = 3000ms after zoom starts.
         setTimeout(() => {
           finalizeUnlocks();
           
-          // Clear everything after the unlock animation has time to play (e.g. 2 seconds)
           setTimeout(() => {
             clearJustCompleted();
-          }, 2000);
+          }, 1000);
           
-        }, 1500);
+        }, 3000);
       }, 300);
     }
   }, [justCompletedNodeId, newlyUnlockedIds, finalizeUnlocks, clearJustCompleted]);
@@ -270,6 +237,7 @@ export const SkillTreeWindow: React.FC = () => {
   }, [selectNode]);
 
   const nodeTypes = useMemo(() => ({ customSkill: CustomSkillNode }), []);
+  const edgeTypes = useMemo(() => ({ animatedUnlock: AnimatedUnlockEdge }), []);
 
   const { flowNodes, flowEdges } = useMemo(() => {
     const fNodes: Node[] = [];
@@ -296,17 +264,17 @@ export const SkillTreeWindow: React.FC = () => {
           const srcDone = srcState?.status === "completed";
           const bothDone = srcDone && targetState?.status === "completed";
 
+          const isUnlocking = targetState?.status === "unlocking";
+
           fEdges.push({
             id: `e-${reqId}-${lesson.id}`,
             source: reqId,
             target: lesson.id,
-            type: "default",
-            animated: srcDone && !bothDone,
-            style: {
-              stroke: bothDone ? "#ffd700" : srcDone ? track.color : "#334155",
-              strokeWidth: bothDone ? 3.5 : srcDone ? 2.5 : 1.5,
-              opacity: bothDone ? 1 : srcDone ? 0.9 : 0.25,
-              strokeDasharray: bothDone ? "none" : undefined,
+            type: "animatedUnlock",
+            data: {
+              isUnlocking,
+              isCompleted: bothDone,
+              trackColor: track.color
             },
           });
         }
@@ -358,7 +326,7 @@ export const SkillTreeWindow: React.FC = () => {
             style={{ width: "100%" }}
           >
             <ReactFlow
-              nodes={nodes} edges={flowEdges} nodeTypes={nodeTypes}
+              nodes={nodes} edges={flowEdges} nodeTypes={nodeTypes} edgeTypes={edgeTypes}
               fitView
               fitViewOptions={{ padding: 0.15, duration: 0 }}
               onInit={(inst) => {

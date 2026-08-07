@@ -180,6 +180,23 @@
   animation: zoomFromCircle 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes drawEdgeLine {
+  0% {
+    stroke-dashoffset: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.edge-unlock-animation {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  /* 1.5s animation matching the view zoom out, ease-out so it slows down near the target */
+  /* We add a 1.5s delay so it waits for the camera zoom to finish before animating */
+  animation: drawEdgeLine 1.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 1.5s;
+}
+
 ::-webkit-scrollbar-track {
   background: rgba(18, 18, 30, 0.6);
 }
