@@ -1,50 +1,70 @@
-import { BaseEdge, EdgeProps, getBezierPath } from '@xyflow/react';
+import { EdgeProps, getStraightPath } from '@xyflow/react';
 
 export const AnimatedUnlockEdge = ({
   sourceX,
   sourceY,
   targetX,
   targetY,
-  sourcePosition,
-  targetPosition,
   style = {},
-  markerEnd,
+  id,
   data,
 }: EdgeProps) => {
-  const [edgePath] = getBezierPath({
+  const [edgePath] = getStraightPath({
     sourceX,
     sourceY,
-    sourcePosition,
     targetX,
     targetY,
-    targetPosition,
   });
 
   const isUnlocking = data?.isUnlocking as boolean;
-  const isCompleted = data?.isCompleted as boolean;
+  const isActive = data?.isActive as boolean; // True if source is done and target is at least active
   const trackColor = (data?.trackColor as string) || "#00ffcc";
+  const maskId = `mask-${id}`;
 
   return (
     <>
-      <BaseEdge 
-        path={edgePath} 
-        markerEnd={markerEnd} 
-        style={{ ...style, strokeWidth: 2, stroke: isCompleted ? trackColor : "#334155", opacity: isCompleted ? 1 : 0.25 }} 
+      {isUnlocking && (
+        <defs>
+          <mask id={maskId}>
+            <path
+              d={edgePath}
+              pathLength={1}
+              stroke="white"
+              strokeWidth={10}
+              fill="none"
+              strokeLinecap="round"
+              className="edge-unlock-animation"
+            />
+          </mask>
+        </defs>
+      )}
+
+      {/* Background / Solid Active edge */}
+      <path
+        d={edgePath}
+        fill="none"
+        style={{ 
+          ...style, 
+          strokeWidth: isActive ? 2.5 : 2, 
+          stroke: isActive ? trackColor : "#334155", 
+          opacity: isActive ? 1 : 0.25 
+        }} 
       />
       
+      {/* Foreground dashed animating edge */}
       {isUnlocking && (
         <path
           d={edgePath}
-          pathLength={1}
+          mask={`url(#${maskId})`}
           style={{
             ...style,
             strokeWidth: 4,
             stroke: trackColor,
-            strokeLinecap: "round",
+            strokeDasharray: "8 8",
             fill: "none",
-            filter: `drop-shadow(0 0 12px ${trackColor})`,
+            filter: `drop-shadow(0 0 10px ${trackColor})`,
           }}
-          className="edge-unlock-animation"
+          className="edge-dash-move"
         />
       )}
     </>

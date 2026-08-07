@@ -40,14 +40,17 @@ export const SkillTreeWindow: React.FC = () => {
   const isDraggingRef = useRef(false);
   const prevViewRef = useRef<{ x: number; y: number; zoom: number } | null>(null);
 
+  const maxC = Object.values(P).reduce((max, pos) => Math.max(max, Math.abs(pos.x), Math.abs(pos.y)), 0) + 400;
+  const symmetricBounds = useMemo(() => ({ x: -maxC, y: -maxC, width: maxC * 2, height: maxC * 2 }), [maxC]);
+
   useEffect(() => {
     if (reactFlowInstance.current) {
       const timer = setTimeout(() => {
-        reactFlowInstance.current?.fitView({ padding: 0.15, duration: 250 });
+        reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 250 });
       }, 60);
       return () => clearTimeout(timer);
     }
-  }, [isMaximized]);
+  }, [isMaximized, symmetricBounds]);
 
   // Calculate viewport offset for the 65% left-aligned area
   const centerNode = (pos: { x: number; y: number }, percentageX: number, duration: number) => {
@@ -87,12 +90,9 @@ export const SkillTreeWindow: React.FC = () => {
       }
     } else {
       setPanelOpen(false);
-      // Wait, if we just completed a lesson, don't center anything, we will fitView!
+      // Wait, if we just completed a lesson, don't center anything, we will fitBounds later!
       if (!justCompletedNodeId && reactFlowInstance.current) {
-        if (prevViewRef.current) {
-            reactFlowInstance.current?.setViewport(prevViewRef.current!, { duration: 400 });
-            prevViewRef.current = null;
-        }
+        reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 400 });
       } else if (justCompletedNodeId) {
         prevViewRef.current = null;
       }
@@ -102,18 +102,21 @@ export const SkillTreeWindow: React.FC = () => {
   const newlyUnlockedIds = useSkillTreeStore((state) => state.newlyUnlockedIds);
   const finalizeUnlocks = useSkillTreeStore((state) => state.finalizeUnlocks);
 
+  // Handle Initial view or Lesson Close zoom out
+  useEffect(() => {
+    if (!justCompletedNodeId && reactFlowInstance.current && !selectedNodeId) {
+      setTimeout(() => {
+        reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 800 });
+      }, 50);
+    }
+  }, [selectedNodeId, justCompletedNodeId, symmetricBounds]);
+
   // Handle Lesson Completion Zoom Out
   useEffect(() => {
     if (justCompletedNodeId && reactFlowInstance.current) {
       setTimeout(() => {
-        // Fit view to the completed node AND any newly unlocked children
-        const nodesToFit = [justCompletedNodeId, ...newlyUnlockedIds].map(id => ({ id }));
-        
-        reactFlowInstance.current?.fitView({ 
-          nodes: nodesToFit,
-          duration: 1500, 
-          padding: 0.25 
-        });
+        // We want to keep the center at 0,0 here as requested: "ZAWSZE lekcja 0 jest na samym środeczku"
+        reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 1500 });
 
         // The edge animation starts AFTER the camera stops (1500ms delay in CSS)
         // It takes 1500ms to complete.
@@ -128,7 +131,7 @@ export const SkillTreeWindow: React.FC = () => {
         }, 3000);
       }, 300);
     }
-  }, [justCompletedNodeId, newlyUnlockedIds, finalizeUnlocks, clearJustCompleted]);
+  }, [justCompletedNodeId, newlyUnlockedIds, finalizeUnlocks, clearJustCompleted, symmetricBounds]);
 
   // Keyboard navigation for side panel: ArrowDown/ArrowUp/Escape
   useEffect(() => {
@@ -262,9 +265,8 @@ export const SkillTreeWindow: React.FC = () => {
           const srcState = nodeStates[reqId];
           const targetState = nodeStates[lesson.id];
           const srcDone = srcState?.status === "completed";
-          const bothDone = srcDone && targetState?.status === "completed";
-
           const isUnlocking = targetState?.status === "unlocking";
+          const targetActiveOrDone = targetState?.status === "active" || targetState?.status === "completed";
 
           fEdges.push({
             id: `e-${reqId}-${lesson.id}`,
@@ -273,7 +275,7 @@ export const SkillTreeWindow: React.FC = () => {
             type: "animatedUnlock",
             data: {
               isUnlocking,
-              isCompleted: bothDone,
+              isActive: srcDone && targetActiveOrDone,
               trackColor: track.color
             },
           });
@@ -327,10 +329,9 @@ export const SkillTreeWindow: React.FC = () => {
           >
             <ReactFlow
               nodes={nodes} edges={flowEdges} nodeTypes={nodeTypes} edgeTypes={edgeTypes}
-              fitView
-              fitViewOptions={{ padding: 0.15, duration: 0 }}
               onInit={(inst) => {
                 reactFlowInstance.current = inst;
+                setTimeout(() => inst.fitBounds(symmetricBounds, { duration: 0 }), 100);
               }}
               onPaneClick={handlePaneClick}
               defaultViewport={{ x: 0, y: 0, zoom: 1.0 }}

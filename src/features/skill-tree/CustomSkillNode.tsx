@@ -80,7 +80,19 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
         </span>
       </div>
 
-      <Handle type="source" position={Position.Bottom} className="!opacity-0 !w-0 !h-0 !border-none pointer-events-none" />
+      {/* Spider web handles - centered in the middle of the node */}
+      <Handle 
+        type="target" 
+        position={Position.Top} 
+        className="opacity-0 pointer-events-none" 
+        style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }} 
+      />
+      <Handle 
+        type="source" 
+        position={Position.Bottom} 
+        className="opacity-0 pointer-events-none" 
+        style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }} 
+      />
     </div>
   );
 };
