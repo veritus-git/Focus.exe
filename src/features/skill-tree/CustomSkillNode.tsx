@@ -78,18 +78,18 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
         </span>
       </div>
 
-      {/* Spider web handles - centered in the middle of the node */}
+      {/* Spider web handles - centered in the exact middle of the CIRCLE, not the whole node bounding box */}
       <Handle 
         type="target" 
         position={Position.Top} 
         className="opacity-0 pointer-events-none" 
-        style={{ left: '50%', top: '50%', bottom: 'auto', right: 'auto', transform: 'translate(-50%, -50%)' }} 
+        style={{ left: '50%', top: data.isLevel0 ? '36px' : '28px', bottom: 'auto', right: 'auto', transform: 'translate(-50%, -50%)' }} 
       />
       <Handle 
         type="source" 
         position={Position.Bottom} 
         className="opacity-0 pointer-events-none" 
-        style={{ left: '50%', top: '50%', bottom: 'auto', right: 'auto', transform: 'translate(-50%, -50%)' }} 
+        style={{ left: '50%', top: data.isLevel0 ? '36px' : '28px', bottom: 'auto', right: 'auto', transform: 'translate(-50%, -50%)' }} 
       />
     </div>
   );
