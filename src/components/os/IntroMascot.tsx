@@ -16,7 +16,13 @@ export const IntroMascot: React.FC = () => {
 
   useEffect(() => {
     // Force focus on the Tauri window so keyboard events work immediately
-    getCurrentWindow().setFocus().catch(() => {});
+    try {
+      if ((window as any).__TAURI_INTERNALS__) {
+        getCurrentWindow().setFocus().catch(() => {});
+      }
+    } catch (e) {
+      console.warn("Could not focus Tauri window", e);
+    }
     window.focus();
     
     // 1. Smooth 60 FPS gravity drop (0.65s)

@@ -269,11 +269,17 @@ export const P: Record<string, { x: number; y: number }> = (() => {
         
         const p1 = positions[ids[i]];
         const p2 = positions[ids[j]];
-        const dx = p1.x - p2.x;
-        const dy = p1.y - p2.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        let dx = p1.x - p2.x;
+        let dy = p1.y - p2.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
         
-        if (dist < MIN_DIST && dist > 0) {
+        if (dist === 0) {
+          dx = Math.random() - 0.5;
+          dy = Math.random() - 0.5;
+          dist = Math.sqrt(dx * dx + dy * dy);
+        }
+        
+        if (dist < MIN_DIST) {
           const overlap = MIN_DIST - dist;
           const pushX = (dx / dist) * (overlap / 2);
           const pushY = (dy / dist) * (overlap / 2);
