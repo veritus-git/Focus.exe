@@ -53,8 +53,6 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
       }}
       className="flex flex-col items-center cursor-pointer group select-none relative"
     >
-      <Handle type="target" position={Position.Top} className="!opacity-0 !w-0 !h-0 !border-none pointer-events-none" />
-
       {/* Circle — no animation, no composite layer, no blur */}
       <div className="relative flex items-center justify-center">
         <div

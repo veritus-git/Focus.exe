@@ -35,12 +35,17 @@ export const IntroMascot: React.FC = () => {
     };
   }, []);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if ((e.key === "Enter" || e.key === " ") && showSpeech) {
-      e.preventDefault();
-      advanceDialog();
-    }
-  };
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === "Enter" || e.key === " ") && showSpeech) {
+        e.preventDefault();
+        advanceDialog();
+      }
+    };
+    
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showSpeech, dialogStage]);
 
   if (introFinished) return null;
 
@@ -56,7 +61,6 @@ export const IntroMascot: React.FC = () => {
     <div 
       ref={containerRef}
       tabIndex={0}
-      onKeyDown={handleKeyDown}
       className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/60 select-none outline-none"
     >
       {/* Top right language switcher */}

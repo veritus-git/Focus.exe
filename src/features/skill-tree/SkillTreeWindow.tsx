@@ -43,10 +43,19 @@ export const SkillTreeWindow: React.FC = () => {
   const maxC = Object.values(P).reduce((max, pos) => Math.max(max, Math.abs(pos.x), Math.abs(pos.y)), 0) + 400;
   const symmetricBounds = useMemo(() => ({ x: -maxC, y: -maxC, width: maxC * 2, height: maxC * 2 }), [maxC]);
 
+  const isInitialMount = useRef(true);
+  const wasJustCompleted = useRef(false);
+
   useEffect(() => {
     if (reactFlowInstance.current) {
+      if (isInitialMount.current) {
+        isInitialMount.current = false;
+        return;
+      }
       const timer = setTimeout(() => {
-        reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 250 });
+        if (!selectedNodeId && !justCompletedNodeId) {
+          reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 250 });
+        }
       }, 60);
       return () => clearTimeout(timer);
     }
@@ -90,10 +99,11 @@ export const SkillTreeWindow: React.FC = () => {
       }
     } else {
       setPanelOpen(false);
-      // Wait, if we just completed a lesson, don't center anything, we will fitBounds later!
-      if (!justCompletedNodeId && reactFlowInstance.current) {
+      // Only zoom out if we didn't just complete a lesson
+      if (!justCompletedNodeId && reactFlowInstance.current && !wasJustCompleted.current) {
         reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 400 });
-      } else if (justCompletedNodeId) {
+      }
+      if (justCompletedNodeId) {
         prevViewRef.current = null;
       }
     }
@@ -102,18 +112,10 @@ export const SkillTreeWindow: React.FC = () => {
   const newlyUnlockedIds = useSkillTreeStore((state) => state.newlyUnlockedIds);
   const finalizeUnlocks = useSkillTreeStore((state) => state.finalizeUnlocks);
 
-  // Handle Initial view or Lesson Close zoom out
-  useEffect(() => {
-    if (!justCompletedNodeId && reactFlowInstance.current && !selectedNodeId) {
-      setTimeout(() => {
-        reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 800 });
-      }, 50);
-    }
-  }, [selectedNodeId, justCompletedNodeId, symmetricBounds]);
-
   // Handle Lesson Completion Zoom Out
   useEffect(() => {
     if (justCompletedNodeId && reactFlowInstance.current) {
+      wasJustCompleted.current = true;
       setTimeout(() => {
         // Fit view to the completed node AND any newly unlocked children
         const nodesToFit = [justCompletedNodeId, ...newlyUnlockedIds].map(id => ({ id }));
@@ -124,14 +126,15 @@ export const SkillTreeWindow: React.FC = () => {
           padding: 0.25 
         });
 
-        // The edge animation starts AFTER the camera stops (1500ms delay in CSS)
-        // It takes 1500ms to complete.
-        // So we finalize unlocks (lighting up the nodes) at 1500 + 1500 = 3000ms after zoom starts.
         setTimeout(() => {
           finalizeUnlocks();
           
           setTimeout(() => {
             clearJustCompleted();
+            // Reset the wasJustCompleted flag after a short delay so manual close later zooms out
+            setTimeout(() => {
+               wasJustCompleted.current = false;
+            }, 500);
           }, 1000);
           
         }, 3000);
@@ -337,7 +340,9 @@ export const SkillTreeWindow: React.FC = () => {
               nodes={nodes} edges={flowEdges} nodeTypes={nodeTypes} edgeTypes={edgeTypes}
               onInit={(inst) => {
                 reactFlowInstance.current = inst;
-                setTimeout(() => inst.fitBounds(symmetricBounds, { duration: 0 }), 100);
+                window.requestAnimationFrame(() => {
+                  inst.fitBounds(symmetricBounds, { duration: 0 });
+                });
               }}
               onPaneClick={handlePaneClick}
               defaultViewport={{ x: 0, y: 0, zoom: 1.0 }}

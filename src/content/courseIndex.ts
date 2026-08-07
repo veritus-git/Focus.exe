@@ -227,22 +227,29 @@ export const P: Record<string, { x: number; y: number }> = (() => {
     for (const d of Object.keys(lessonsByDepth).map(Number)) {
       const ids = lessonsByDepth[d];
       
-      // FIX OVERLAPPING: Give exponential or larger radius for deeper nodes
-      // Intro nodes (d=1) are at 450px
-      // Depth 2 at 950px, Depth 3 at 1450px
-      const radius = 450 + (d - 1) * 500; 
-      
-      // Fix lateral overlapping by allowing larger spread angle as radius increases
-      const maxSpreadAngle = 35; // increased from 24
+      // Increased base radius to 650 to prevent track overlap at depth 1
+      const radiusBase = 650 + (d - 1) * 500; 
       
       ids.forEach((id, index) => {
+        // pseudo-random deterministic numbers based on id
+        const hash = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        
+        // Jitter radius by ±100px for chaos
+        const rJitter = (hash % 200) - 100;
+        const radius = radiusBase + rJitter;
+
+        // Spread angle if multiple nodes at same depth
+        const maxSpreadAngle = 10; 
         let angleOffset = 0;
         if (ids.length > 1) {
           const step = maxSpreadAngle / (ids.length - 1);
           angleOffset = -maxSpreadAngle/2 + step * index;
         }
+
+        // Jitter angle by ±4 degrees for chaos
+        const aJitter = ((hash * 7) % 8) - 4;
+        const finalAngleRad = ((baseAngle + angleOffset + aJitter) * Math.PI) / 180;
         
-        const finalAngleRad = ((baseAngle + angleOffset) * Math.PI) / 180;
         positions[id] = {
           x: Math.round(Math.cos(finalAngleRad) * radius),
           y: Math.round(Math.sin(finalAngleRad) * radius),
