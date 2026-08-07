@@ -106,6 +106,10 @@ export const SkillTreeWindow: React.FC = () => {
       // Zoom in
       const pos = P[selectedNodeId] || { x: 2500, y: 50 };
       if (!panelOpen) {
+        if (!prevViewRef.current) {
+          const vp = reactFlowInstance.current.getViewport();
+          prevViewRef.current = { x: vp.x, y: vp.y, zoom: vp.zoom };
+        }
         centerNode(pos, 0.5, 400); // 1. zoom to center
         const t = setTimeout(() => {
           setPanelOpen(true);
@@ -123,21 +127,41 @@ export const SkillTreeWindow: React.FC = () => {
             reactFlowInstance.current?.setViewport(prevViewRef.current!, { duration: 400 });
             prevViewRef.current = null;
         }
+      } else if (justCompletedNodeId) {
+        prevViewRef.current = null;
       }
     }
   }, [selectedNodeId, panelOpen]);
+
+  const newlyUnlockedIds = useSkillTreeStore((state) => state.newlyUnlockedIds);
+  const finalizeUnlocks = useSkillTreeStore((state) => state.finalizeUnlocks);
 
   // Handle Lesson Completion Zoom Out
   useEffect(() => {
     if (justCompletedNodeId && reactFlowInstance.current) {
       setTimeout(() => {
-        reactFlowInstance.current?.fitView({ duration: 1500, padding: 0.15 });
+        // Fit view to the completed node AND any newly unlocked children
+        const nodesToFit = [justCompletedNodeId, ...newlyUnlockedIds].map(id => ({ id }));
+        
+        reactFlowInstance.current?.fitView({ 
+          nodes: nodesToFit,
+          duration: 1500, 
+          padding: 0.25 
+        });
+
+        // After the zoom animation finishes, trigger the visual unlock animation
         setTimeout(() => {
-          clearJustCompleted();
+          finalizeUnlocks();
+          
+          // Clear everything after the unlock animation has time to play (e.g. 2 seconds)
+          setTimeout(() => {
+            clearJustCompleted();
+          }, 2000);
+          
         }, 1500);
       }, 300);
     }
-  }, [justCompletedNodeId, clearJustCompleted]);
+  }, [justCompletedNodeId, newlyUnlockedIds, finalizeUnlocks, clearJustCompleted]);
 
   // Keyboard navigation for side panel: ArrowDown/ArrowUp/Escape
   useEffect(() => {

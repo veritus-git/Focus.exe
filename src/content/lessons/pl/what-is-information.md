@@ -1,85 +1,136 @@
 # Czym jest informacja?
 
-Zanim zanurzymy się w procesory, sztuczną inteligencję czy kryptografię — musimy odpowiedzieć na jedno fundamentalne pytanie, które łączy **absolutnie wszystko** w cyfrowym świecie[cite: 2].
+Zanim zanurzymy się w procesory, sztuczną inteligencję czy kryptografię — musimy cofnąć się o tysiące, a nawet miliardy lat. Zanim w ogóle wynaleziono prąd, układy scalone i ekrany, informacja już rządziła naszym światem. 
 
-## Czym w ogóle JEST informacja?
-
-Wyobraź sobie, że stoisz w kompletnie ciemnym pokoju. Ktoś naciska przełącznik. Światło jest albo **włączone**, albo **wyłączone**. To wszystko. Dwa stany. Dwie możliwości[cite: 2].
-
-To pojedyncze "włączone lub wyłączone" — to **bit**[cite: 2]. Najmniejszy możliwy kawałek informacji we wszechświecie[cite: 2].
-
-Ale pomyśl o tym z innej strony. Zanim ktoś kliknął ten przełącznik, nie wiedziałeś, czy będzie jasno, czy ciemno. Twoja niepewność wynosiła dokładnie 50/50. Kiedy światło się zapaliło, ta niepewność zniknęła. 
-
-Informacja to nic innego jak **redukcja niepewności**. Kiedy dowiadujesz się czegoś, czego wcześniej nie wiedziałeś, otrzymujesz informację. W świecie komputerów tę porcję usuniętej niepewności mierzymy właśnie w bitach.
-
-*Właśnie teraz, kiedy czytasz to zdanie, Twój ekran wyświetla miliony takich maleńkich sygnałów włącz/wyłącz. Każdy piksel, każda litera, każdy kolor — wszystko sprowadza się do astronomicznej liczby bitów przetwarzanych niesamowicie szybko.*[cite: 2]
+Aby zrozumieć, czym jest "bit", musisz najpierw poczuć, z jakim potężnym problemem zmagała się natura i ludzkość od samego początku istnienia. Czym tak naprawdę jest informacja?
 
 ---PAGE---
 
-## Wszystko to tylko liczby
+## Wszechświat dąży do śmierci (Zasada Entropii)
 
-Oto coś, co może lekko zburzyć Twój światopogląd: wewnątrz komputera nie ma czegoś takiego jak "plik dźwiękowy" czy "plik graficzny". Komputer jest ślepy i głuchy. Rozumie tylko jedną rzecz: **liczby**.
+Zacznijmy od najtwardszej fizyki. Drugie prawo termodynamiki mówi o pewnej przygnębiającej prawdzie: wszechświat naturalnie dąży do chaosu, rozpadu i maksymalnego bałaganu. Fizycy nazywają to zjawisko **entropią**.
 
-- **Zdjęcie?** Miliony maleńkich kwadracików (pikseli). Każdy piksel to tak naprawdę tylko 3 liczby — ile w nim jest koloru czerwonego, zielonego i niebieskiego. Wartości od 0 do 255.
-- **Piosenka?** Twój komputer mierzy ciśnienie powietrza (falę dźwiękową) 44 100 razy w ciągu każdej sekundy, a każdy pomiar zapisuje jako liczbę[cite: 2]. Odtwarzając muzykę, po prostu wypluwa te liczby do głośnika.
-- **Ten tekst?** Każda litera to z góry ustalona liczba. A = 65. B = 66. Spacja = 32[cite: 2].
-- **Gra wideo?** Twoja pozycja na mapie (X, Y, Z), Twoje punkty życia, a nawet kierunek wiatru to liczby aktualizowane 60 razy na sekundę[cite: 2].
+Zostaw gorącą herbatę na stole, a wystygnie i zrówna się temperaturą z otoczeniem. Zbuduj wspaniały zamek z piasku, a wiatr i fale zrównają go z ziemią. Zostaw żelazny miecz na deszczu, a zje go rdza. Rzeczy same z siebie nie stają się bardziej uporządkowane. Zawsze zmierzają ku destrukcji.
 
-Nie ma w tym żadnej magii. Wewnątrz maszyny nie ma specjalnego "materiału wideo". Na samym dnie tego wszystkiego, te miliardy liczb zbudowane są wyłącznie z bitów — zer i jedynek[cite: 2].
+Co jest jedyną siłą we wszechświecie, która potrafi postawić się entropii? Co potrafi wziąć chaos i zamienić go w porządek?
 
----PAGE---
+**To informacja.**
 
-## Dlaczego zera i jedynki?
-
-Wielu ludzi myśli, że zera i jedynki to jakiś genialny, czysty system matematyczny wymyślony po to, żeby było "cyfrowo". Prawda jest znacznie bardziej brutalna. Używamy ich z powodu fizyki i wszechobecnego szumu.
-
-Tranzystor — mikroskopijny przełącznik wewnątrz Twojego procesora — ma dwa stany: **prąd płynie** lub **prąd nie płynie**. Włączony lub wyłączony. 1 lub 0[cite: 2].
-
-Wyobraź sobie, że chcemy zbudować komputer, który rozróżnia 10 różnych wartości zamiast dwóch. Musielibyśmy używać 10 różnych poziomów napięcia prądu (np. 1 Volt to jedynka, 2 Volty to dwójka... 9 Voltów to dziewiątka). 
-
-Brzmi prosto, ale w prawdziwym świecie kable się nagrzewają, obok działają inne urządzenia elektromagnetyczne, a zasilacz czasem podaje lekko wyższe napięcie. Jeśli kabel odczyta 2.2 Volta zamiast 2.0... komputer nie wie, czy to "dwójka", która dostała szumu, czy "trójka", której zabrakło prądu. System się sypie.
-
-Ale jeśli mamy tylko "JEST PRĄD" i "NIE MA PRĄDU"? To niesamowicie łatwe do sprawdzenia. Nawet jeśli sygnał jest zaszumiony, komputer natychmiast wie, z czym ma do czynienia. To fizyczna niezawodność podyktowała użycie jedynek i zer.
+Informacja to struktura. To precyzyjny przepis na to, jak ułożyć atomy, jak ułożyć dźwięki, jak ułożyć słowa. Informacja jest wszystkim tym, co sprzeciwia się ślepemu chaosowi.
 
 ---PAGE---
 
-## Kontekst nadaje sens
+## Kod źródłowy życia (Twój pierwszy system operacyjny)
 
-Pojedyncze zero lub jedynka nic nie znaczy. Jak komputer wie, że seria 8 bitów (np. 01000001) oznacza literę "A", a nie ciemnoczerwony piksel albo instrukcję dla głośnika?
+Natura zrozumiała potęgę informacji miliardy lat temu. Kiedy powstawało pierwsze życie na Ziemi, biologia musiała rozwiązać gigantyczny problem: w jaki sposób zapisać instrukcję budowy żywego organizmu i przekazać ją dalej, zanim ten organizm umrze?
 
-Odpowiedzią jest **kontekst**.
+Tak powstało **DNA**. To nic innego jak biologiczny pendrive, gigantyczna taśma z kodem źródłowym. 
 
-Jeśli otworzysz plik tekstowy, procesor wie: "Aha, ładuję aplikację Notatnik, więc wszystkie bity, które teraz dostanę, mam traktować jak litery alfabetu". 
-Jeśli otworzysz to samo 01000001 w Photoshopie, program powie: "To jest program graficzny, więc potraktuję te bity jako informację o odcieniu czerwieni".
+Zauważ jednak coś fascynującego: natura nie użyła tam systemu binarnego (złożonego z dwóch stanów). Zbudowała ten kod przy pomocy czterech cząsteczek chemicznych: Adeniny (A), Cytozyny (C), Guaniny (G) i Tymin (T). Zamiast zer i jedynek, życie to ciąg liter typu: `A-G-G-T-C-A-T...`
 
-To programy i rozszerzenia plików nadają bitom znaczenie. Same w sobie, bity są tylko ślepym impulsem elektrycznym.
+Każda komórka Twojego ciała ma w sobie miliardy takich "liter". Kiedy w tym kodzie nastąpi błąd przy kopiowaniu (ktoś pomyli literę) — nazywamy to mutacją. To była pierwsza na naszej planecie forma przetwarzania i przechowywania danych. Kto potrafił lepiej przetwarzać informacje o środowisku, ten przetrwał ewolucję.
+
+---PAGE---
+
+## Ludzka Supermoc i Zewnętrzne Dyski Twarde
+
+Dlaczego to my, ludzie (Homo sapiens), zdominowaliśmy tę planetę? Nie jesteśmy najszybsi, nie mamy najostrzejszych zębów, nie latamy i nie mamy grubego pancerza.
+
+Zwyciężyliśmy, ponieważ opanowaliśmy **przesyłanie informacji między umysłami na niespotykaną skalę**.
+
+Na początku był to tylko język. Mogliśmy ostrzec plemię, że "za rzeką są lwy". Problem z mową polegał jednak na tym, że słowa ulatywały. Były jak pamięć RAM — znikały w momencie, gdy zmarł najstarszy mędrzec w wiosce, albo gdy opowieść została przekręcona przez kolejne pokolenia (jak w zabawie w głuchy telefon).
+
+Potem nastąpił największy wynalazek przed erą komputerów. Zrozumieliśmy, że możemy wyrzucić informację poza nasz własny mózg. 
+Sumerowie zaczęli odciskać znaki w glinianych tabliczkach, żeby policzyć worki ze zbożem. Te gliniane tabliczki były pierwszymi w historii ludzkości **twardymi dyskami**. Pokonaliśmy czas. Wiedza architekta, medyka czy króla mogła przetrwać setki lat po jego śmierci, ucząc kolejne pokolenia.
+
+---PAGE---
+
+## Koszmar Ery Analogowej (Problem Wieży Babel)
+
+Przez tysiące lat rozwijaliśmy sposoby zapisu, ale wpędziliśmy się w potężny problem technologiczny. Różne rodzaje informacji wymagały zupełnie innych, niekompatybilnych ze sobą nośników. 
+
+- Chcesz zapisać myśli i historie? Używasz atramentu i papieru.
+- Chcesz zapisać, jak wyglądał władca? Wynajmujesz malarza, który używa farb i płótna.
+- Chcesz zapisać muzykę z koncertu? Rzeźbisz mechaniczne rowki na płycie winylowej, które fizycznie naśladują falę dźwiękową.
+- Chcesz zapisać ruch? Naświetlasz taśmę filmową, klatka po klatce.
+
+To był koszmar. Nie dało się przesłać obrazu przez telegraf (który przesyłał tylko stukanie alfabetem Morse'a). Nie dało się wydrukować dźwięku w książce. Każdy typ informacji był zamknięty w swoim własnym fizycznym świecie. Były jak plemiona mówiące różnymi językami, niemogące się ze sobą dogadać.
+
+Potrzebowaliśmy jednego, absolutnie uniwersalnego języka.
+
+---PAGE---
+
+## Ojciec Cyfrowego Świata i Redukcja Niepewności
+
+W 1948 roku ten problem rozwiązał jeden człowiek. Nazywał się Claude Shannon. Pracując nad systemami szyfrowania i telefonii, napisał przełomową pracę naukową, która na zawsze zmieniła ludzkość.
+
+Shannon zadał genialne w swej prostocie pytanie: "Jak możemy zmierzyć ilość informacji, niezależnie od tego, czy jest to tekst, dźwięk, czy obraz?"
+
+Zauważył on, że dowiadywanie się nowych rzeczy to tak naprawdę **redukcja niepewności**. 
+Wyobraź sobie, że grasz w "20 pytań". Musisz zgadnąć, o jakim zwierzęciu myślę. Z każdym Twoim pytaniem typu "Tak/Nie" (Czy to ssak? Czy umie latać? Czy jest drapieżnikiem?), odrzucasz połowę błędnych możliwości. Twoja niepewność maleje.
+
+Shannon stwierdził, że jeśli zadasz wystarczająco dużo pytań odpowiadających "TAK" lub "NIE", jesteś w stanie opisać każdą rzecz we wszechświecie.
+
+Ten pojedynczy podział, ta jedna odpowiedź "Tak lub Nie", "Włączone lub Wyłączone" — to **bit** (od słów *binary digit*). Najmniejszy możliwy, niepodzielny atom w cyfrowym świecie.
+
+---PAGE---
+
+## Wielka Unifikacja: Wszystko staje się cyfrą
+
+Odkrycie Shannona wywołało rewolucję. Nagle zrozumieliśmy, że płótno, taśmy wideo i płyty winylowe nie są nam niezbędne. Każdą informację można sprowadzić do gigantycznej serii pytań "Tak lub Nie" — czyli do ogromnej listy zer i jedynek.
+
+- **Zdjęcie?** Dzielimy je na miliony mikroskopijnych punktów (pikseli). Każdy punkt opisujemy liczbami (ile ma w sobie czerwieni, zieleni i błękitu).
+- **Piosenka?** Zamiast rzeźbić rowki na winylu, po prostu mierzymy ciśnienie powietrza 44 100 razy w ciągu każdej sekundy. Każdy taki pomiar zapisujemy jako liczbę.
+- **Tekst?** Wyrzucamy atrament. Każdej literze przypisujemy z góry ustaloną wartość. Litera 'A' to liczba 65. Litera 'B' to 66.
+- **Środowisko Gry 3D?** Twoja pozycja (X,Y,Z), kąt padania słońca, tekstura zbroi bohatera — to wszystko matematyka aktualizowana 60 razy na sekundę.
+
+Nagle teksty, piosenki, filmy i skomplikowane programy zaczęły płynąć tym samym, uniwersalnym korytem. Różniło je tylko to, ile tych "bitów" ze sobą niosą.
+
+---PAGE---
+
+## Maszyny Wkraczają do Gry (Dlaczego prąd?)
+
+Skoro wszystko zredukowaliśmy do liczb (zer i jedynek), potrzebowaliśmy maszyn, które potrafią je magazynować i liczyć w mgnieniu oka. 
+
+Jak jednak zmusić fizykę do liczenia? Szukaliśmy zjawiska, które jest niewiarygodnie szybkie. Odpowiedź była jedna: **elektryczność**.
+
+A jak kontrolować elektryczność? Za pomocą przełączników. Przełącznik jest idealną reprezentacją bitu, ponieważ posiada dokładnie dwa stany:
+1. **Prąd płynie (ON)** — co oznacza jedynkę.
+2. **Prąd nie płynie (OFF)** — co oznacza zero.
+
+To brutalne prawa fizyki zmusiły nas do użycia systemu binarnego (dwójkowego). Wyobraź sobie, że spróbujemy użyć systemu dziesiętnego i przesyłać 10 różnych wartości napięcia (np. 1 Volt to cyfra 1, 9 Voltów to cyfra 9). 
+Kable nagrzewają się, burze powodują przepięcia, a obok działają inne maszyny emitujące pole magnetyczne. Wszędzie jest tzw. szum. Jeśli komputer wyśle sygnał "3 Volty", a przez zakłócenia dotrze "3.5 Volta", maszyna zgłupieje. Zacznie mylić cyfry.
+
+Dlatego używamy zer i jedynek. Granica jest prosta. "Jest napięcie powyżej pewnego progu?" -> To znaczy TAK (1). "Napięcie jest bliskie zeru?" -> To znaczy NIE (0). System binarny to sposób komputera na przetrwanie w chaotycznym, pełnym zakłóceń świecie fizyki.
 
 ---PAGE---
 
 ## Spróbuj sam!
 
-Oto prawdziwy licznik binarny. Klikaj bity, żeby przełączać je między 0 a 1, i obserwuj jak zmienia się liczba dziesiętna[cite: 2]:
+Oto dowód na to, jak z fizycznych odpowiedzi "Tak" i "Nie" (0 i 1) powstają matematyczne liczby dziesiętne. 
+
+Oto działający licznik binarny. Zobacz, jak za pomocą zaledwie 8 przełączników (czyli 8 bitów tworzących dokładnie jeden **Bajt**) możesz wygenerować aż 256 różnych kombinacji, co pozwala zapisać każdą małą i wielką literę na Twojej klawiaturze.
 
 <!-- INTERACTIVE: binary-counter -->
 
-Zauważyłeś coś? Za pomocą zaledwie **8 bitów** (jednego bajta) możesz reprezentować dowolną liczbę od 0 do 255. To wystarczy do zakodowania każdej litery alfabetu, każdej podstawowej wartości koloru, każdej prostej instrukcji[cite: 2].
-
-Z 32 bitami możesz liczyć do ponad **4 miliardów**. Z 64 bitami ta liczba wynosi ponad 18 trylionów. Właśnie tak komputery budują nieskończoność z dwóch stanów.
+A teraz pomyśl: jeśli masz 32 takie połączone ze sobą przełączniki, możesz liczyć do ponad 4 miliardów. A jeśli masz ich 64? Możesz opisać ponad 18 trylionów wartości. W taki sposób z prostych, fizycznych pstryczków budujemy całe wszechświaty danych.
 
 ---PAGE---
 
-> [!KEY] Wszystko co widzisz na ekranie — tekst, zdjęcia, filmy, gry — to ogromna ilość zer i jedynek, które Twój komputer czyta NIESAMOWICIE szybko. To właśnie jest informacja: zorganizowane i zinterpretowane bity[cite: 2].
+> [!KEY] Informacja to bunt przeciwko entropii. To uporządkowana struktura i redukcja naszej niepewności o świecie. Cały współczesny świat cyfrowy — od filmów 4K, przez wiadomości SMS, aż po modele językowe AI — to zunifikowany system zadawania miliardów pytań "Tak lub Nie", które fizycznie reprezentowane są przez przełączniki wpuszczające lub blokujące prąd elektryczny.
 
 ---PAGE---
 
 ## Stąd wszystko się rozgałęzia
 
-Teraz, gdy rozumiesz czym jest informacja, możesz pójść w **dowolnym kierunku**[cite: 2]:
+Dotarliśmy od mroków powstawania wszechświata, przez gliniane tabliczki Sumerów, aż do genialnego pomysłu Claude'a Shannona i tranzystorów sterujących prądem. 
 
-- **🧠 Hardware** — Jak komputer fizycznie przetwarza te bity? Czym są bramki logiczne? Jak z prądu zrobić kalkulator?
-- **💻 Programowanie** — Jak powiedzieć komputerowi, co ma zrobić z tymi liczbami?
-- **🌐 Internet** — Jak te miliardy bitów potrafią w ułamku sekundy okrążyć kulę ziemską światłowodami na dnie oceanu?
-- **🤖 AI** — W jaki sposób maszyna potrafi "nauczyć się" odróżniać bity tworzące zdjęcie psa od zdjęcia kota?
-- **🔐 Kryptografia** — Jak za pomocą matematyki zapętlić i wymieszać bity tak, żeby nikt inny nie mógł ich odczytać?
+Teraz otwierają się przed Tobą konkretne, inżynieryjne drzwi. Na tym drzewku nauki możesz pójść w **dowolnym kierunku**:
 
-**Wybierz ścieżkę, która Cię fascynuje. Na tym drzewku nie ma "złej kolejności" — jest tylko Twoja ciekawość.**[cite: 2]
+- **🧠 Hardware** — Jak inżynierowie budują te maleńkie przełączniki dla prądu? Czym są procesory i pamięć RAM?
+- **💻 Programowanie** — W jaki sposób grupujemy te zera i jedynki tak, aby wydawać maszynie precyzyjne rozkazy w ludzkim języku?
+- **🌐 Internet** — Jak to możliwe, że miliardy bitów wędrują pod dnem oceanów, pozwalając Ci oglądać wideo z innego kontynentu w czasie rzeczywistym?
+- **🤖 AI** — Jak ułożyć te wszystkie "Tak" i "Nie" w taki sposób, aby maszyna zaczęła rozpoznawać wzorce przypominające ludzkie myślenie?
+- **🔐 Kryptografia** — Jak użyć matematyki, aby sprytnie wymieszać nasze bity tak, aby żaden wróg nie był w stanie przywrócić w nich pierwotnego porządku?
+
+**Wybierz ścieżkę, która najbardziej rozbudza Twoją wyobraźnię. Tutaj nie ma "złej kolejności" — jest tylko głód wiedzy.**

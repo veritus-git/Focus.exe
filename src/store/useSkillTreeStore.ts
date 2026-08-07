@@ -9,7 +9,7 @@ const STORAGE_KEY = "focusos-skilltree-progress";
 
 export interface SkillNodeState {
   id: string;
-  status: "locked" | "active" | "completed";
+  status: "locked" | "active" | "completed" | "unlocking";
   progress: number;
 }
 
@@ -17,8 +17,10 @@ interface SkillTreeStore {
   nodes: Record<string, SkillNodeState>;
   selectedNodeId: string | null;
   justCompletedNodeId: string | null;
+  newlyUnlockedIds: string[];
   selectNode: (id: string) => void;
   completeNode: (id: string) => void;
+  finalizeUnlocks: () => void;
   clearJustCompleted: () => void;
   resetProgress: () => void;
 }
@@ -81,8 +83,9 @@ function persistNodes(nodes: Record<string, SkillNodeState>): void {
  * After completing a node, recalculate which nodes should be unlocked.
  * A node becomes "active" when ALL its prerequisites are "completed".
  */
-function recalculateUnlocks(nodes: Record<string, SkillNodeState>): Record<string, SkillNodeState> {
+function recalculateUnlocks(nodes: Record<string, SkillNodeState>): { updated: Record<string, SkillNodeState>, newlyUnlockedIds: string[] } {
   const updated = { ...nodes };
+  const newlyUnlockedIds: string[] = [];
 
   for (const lesson of ALL_LESSONS) {
     const node = updated[lesson.id];
@@ -94,24 +97,26 @@ function recalculateUnlocks(nodes: Record<string, SkillNodeState>): Record<strin
     );
 
     if (allPrereqsMet) {
-      updated[lesson.id] = { ...node, status: "active" };
+      updated[lesson.id] = { ...node, status: "unlocking" };
+      newlyUnlockedIds.push(lesson.id);
     }
   }
 
-  return updated;
+  return { updated, newlyUnlockedIds };
 }
 
 export const useSkillTreeStore = create<SkillTreeStore>((set) => ({
   nodes: loadPersistedNodes(),
   selectedNodeId: null,
   justCompletedNodeId: null,
+  newlyUnlockedIds: [],
 
   selectNode: (id) =>
     set((state) => ({
       selectedNodeId: state.selectedNodeId === id ? null : id,
     })),
 
-  clearJustCompleted: () => set({ justCompletedNodeId: null }),
+  clearJustCompleted: () => set({ justCompletedNodeId: null, newlyUnlockedIds: [] }),
 
   completeNode: (id) =>
     set((state) => {
@@ -125,20 +130,35 @@ export const useSkillTreeStore = create<SkillTreeStore>((set) => ({
         };
       }
 
-      updatedNodes = recalculateUnlocks(updatedNodes);
-      persistNodes(updatedNodes);
+      const { updated, newlyUnlockedIds } = recalculateUnlocks(updatedNodes);
+      persistNodes(updated);
 
       return {
-        nodes: updatedNodes,
+        nodes: updated,
         selectedNodeId: null, // close panel on completion
         justCompletedNodeId: id,
+        newlyUnlockedIds,
       };
+    }),
+
+  finalizeUnlocks: () =>
+    set((state) => {
+      let updatedNodes = { ...state.nodes };
+      let changed = false;
+      for (const id of Object.keys(updatedNodes)) {
+        if (updatedNodes[id].status === "unlocking") {
+          updatedNodes[id] = { ...updatedNodes[id], status: "active" };
+          changed = true;
+        }
+      }
+      if (changed) persistNodes(updatedNodes);
+      return { nodes: updatedNodes };
     }),
 
   resetProgress: () =>
     set(() => {
       const freshNodes = buildInitialNodes();
       persistNodes(freshNodes);
-      return { nodes: freshNodes, selectedNodeId: null, justCompletedNodeId: null };
+      return { nodes: freshNodes, selectedNodeId: null, justCompletedNodeId: null, newlyUnlockedIds: [] };
     }),
 }));

@@ -35,12 +35,14 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
     }
   }, [isSelected]);
 
-  const isLocked = nodeState.status === "locked";
+  const isLocked = nodeState.status === "locked" || nodeState.status === "unlocking";
   const isCompleted = nodeState.status === "completed";
+  const isNewlyUnlocked = useSkillTreeStore((state) => state.newlyUnlockedIds.includes(data.nodeId));
 
   const accentColor = data.trackColor || "#00ffcc";
   const size = data.isLevel0 ? "w-18 h-18" : "w-14 h-14";
   const title = t(data.titleKey);
+  const durationClass = isNewlyUnlocked ? "duration-1000" : "duration-200";
 
   return (
     <div
@@ -56,7 +58,7 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
       {/* Circle — no animation, no composite layer, no blur */}
       <div className="relative flex items-center justify-center">
         <div
-          className={`rounded-full border-3 flex items-center justify-center transition-all duration-200 ${size} ${
+          className={`rounded-full border-3 flex items-center justify-center transition-all ${durationClass} ${size} ${
             isLocked ? "bg-slate-950 border-slate-700 text-slate-500 opacity-50"
               : isCompleted ? "bg-[#2d0938] border-[#ffd700] text-white"
               : "bg-[#1f0528] text-white"

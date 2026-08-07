@@ -62,15 +62,21 @@ export const LessonSidePanel: React.FC<LessonSidePanelProps> = ({ nodeId, navGro
     return { navList: navGroup, currentIndex: Math.max(0, idx) };
   }, [nodeId, navGroup]);
 
-  const canGoPrev = currentIndex > 0;
-  const canGoNext = currentIndex < navList.length - 1;
+  const canGoPrev = navList.length > 1;
+  const canGoNext = navList.length > 1;
 
   const handlePrev = () => {
-    if (canGoPrev) onNavigate(navList[currentIndex - 1]);
+    if (canGoPrev) {
+      const prevIdx = currentIndex > 0 ? currentIndex - 1 : navList.length - 1;
+      onNavigate(navList[prevIdx]);
+    }
   };
 
   const handleNext = () => {
-    if (canGoNext) onNavigate(navList[currentIndex + 1]);
+    if (canGoNext) {
+      const nextIdx = currentIndex < navList.length - 1 ? currentIndex + 1 : 0;
+      onNavigate(navList[nextIdx]);
+    }
   };
 
   // Keyboard navigation: arrows to traverse, Enter to start lesson
