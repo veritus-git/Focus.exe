@@ -57,18 +57,20 @@ export const SkillTreeWindow: React.FC = () => {
     nodeIds.forEach(id => {
       const pos = P[id];
       if (pos) {
-        minX = Math.min(minX, pos.x);
-        minY = Math.min(minY, pos.y);
-        maxX = Math.max(maxX, pos.x + 72);
-        maxY = Math.max(maxY, pos.y + 72);
+        const cx = pos.x + 60; // Center of the 120px wide container
+        const cy = pos.y + 36; // Center of the level 0 circle
+        minX = Math.min(minX, cx);
+        minY = Math.min(minY, cy);
+        maxX = Math.max(maxX, cx);
+        maxY = Math.max(maxY, cy);
       }
     });
 
-    const boxWidth = Math.max(100, maxX - minX);
-    const boxHeight = Math.max(100, maxY - minY);
+    const boxWidth = Math.max(1, maxX - minX);
+    const boxHeight = Math.max(1, maxY - minY);
 
     const availableWidth = vpWidth * (percentageX > 0.4 ? 1.0 : 0.65);
-    const padding = 150;
+    const padding = 250; // padding around the circle centers
     
     const zoomX = (availableWidth - padding) / boxWidth;
     const zoomY = (vpHeight - padding) / boxHeight;
@@ -108,8 +110,8 @@ export const SkillTreeWindow: React.FC = () => {
     const zoom = 1.5;
     const centerX = vpWidth * percentageX;
     const centerY = vpHeight * 0.5;
-    const targetX = centerX - (pos.x + 32) * zoom;
-    const targetY = centerY - (pos.y + 32) * zoom;
+    const targetX = centerX - (pos.x + 60) * zoom; // Center of 120px container
+    const targetY = centerY - (pos.y + 36) * zoom; // Center of circle
     reactFlowInstance.current.setViewport({ x: targetX, y: targetY, zoom }, { duration });
   };
 

@@ -69,9 +69,9 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
       </div>
 
       {/* Label — always visible, white when available, gray when locked */}
-      <div className="mt-3 text-center max-w-[100px]">
+      <div className="mt-3 text-center w-[120px]">
         <span
-          className={`text-[10px] font-pixel font-bold block leading-tight ${isLocked ? "text-slate-600" : isCompleted ? "text-[#ffd700]" : "text-white"}`}
+          className={`text-[10px] font-pixel font-bold block leading-tight break-words ${isLocked ? "text-slate-600" : isCompleted ? "text-[#ffd700]" : "text-white"}`}
           style={{ textShadow: isLocked ? "none" : isCompleted ? "0 0 10px rgba(255,215,0,0.5)" : "0 2px 6px rgba(0,0,0,0.9)" }}
         >
           {title}
