@@ -115,8 +115,14 @@ export const SkillTreeWindow: React.FC = () => {
   useEffect(() => {
     if (justCompletedNodeId && reactFlowInstance.current) {
       setTimeout(() => {
-        // We want to keep the center at 0,0 here as requested: "ZAWSZE lekcja 0 jest na samym środeczku"
-        reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 1500 });
+        // Fit view to the completed node AND any newly unlocked children
+        const nodesToFit = [justCompletedNodeId, ...newlyUnlockedIds].map(id => ({ id }));
+        
+        reactFlowInstance.current?.fitView({ 
+          nodes: nodesToFit,
+          duration: 1500, 
+          padding: 0.25 
+        });
 
         // The edge animation starts AFTER the camera stops (1500ms delay in CSS)
         // It takes 1500ms to complete.

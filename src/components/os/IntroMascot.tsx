@@ -13,6 +13,9 @@ export const IntroMascot: React.FC = () => {
   const [dialogStage, setDialogStage] = useState<1 | 2>(1);
 
   useEffect(() => {
+    // Focus window to capture keyboard input
+    window.focus();
+    
     // 1. Smooth 60 FPS gravity drop (0.65s)
     const fallTimer = setTimeout(() => {
       setBotState("standing");

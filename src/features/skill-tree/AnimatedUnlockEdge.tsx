@@ -1,4 +1,4 @@
-import { EdgeProps, getStraightPath } from '@xyflow/react';
+import { EdgeProps, getBezierPath, Position } from '@xyflow/react';
 
 export const AnimatedUnlockEdge = ({
   sourceX,
@@ -9,11 +9,28 @@ export const AnimatedUnlockEdge = ({
   id,
   data,
 }: EdgeProps) => {
-  const [edgePath] = getStraightPath({
+  // Determine dynamic positions based on relative coordinates to create a radial bloom effect
+  const dx = targetX - sourceX;
+  const dy = targetY - sourceY;
+  
+  let dynamicSourcePos = Position.Bottom;
+  let dynamicTargetPos = Position.Top;
+  
+  if (Math.abs(dx) > Math.abs(dy)) {
+    dynamicSourcePos = dx > 0 ? Position.Right : Position.Left;
+    dynamicTargetPos = dx > 0 ? Position.Left : Position.Right;
+  } else {
+    dynamicSourcePos = dy > 0 ? Position.Bottom : Position.Top;
+    dynamicTargetPos = dy > 0 ? Position.Top : Position.Bottom;
+  }
+
+  const [edgePath] = getBezierPath({
     sourceX,
     sourceY,
+    sourcePosition: dynamicSourcePos,
     targetX,
     targetY,
+    targetPosition: dynamicTargetPos,
   });
 
   const isUnlocking = data?.isUnlocking as boolean;
@@ -47,8 +64,10 @@ export const AnimatedUnlockEdge = ({
           ...style, 
           strokeWidth: isActive ? 2.5 : 2, 
           stroke: isActive ? trackColor : "#334155", 
-          opacity: isActive ? 1 : 0.25 
+          opacity: isActive ? 1 : 0.25,
+          strokeDasharray: "6 6"
         }} 
+        className="edge-dash-move"
       />
       
       {/* Foreground dashed animating edge */}
@@ -60,7 +79,7 @@ export const AnimatedUnlockEdge = ({
             ...style,
             strokeWidth: 4,
             stroke: trackColor,
-            strokeDasharray: "8 8",
+            strokeDasharray: "6 6",
             fill: "none",
             filter: `drop-shadow(0 0 10px ${trackColor})`,
           }}
