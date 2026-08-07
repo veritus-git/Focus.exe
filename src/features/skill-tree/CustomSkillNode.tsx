@@ -85,13 +85,13 @@ const CustomSkillNodeInner: React.FC<CustomSkillNodeProps> = ({ data }) => {
         type="target" 
         position={Position.Top} 
         className="opacity-0 pointer-events-none" 
-        style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }} 
+        style={{ left: '50%', top: '50%', bottom: 'auto', right: 'auto', transform: 'translate(-50%, -50%)' }} 
       />
       <Handle 
         type="source" 
         position={Position.Bottom} 
         className="opacity-0 pointer-events-none" 
-        style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }} 
+        style={{ left: '50%', top: '50%', bottom: 'auto', right: 'auto', transform: 'translate(-50%, -50%)' }} 
       />
     </div>
   );

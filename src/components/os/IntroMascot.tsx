@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
 import { useOSStore } from "../../store/useOSStore";
@@ -11,10 +11,13 @@ export const IntroMascot: React.FC = () => {
   const [botState, setBotState] = useState<"falling" | "standing">("falling");
   const [showSpeech, setShowSpeech] = useState(false);
   const [dialogStage, setDialogStage] = useState<1 | 2>(1);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Focus window to capture keyboard input
-    window.focus();
+    // Force focus on our container to catch keyboard events easily
+    if (containerRef.current) {
+      containerRef.current.focus();
+    }
     
     // 1. Smooth 60 FPS gravity drop (0.65s)
     const fallTimer = setTimeout(() => {
@@ -32,17 +35,12 @@ export const IntroMascot: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.key === "Enter" || e.key === " ") && showSpeech) {
-        e.preventDefault();
-        advanceDialog();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [showSpeech, dialogStage]);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.key === "Enter" || e.key === " ") && showSpeech) {
+      e.preventDefault();
+      advanceDialog();
+    }
+  };
 
   if (introFinished) return null;
 
@@ -55,11 +53,16 @@ export const IntroMascot: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/60 select-none">
+    <div 
+      ref={containerRef}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/60 select-none outline-none"
+    >
       {/* Top right language switcher */}
       <div className="absolute top-5 right-8 flex items-center bg-slate-900 border border-white/20 px-2.5 py-1 rounded-lg">
         <button
-          onClick={() => setLanguage("pl")}
+          onClick={(e) => { e.stopPropagation(); setLanguage("pl"); }}
           className={`px-2 py-0.5 text-xs font-pixel cursor-pointer transition-all ${
             language === "pl"
               ? "bg-white text-slate-900 rounded font-bold"
@@ -70,7 +73,7 @@ export const IntroMascot: React.FC = () => {
         </button>
         <span className="text-slate-500 text-xs px-1">|</span>
         <button
-          onClick={() => setLanguage("en")}
+          onClick={(e) => { e.stopPropagation(); setLanguage("en"); }}
           className={`px-2 py-0.5 text-xs font-pixel cursor-pointer transition-all ${
             language === "en"
               ? "bg-white text-slate-900 rounded font-bold"
