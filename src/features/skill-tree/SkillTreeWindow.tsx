@@ -61,19 +61,53 @@ export const SkillTreeWindow: React.FC = () => {
     }
   }, [isMaximized, symmetricBounds]);
 
-  // Calculate viewport offset for the 65% left-aligned area
-  const centerNode = (pos: { x: number; y: number }, percentageX: number, duration: number) => {
-    if (!reactFlowInstance.current) return;
+  const centerNodesBoundingBox = (nodeIds: string[], percentageX: number, duration: number) => {
+    if (!reactFlowInstance.current || nodeIds.length === 0) return;
     const vpWidth = window.innerWidth;
     const vpHeight = window.innerHeight - 44; // Account for taskbar height
-    const zoom = 1.5;
+    
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    nodeIds.forEach(id => {
+      const pos = P[id];
+      if (pos) {
+        minX = Math.min(minX, pos.x);
+        minY = Math.min(minY, pos.y);
+        maxX = Math.max(maxX, pos.x + 72);
+        maxY = Math.max(maxY, pos.y + 72);
+      }
+    });
+
+    const boxWidth = Math.max(100, maxX - minX);
+    const boxHeight = Math.max(100, maxY - minY);
+
+    const availableWidth = vpWidth * (percentageX > 0.4 ? 1.0 : 0.65);
+    const padding = 150;
+    
+    const zoomX = (availableWidth - padding) / boxWidth;
+    const zoomY = (vpHeight - padding) / boxHeight;
+    let zoom = Math.min(zoomX, zoomY, 1.5); 
     
     const centerX = vpWidth * percentageX;
     const centerY = vpHeight * 0.5;
-    
+
+    const boxCenterX = minX + boxWidth / 2;
+    const boxCenterY = minY + boxHeight / 2;
+
+    const targetX = centerX - boxCenterX * zoom;
+    const targetY = centerY - boxCenterY * zoom;
+
+    reactFlowInstance.current.setViewport({ x: targetX, y: targetY, zoom }, { duration });
+  };
+
+  const centerSingleNode = (pos: { x: number; y: number }, percentageX: number, duration: number) => {
+    if (!reactFlowInstance.current) return;
+    const vpWidth = window.innerWidth;
+    const vpHeight = window.innerHeight - 44;
+    const zoom = 1.5;
+    const centerX = vpWidth * percentageX;
+    const centerY = vpHeight * 0.5;
     const targetX = centerX - (pos.x + 32) * zoom;
-    const targetY = centerY - (pos.y + 64) * zoom;
-    
+    const targetY = centerY - (pos.y + 32) * zoom;
     reactFlowInstance.current.setViewport({ x: targetX, y: targetY, zoom }, { duration });
   };
 
@@ -81,21 +115,30 @@ export const SkillTreeWindow: React.FC = () => {
   useEffect(() => {
     if (!reactFlowInstance.current) return;
     if (selectedNodeId) {
-      // Zoom in
-      const pos = P[selectedNodeId] || { x: 2500, y: 50 };
-      if (!panelOpen) {
-        if (!prevViewRef.current) {
-          const vp = reactFlowInstance.current.getViewport();
-          prevViewRef.current = { x: vp.x, y: vp.y, zoom: vp.zoom };
+      if (!panelOpen && !prevViewRef.current) {
+        const vp = reactFlowInstance.current.getViewport();
+        prevViewRef.current = { x: vp.x, y: vp.y, zoom: vp.zoom };
+      }
+
+      // If selected node is the parent (first in navGroup) zoom to group bounding box. Else, zoom to the single child.
+      const isParent = navGroup.length > 0 && navGroup[0] === selectedNodeId;
+      const zoomAction = (pct: number, dur: number) => {
+        if (isParent) {
+          centerNodesBoundingBox(navGroup, pct, dur);
+        } else {
+          centerSingleNode(P[selectedNodeId] || { x: 2500, y: 50 }, pct, dur);
         }
-        centerNode(pos, 0.5, 400); // 1. zoom to center
+      };
+
+      if (!panelOpen) {
+        zoomAction(0.5, 400); // 1. zoom to center
         const t = setTimeout(() => {
           setPanelOpen(true);
-          centerNode(pos, 0.325, 400); // 2. open panel & shift
+          zoomAction(0.325, 400); // 2. open panel & shift
         }, 400);
         return () => clearTimeout(t);
       } else {
-        centerNode(pos, 0.325, 400); // already open, just shift
+        zoomAction(0.325, 400); // already open, just shift
       }
     } else {
       setPanelOpen(false);
@@ -221,7 +264,17 @@ export const SkillTreeWindow: React.FC = () => {
     // Helper functions for navigation group
     const getChildren = (id: string) => ALL_LESSONS
       .filter((l: any) => l.requires.includes(id))
-      .sort((a: any, b: any) => (P[a.id]?.x ?? 0) - (P[b.id]?.x ?? 0))
+      .sort((a: any, b: any) => {
+        const pa = P[a.id] || { x: 0, y: 0 };
+        const pb = P[b.id] || { x: 0, y: 0 };
+        const parentPos = P[id] || { x: 0, y: 0 };
+        let angleA = Math.atan2(pa.y - parentPos.y, pa.x - parentPos.x);
+        let angleB = Math.atan2(pb.y - parentPos.y, pb.x - parentPos.x);
+        // Normalize from [-PI, PI] to [0, 2PI] (starting from Right = 0, going clockwise)
+        if (angleA < 0) angleA += 2 * Math.PI;
+        if (angleB < 0) angleB += 2 * Math.PI;
+        return angleA - angleB;
+      })
       .map((l: any) => l.id);
     const getParentNode = (id: string) => {
       const lesson = ALL_LESSONS.find((l: any) => l.id === id);
