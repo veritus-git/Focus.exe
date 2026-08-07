@@ -37,6 +37,7 @@ export const SkillTreeWindow: React.FC = () => {
   const [resetInput, setResetInput] = useState("");
 
   const reactFlowInstance = useRef<any>(null);
+  const reactFlowContainerRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const prevViewRef = useRef<{ x: number; y: number; zoom: number } | null>(null);
 
@@ -44,14 +45,46 @@ export const SkillTreeWindow: React.FC = () => {
     return [LEVEL_0.id, ...ALL_LESSONS.filter(l => l.requires.includes(LEVEL_0.id)).map(l => l.id)];
   }, []);
 
+  const defaultInitialViewport = useMemo(() => {
+    const vpWidth = window.innerWidth;
+    const vpHeight = window.innerHeight - 80; // 44 taskbar + 36 titlebar
+    
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    initialNodeIds.forEach(id => {
+      const pos = P[id];
+      if (pos) {
+        const cx = pos.x + 60;
+        const cy = pos.y + 36;
+        minX = Math.min(minX, cx);
+        minY = Math.min(minY, cy);
+        maxX = Math.max(maxX, cx);
+        maxY = Math.max(maxY, cy);
+      }
+    });
+
+    const boxWidth = Math.max(1, maxX - minX);
+    const boxHeight = Math.max(1, maxY - minY);
+    const padding = 250;
+    
+    const zoomX = (vpWidth - padding) / boxWidth;
+    const zoomY = (vpHeight - padding) / boxHeight;
+    let zoom = Math.min(zoomX, zoomY, 1.5); 
+    
+    const x = vpWidth * 0.5 - (minX + boxWidth / 2) * zoom;
+    const y = vpHeight * 0.5 - (minY + boxHeight / 2) * zoom;
+    
+    return { x, y, zoom };
+  }, [initialNodeIds]);
+
   const isInitialMount = useRef(true);
   const wasJustCompleted = useRef(false);
 
   // Helper moved up so useEffects can use it
   const centerNodesBoundingBox = useCallback((nodeIds: string[], percentageX: number, duration: number) => {
     if (!reactFlowInstance.current || nodeIds.length === 0) return;
-    const vpWidth = window.innerWidth;
-    const vpHeight = window.innerHeight - 44; 
+    const container = reactFlowContainerRef.current;
+    const vpWidth = container ? container.offsetWidth : window.innerWidth;
+    const vpHeight = container ? container.offsetHeight : (window.innerHeight - 80);
     
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     nodeIds.forEach(id => {
@@ -105,8 +138,9 @@ export const SkillTreeWindow: React.FC = () => {
 
   const centerSingleNode = (pos: { x: number; y: number }, percentageX: number, duration: number) => {
     if (!reactFlowInstance.current) return;
-    const vpWidth = window.innerWidth;
-    const vpHeight = window.innerHeight - 44;
+    const container = reactFlowContainerRef.current;
+    const vpWidth = container ? container.offsetWidth : window.innerWidth;
+    const vpHeight = container ? container.offsetHeight : (window.innerHeight - 80);
     const zoom = 1.5;
     const centerX = vpWidth * percentageX;
     const centerY = vpHeight * 0.5;
@@ -399,6 +433,7 @@ export const SkillTreeWindow: React.FC = () => {
         <div className="flex-1 flex overflow-hidden relative">
           {/* React Flow map area — always 100% width, viewport camera moves instead */}
           <div
+            ref={reactFlowContainerRef}
             className="h-full bg-slate-950 relative overflow-hidden"
             style={{ width: "100%" }}
           >
@@ -406,12 +441,9 @@ export const SkillTreeWindow: React.FC = () => {
               nodes={nodes} edges={flowEdges} nodeTypes={nodeTypes} edgeTypes={edgeTypes}
               onInit={(inst) => {
                 reactFlowInstance.current = inst;
-                window.requestAnimationFrame(() => {
-                  centerNodesBoundingBox(initialNodeIds, 0.5, 0);
-                });
               }}
               onPaneClick={handlePaneClick}
-              defaultViewport={{ x: 0, y: 0, zoom: 1.0 }}
+              defaultViewport={defaultInitialViewport}
               minZoom={0.15} maxZoom={1.6}
               proOptions={{ hideAttribution: true }}
               nodesFocusable={false}
