@@ -257,5 +257,37 @@ export const P: Record<string, { x: number; y: number }> = (() => {
       });
     }
   }
+
+  // 3. Simple physics repulsion step to absolutely guarantee no overlapping
+  const MIN_DIST = 180;
+  const ids = Object.keys(positions);
+  for (let iter = 0; iter < 50; iter++) {
+    let moved = false;
+    for (let i = 0; i < ids.length; i++) {
+      for (let j = i + 1; j < ids.length; j++) {
+        if (ids[i] === 'what-is-information' || ids[j] === 'what-is-information') continue;
+        
+        const p1 = positions[ids[i]];
+        const p2 = positions[ids[j]];
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        if (dist < MIN_DIST && dist > 0) {
+          const overlap = MIN_DIST - dist;
+          const pushX = (dx / dist) * (overlap / 2);
+          const pushY = (dy / dist) * (overlap / 2);
+          
+          p1.x += pushX;
+          p1.y += pushY;
+          p2.x -= pushX;
+          p2.y -= pushY;
+          moved = true;
+        }
+      }
+    }
+    if (!moved) break;
+  }
+
   return positions;
 })();

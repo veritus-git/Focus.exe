@@ -101,10 +101,19 @@ export const SkillTreeWindow: React.FC = () => {
       setPanelOpen(false);
       // Only zoom out if we didn't just complete a lesson
       if (!justCompletedNodeId && reactFlowInstance.current && !wasJustCompleted.current) {
-        reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 400 });
+        if (prevViewRef.current) {
+          reactFlowInstance.current.setViewport(prevViewRef.current, { duration: 400 });
+        } else {
+          reactFlowInstance.current?.fitBounds(symmetricBounds, { duration: 400 });
+        }
       }
       if (justCompletedNodeId) {
         prevViewRef.current = null;
+      } else {
+        // Clear prev view ref so next open will capture the correct new view
+        setTimeout(() => {
+          prevViewRef.current = null;
+        }, 400);
       }
     }
   }, [selectedNodeId, panelOpen]);

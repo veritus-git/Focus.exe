@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useOSStore } from "../../store/useOSStore";
 import { PixelBotCharacter } from "./PixelBotCharacter";
 
@@ -14,10 +15,9 @@ export const IntroMascot: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Force focus on our container to catch keyboard events easily
-    if (containerRef.current) {
-      containerRef.current.focus();
-    }
+    // Force focus on the Tauri window so keyboard events work immediately
+    getCurrentWindow().setFocus().catch(() => {});
+    window.focus();
     
     // 1. Smooth 60 FPS gravity drop (0.65s)
     const fallTimer = setTimeout(() => {

@@ -1,4 +1,4 @@
-import { EdgeProps, getStraightPath } from '@xyflow/react';
+import { EdgeProps, getBezierPath, Position } from '@xyflow/react';
 
 export const AnimatedUnlockEdge = ({
   sourceX,
@@ -9,11 +9,27 @@ export const AnimatedUnlockEdge = ({
   id,
   data,
 }: EdgeProps) => {
-  const [edgePath] = getStraightPath({
+  const dx = targetX - sourceX;
+  const dy = targetY - sourceY;
+  
+  let dynamicSourcePos = Position.Bottom;
+  let dynamicTargetPos = Position.Top;
+  
+  if (Math.abs(dx) > Math.abs(dy)) {
+    dynamicSourcePos = dx > 0 ? Position.Right : Position.Left;
+    dynamicTargetPos = dx > 0 ? Position.Left : Position.Right;
+  } else {
+    dynamicSourcePos = dy > 0 ? Position.Bottom : Position.Top;
+    dynamicTargetPos = dy > 0 ? Position.Top : Position.Bottom;
+  }
+
+  const [edgePath] = getBezierPath({
     sourceX,
     sourceY,
+    sourcePosition: dynamicSourcePos,
     targetX,
     targetY,
+    targetPosition: dynamicTargetPos,
   });
 
   const isUnlocking = data?.isUnlocking as boolean;
